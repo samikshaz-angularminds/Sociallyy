@@ -1,0 +1,130 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid d-flex align-items-center">
+    <div class="d-flex justify-content-center align-items-center playwrite-is gradient-text fs-25">
+      <span class="logo" (click)="toggleSidebar()">Socially</span>
+    </div>
+
+    <div class="collapse navbar-collapse p-1 justify-content-center">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item px-3">
+          <i routerLink="/user/home" class="fa-solid fs-25 fa-house cursor-pointer"></i>
+        </li>
+        <li class="nav-item px-3">
+          <i routerLink="/user/requests" class="fa-regular fs-25 r fa-heart cursor-pointer"></i>
+        </li>
+        <li class="nav-item px-3">
+          <i data-bs-toggle="modal" data-bs-target="#postModal" class="fa-solid fs-25 fa-plus cursor-pointer"></i>
+        </li>
+        <li class="nav-item px-3">
+          <i data-bs-toggle="modal" data-bs-target="#searchModal"
+            class="fa-solid fs-25 fa-magnifying-glass cursor-pointer"></i>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <img routerLink="/user/myProfile" [src]="user?.profileImage?.url" class="image-style" alt="">
+    </div>
+  </div>
+</nav>
+
+<!-- WHEN USER CLICKS ON AREA OTHER THAN SIDEBAR, THE SIDEBAR DISAPPEARS -->
+<div class="backdrop" [ngClass]="{'active':isSidebarVisible}" (click)="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div [ngClass]="{'sidebar': true, 'active': isSidebarVisible}">
+  <a routerLink="/user/myProfile" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">My
+    Profile</a>
+  <hr>
+  <ul class="nav nav-pills flex-column mb-auto">
+    <!-- <li class="nav-item">
+    </li> -->
+    <li class="nav-item">
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" [class.collapsed]="!accordionIsOpen"
+              (click)="toggleAccordion()" [attr.aria-expanded]="accordionIsOpen">
+              Settings
+            </button>
+          </h2>
+          <div class="accordion-collapse collapse" [class.show]="accordionIsOpen"
+            [attr.data-bs-parent]="'#accordionExample'">
+            <div class="accordion-body">
+    <li class="p-2 py-2 cursor-pointer" (click)="makeAccountPrivate()">Privacy</li>
+    <li class="p-2 py-2 cursor-pointer" (click)="deleteAccount()">Delete Account</li>
+    <li class="p-2 py-2 cursor-pointer" (click)="logOut()">Log Out <i class="fa-solid fa-power-off"></i></li>
+</div>
+</div>
+</div>
+</div>
+
+</li>
+
+</ul>
+</div>
+
+
+<!-- POST MODAL -->
+<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered  max-width-700">
+    <div class="modal-content d-flex justify-content-center ">
+
+      <div class="modal-body">
+        <form action="" [formGroup]="postForm">
+          <div class="d-flex">
+            <div class="p-1">
+              <div>
+                <label for="">Caption</label>
+              </div>
+              <textarea type="textarea" formControlName="caption" class="form-control" rows="10" cols="20">  </textarea>
+            </div>
+            <div class="p-1">
+              <div>
+                <label for="">Images</label>
+              </div>
+              <input type="file" multiple (change)="onFileSelect($event)">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-sm btn-primary" data-bs-dismiss="modal" (click)="postIt()">Save
+          changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SEARCH MODAL -->
+<div #searchModal id="searchModal" class="modal fade" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true" (hidden.bs.modal)="onModalDismiss()">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="input-group">
+          <input type="search" (input)="onSearch()" [(ngModel)]="searchQuery" class="form-control" name="searchQuery"
+            id="" placeholder="Search">
+          <span class="input-group-text">
+            <i class="fa fa-search"></i>
+          </span>
+        </div>
+
+        @if (filteredUsers !== undefined && searchQuery !== '') {
+        @for (user of filteredUsers; track $index) {
+        <div class="d-flex p-1 cursor-pointer" data-bs-dismiss="modal" [routerLink]="['/seeProfile']" [queryParams]="{ username: user.username }">
+          <div class="p-1"> 
+            <img class="width-30 height-30 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
+          </div >
+          <div class="p-1">
+            <div> {{user.username}} </div>
+            <div> {{user.full_name}} </div>
+          </div>
+        </div>
+        }
+        }
+      </div>
+    </div>
+  </div>
+</div>

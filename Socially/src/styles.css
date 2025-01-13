@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playwrite+IS:wght@100..400&family=Sofadi+One&display=swap');
+
+
+
+.gradient-text {
+    background-image: linear-gradient(to bottom right, rgb(255, 0, 234), yellow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+
+.playwrite-is {
+  font-family: "Playwrite IS", serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}

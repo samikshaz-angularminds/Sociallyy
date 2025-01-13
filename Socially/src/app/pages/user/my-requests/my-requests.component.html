@@ -1,0 +1,38 @@
+<div class="container d-flex flex-column justify-content-center align-items-center">
+    
+
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        @for (request of requests; track $index) {
+            <div class="width-415" style="width: 350px;">
+                <div class="card m-1 p-1 ">
+                    <div class=" d-flex justify-content-between">
+                        <div class="d-flex">
+                            <div class="p-2">
+                                <img [src]="request.profileImage.url" class="width-45 height-45 rounded-circle" alt="" srcset="">
+                            </div>
+                            <div class="p-2">
+                                <div>
+                                    {{request.username}}
+                                </div>
+                                <div>
+                                    {{request.full_name}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" d-flex">
+                            <div class="p-1 d-flex justify-content-center align-items-center">
+                                <button class="btn btn-sm btn-primary px-1" (click)="acceptRequest(request.username)"><small>Confirm</small></button>
+                            </div>
+                            <div class="p-1 d-flex justify-content-center align-items-center">
+                                <button class="btn btn-sm btn-secondary px-1" (click)="denyRequest(request.username)"><small>Delete</small></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @empty {
+            No requests
+        }
+    </div>
+</div>

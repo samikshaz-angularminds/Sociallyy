@@ -1,0 +1,74 @@
+<div class="container d-flex justify-content-center align-items-center mt-4">
+  <div>
+    <div class="d-flex justify-content-center align-items-center">
+      <h2>User Registration</h2>
+
+    </div>
+    <div class="card p-3">
+      <form [formGroup]="userRegistrationForm" (ngSubmit)="onSubmit()">
+
+        <!-- Full Name -->
+        <div class="mb-3">
+          <label for="full_name" class="form-label">Full Name</label>
+          <input id="full_name" type="text" formControlName="full_name" class="form-control" required />
+          <div *ngIf="userRegistrationForm.get('full_name')?.invalid && userRegistrationForm.get('full_name')?.touched"
+            class="text-danger">
+            Full name is required.
+          </div>
+        </div>
+
+        <!-- Username -->
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" type="text" formControlName="username" class="form-control" required />
+          <div *ngIf="userRegistrationForm.get('username')?.invalid && userRegistrationForm.get('username')?.touched"
+            class="text-danger">
+            Username is required.
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" type="email" formControlName="email" class="form-control" required />
+          <div *ngIf="userRegistrationForm.get('email')?.invalid && userRegistrationForm.get('email')?.touched"
+            class="text-danger">
+            Please enter a valid email.
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" type="password" formControlName="password" class="form-control" required />
+          <div *ngIf="userRegistrationForm.get('password')?.invalid && userRegistrationForm.get('password')?.touched"
+            class="text-danger">
+            Password is required.
+          </div>
+        </div>
+
+
+        <!-- Phone -->
+        <div class="mb-3">
+          <label for="phone" class="form-label">Phone</label>
+          <input id="phone" type="text" formControlName="phone" class="form-control" />
+        </div>
+
+        <!-- Image -->
+        <div class="mb-3 form-check">
+          <label class="form-label">Select a file</label>
+          <input type="file" (change)="onFileSelect($event)" class="form-control" />
+        </div>
+
+        <!-- Submit Button -->
+         <div class="d-flex justify-content-center align-items-center">
+           <button type="submit" class="btn btn-primary" [disabled]="userRegistrationForm.invalid">Submit</button>
+
+         </div>
+      </form>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      Already Registered? <a class="text-primary" routerLink="/account/login">LogIn</a>
+    </div>
+  </div>
+</div>

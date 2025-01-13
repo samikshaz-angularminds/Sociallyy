@@ -1,0 +1,59 @@
+<div class="container d-flex flex-column justify-content-center align-items-center">
+
+    @if(selectedElement === 'followers'){
+
+    @for (follower of followers; track $index) {
+    <div class="card p-2 m-1">
+        <div class="d-flex justify-content-between">
+            <DIV class="d-flex" (click)="seeUser(follower.username)">
+                <div class="px-1">
+                    <img class="height-50 width-50 rounded-circle" [src]="follower.profileImage.url" alt="" srcset="">
+                </div>
+                <div class="px-1" >
+                    <div>
+                        {{follower.username}}
+                    </div>
+                    <div>
+                        {{follower.full_name}}
+                    </div>
+                </div>
+
+            </DIV>
+            @if(accountHolder !== undefined){
+            <div class="px-1 d-flex justify-content-center align-items-center">
+                <button class="btn btn-sm btn-danger" (click)="removeFollower(follower.username)">Remove</button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+    }
+    @else if (selectedElement === 'followings') {
+    @for (following of followings; track $index) {
+
+    <div class="card p-2 m-1">
+        <div class="d-flex  justify-content-between">
+            <div class="d-flex" (click)="seeUser(following.username)">
+                <div class="px-1">
+                    <img class="height-50 width-50 rounded-circle " [src]="following.profileImage.url" alt="" srcset="">
+                </div>
+                <div class="px-1">
+                    <div>
+                        {{following.username}}
+                    </div>
+                    <div>
+                        {{following.full_name}}
+                    </div>
+                </div>
+            </div>
+            @if(accountHolder !== undefined){
+            <div class="px-1 d-flex justify-content-center align-items-center">
+                <button class="btn btn-sm btn-danger" (click)="removeFollowing(following.username)">Unfollow</button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+    }
+</div>
