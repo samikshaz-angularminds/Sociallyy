@@ -69,9 +69,34 @@ async function uploadPost(req, res) {
 }
 
 async function showAllPosts(req, res) {
-    const allPosts = await Post.find({})
+    const allPosts = await Post.find({}).populate('accountHolderId','-id -_id')
 
     return res.json(allPosts)
+}
+
+async function filteredPosts(req,res) {
+    const username = req.params.username
+
+    const allPosts = await Post.find({}).populate('accountHolderId','-password')
+
+
+    const filteredPosts = allPosts.filter(post => {
+        // console.log('yayyy: ', post);
+
+        const account = post.accountHolderId
+
+        console.log('ACCOUNTS:: ', account);
+
+        if (!account.isPrivate) {
+            return true
+        }
+
+        return account.followers.includes(username)
+        
+        
+    })
+
+    return res.json({filteredPosts})
 }
 
 async function showMyPosts(req, res) {
@@ -165,5 +190,5 @@ async function unLikeAPost(req, res) {
 
 }
 
-module.exports = { uploadPostPhotos, uploadPost, showMyPosts, showAllPosts, deletePost, showOnePost, likedAPost, unLikeAPost }
+module.exports = { uploadPostPhotos, uploadPost, showMyPosts, filteredPosts, showAllPosts, deletePost, showOnePost, likedAPost, unLikeAPost }
 

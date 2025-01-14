@@ -33,7 +33,8 @@
 
 <!-- SIDEBAR -->
 <div [ngClass]="{'sidebar': true, 'active': isSidebarVisible}">
-  <a routerLink="/user/myProfile" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">My
+  <a (click)="toggleSidebar()" routerLink="/user/myProfile"
+    class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">My
     Profile</a>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
@@ -51,7 +52,7 @@
           <div class="accordion-collapse collapse" [class.show]="accordionIsOpen"
             [attr.data-bs-parent]="'#accordionExample'">
             <div class="accordion-body">
-    <li class="p-2 py-2 cursor-pointer" (click)="makeAccountPrivate()">Privacy</li>
+    <li class="p-2 py-2 cursor-pointer" (click)="accountPrivacy()">Privacy</li>
     <li class="p-2 py-2 cursor-pointer" (click)="deleteAccount()">Delete Account</li>
     <li class="p-2 py-2 cursor-pointer" (click)="logOut()">Log Out <i class="fa-solid fa-power-off"></i></li>
 </div>
@@ -99,7 +100,8 @@
 
 
 <!-- SEARCH MODAL -->
-<div #searchModal id="searchModal" class="modal fade" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true" (hidden.bs.modal)="onModalDismiss()">
+<div #searchModal id="searchModal" class="modal fade" tabindex="-1" aria-labelledby="searchModalLabel"
+  aria-hidden="true" (hidden.bs.modal)="onModalDismiss()">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
@@ -113,10 +115,11 @@
 
         @if (filteredUsers !== undefined && searchQuery !== '') {
         @for (user of filteredUsers; track $index) {
-        <div class="d-flex p-1 cursor-pointer" data-bs-dismiss="modal" [routerLink]="['/seeProfile']" [queryParams]="{ username: user.username }">
-          <div class="p-1"> 
+        <div class="d-flex p-1 cursor-pointer" data-bs-dismiss="modal" [routerLink]="['/seeProfile']"
+          [queryParams]="{ username: user.username }">
+          <div class="p-1">
             <img class="width-30 height-30 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
-          </div >
+          </div>
           <div class="p-1">
             <div> {{user.username}} </div>
             <div> {{user.full_name}} </div>

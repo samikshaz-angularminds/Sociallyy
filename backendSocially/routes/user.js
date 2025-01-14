@@ -13,7 +13,7 @@ router.post('/login',loginUser)
 
 router.get('/:id',getUser,getOneUser)
 router.get('/notme/:id',getUser,getUsersExceptMe)
-router.get('/other/:name',getUser,seeAnotherUser)
+router.get('/other/user',seeAnotherUser)
 
 router.patch('/privacy/:userId',getUser,privateAccount)
 router.delete('/delete/:userId',getUser,deleteAccount)

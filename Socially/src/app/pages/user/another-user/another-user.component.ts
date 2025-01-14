@@ -8,6 +8,7 @@ import { Modal } from 'bootstrap';
 import { UserService } from '../../../core/services/userService/user.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-another-user',
@@ -31,12 +32,21 @@ export class AnotherUserComponent implements OnInit {
   reqsent: { [key: string]: boolean } = {}
   queryParamsSubject !: Subscription
   isFollowing = false
-
+  queryparams = {username:'',profile:''}
 
   ngOnInit(): void {
     
     this.queryParamsSubject = this.route.queryParams.subscribe((params: any) => {
       const newUserName = params['username']
+      const viewer = params['profile']
+
+      console.log('JYACHI PROFILE BAGHAT AAHE: '+newUserName+'LOGGEDIN: ',viewer);
+
+      this.queryparams = {
+        username : newUserName,
+        profile : viewer
+      }
+      
 
       if (newUserName !== this.username) {
         this.username = newUserName
@@ -46,7 +56,13 @@ export class AnotherUserComponent implements OnInit {
   }
 
   getUser(uname: string) {
-    this.apiService.get<IUser>(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + uname).subscribe({
+
+    console.log('QUERYPARAMS: ',this.queryparams);
+    
+    console.log(apiConstant.API_HOST_URL+apiConstant.SHOW_ANOTHER_USER+`?username=${this.queryparams.username}&profile=${this.queryparams.profile}`);
+    
+
+    this.apiService.get<IUser>(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?username=${this.queryparams.username}&profile=${this.queryparams.profile}`).subscribe({
       next: (res: IUser) => {
         console.log('ANOTHER USER: ', res);
 

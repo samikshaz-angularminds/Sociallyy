@@ -23,16 +23,16 @@
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center justify-content-center pt-1">
-                            @if(reqsent[user.username]){
-                            <button class="btn btn-light">Requested </button>
-                            }
-                            @else {
-                            <button class="btn btn-sm btn-primary w-100"
-                                (click)="sendRequest(user.username)"><small>Follow</small></button>
-                            }
-                        </div>
                     </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center pt-1">
+                    @if(reqsent[user.username]){
+                    <button class="btn btn-light">Requested </button>
+                    }
+                    @else {
+                    <button class="btn btn-sm btn-primary w-100"
+                        (click)="sendRequest(user.username)"><small>Follow</small></button>
+                    }
                 </div>
 
             </div>

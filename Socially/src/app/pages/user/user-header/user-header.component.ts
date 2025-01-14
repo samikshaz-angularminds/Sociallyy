@@ -18,7 +18,7 @@ import * as bootstrap from 'bootstrap';
   templateUrl: './user-header.component.html',
   styleUrl: './user-header.component.css'
 })
-export class UserHeaderComponent implements OnInit,OnDestroy {
+export class UserHeaderComponent implements OnInit {
   @ViewChild('searchModal', { static: false }) searchModal !: ElementRef
 
   userService = inject(UserService)
@@ -93,6 +93,27 @@ export class UserHeaderComponent implements OnInit,OnDestroy {
 
   }
 
+  async accountPrivacy() {
+
+    const consent = await Swal.fire({
+      title:  `Do you want to make this account ${this.user.isPrivate ? 'public' : 'private'}?`,
+      confirmButtonText: 'Yes',
+      showCancelButton: true,
+      cancelButtonText: 'No'
+    })
+
+    if (consent) {
+      this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.ACCOUNT_PRIVACY + this.user._id, { command: this.user.isPrivate ? false : true }).subscribe({
+        next: (res: any) => {
+          console.log(` ${this.user.isPrivate ? 'public' : 'private'}`, res)
+          this.ngOnInit()
+        },
+        error: (error) => console.log(error)
+      })
+    }
+
+  }
+
   async deleteAccount() {
 
     const consent = await Swal.fire({
@@ -118,10 +139,6 @@ export class UserHeaderComponent implements OnInit,OnDestroy {
     this.router.navigate(['account/login'])
 
   }
-
-
-
-
 
   getPostForm() {
     this.postForm = this.fb.group({
@@ -172,17 +189,14 @@ export class UserHeaderComponent implements OnInit,OnDestroy {
   }
 
   seeUser(username: string) {
+    console.log('LOGGED IN USED NAME: ',this.user.username);
     
     
-    this.router.navigate(['seeProfile'], { queryParams: { username: username } })
+    this.router.navigate(['seeProfile'], { queryParams: { username: username,profile: this.user.username } })
   }
 
   onModalDismiss() {
     this.searchQuery = ''
-
   }
 
-  ngOnDestroy(): void {
-      
-  }
 }

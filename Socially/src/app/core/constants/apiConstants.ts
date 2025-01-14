@@ -7,7 +7,7 @@ export const apiConstant = {
     USER_LOGIN : 'user/login',
     GET_ME : 'user/',
     GET_USERS_EXCEPT_ME : 'user/notme/',
-    SHOW_ANOTHER_USER : 'user/other/',
+    SHOW_ANOTHER_USER : 'user/other/user',
     DELETE_ACCOUNT : 'user/delete/',
     ACCOUNT_PRIVACY : 'user/privacy/',
     SEARCHLIST_USERS : 'user/search',

@@ -90,7 +90,7 @@ export class HomePageComponent implements OnInit {
   }
 
   seeUser(uname: string) {
-    this.router.navigate(['seeProfile'], { queryParams: { username: uname } })
+    this.router.navigate(['seeProfile'], { queryParams: { username: uname, profile : this.user.username } })
   }
 
   sendRequest(name: string) {

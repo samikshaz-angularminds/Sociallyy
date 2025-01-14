@@ -32,32 +32,42 @@ export class FollowersFollowingComponent implements OnInit {
     this.accountHolder = this.route.snapshot.queryParams['user']
     this.anotherUser = this.route.snapshot.queryParams['username']
 
-    if(this.selectedElement !== undefined) this.getUser(this.selectedElement)
-    if(this.anotherUser !== undefined ) this.getUser(this.selectedElement, this.anotherUser)
+    if (this.selectedElement !== undefined) this.getUser(this.selectedElement)
+    if (this.anotherUser !== undefined) this.getUser(this.selectedElement, this.anotherUser)
 
-      console.log('SELECTED ELEMENT: ', this.selectedElement);
-      console.log('ACCOUNT HOLDER: ',this.accountHolder);
-      console.log('ANOTHER USER: ', this.anotherUser);
-      
-      
-      
+    console.log('SELECTED ELEMENT: ', this.selectedElement);
+    console.log('ACCOUNT HOLDER: ', this.accountHolder);
+    console.log('ANOTHER USER: ', this.anotherUser);
+
+
+
   }
 
   seeUser(uname: string) {
-    this.router.navigate(['seeProfile'],{queryParams : {username : uname}})
+    this.router.navigate(['seeProfile'], { queryParams: { username: uname, profile:this.user.username } })
   }
 
-  getUser(element: string, username ?: string) {
+  getUser(element: string, username?: string) {
     this.userService.user$.subscribe((response: any) => this.user = response)
 
-    console.log('USER IS: ',this.user);
+    console.log('ELEMENT: ',element);
+    console.log('USERNAME: ',username);
+    
+    
+    console.log('USER IS: ', this.user);
 
-    if(username && element === 'followers') this.getFollowers(username)
-    if(username && element === 'followings') this.getFollowings(username)
+    if (username && element === 'followers') this.getFollowers(username)
+    if (username && element === 'followings') this.getFollowings(username)
+
+
+    if(element === 'followers') this.getFollowers(this.user.username)
+    if(element === 'followings') this.getFollowings(this.user.username)
 
   }
 
   getFollowers(uname: string) {
+    console.log('URL:: ',apiConstant.API_HOST_URL+apiConstant.SHOW_FOLLOWERS+uname);
+
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWERS + uname).subscribe({
       next: (res: any) => {
         if (res) console.log('FOLLOWERS', res)
@@ -69,6 +79,8 @@ export class FollowersFollowingComponent implements OnInit {
   }
 
   getFollowings(uname: string) {
+    console.log('URL:: ',apiConstant.API_HOST_URL+apiConstant.SHOW_FOLLOWINGS+uname);
+    
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + uname).subscribe({
       next: (res: any) => {
         console.log('FOLLOWING: ', res)
@@ -92,7 +104,7 @@ export class FollowersFollowingComponent implements OnInit {
   removeFollowing(uname: string) {
     this.apiService.delete(apiConstant.API_HOST_URL + apiConstant.REMOVE_FOLLOWING + this.user.username, '', { username: uname }).subscribe({
       next: (res: any) => {
-        console.log('REMOVED FROM FOLLOWING: ',res)
+        console.log('REMOVED FROM FOLLOWING: ', res)
         this.getFollowings(uname)
       },
       error: (error) => console.log(error)

@@ -2,7 +2,7 @@
 
 <div class="container d-flex flex-column justify-content-center align-items-center">
 
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="container w-75 d-flex justify-content-center align-items-center">
         <div class=" d-flex flex-column justify-content-center align-items-center">
             <div class="p-1">
                 <img class="width-100 height-100 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
@@ -31,13 +31,17 @@
                 </div>
             </div>
     
-            <div>
-                <button class="btn btn-primary w-100" [ngClass]="{'btn-light':isFollowing}" (click)="sendRequest(user.username)"> {{isFollowing ? 'Following' : 'Follow +'}}</button>
-            </div>
         </div>
+        
     </div>
 
-    <div class="container d-flex justify-content-center align-items-center pt-4">
+    <div class="container w-75 d-flex">
+        <button class="btn btn-primary w-50 mx-1" [ngClass]="{'btn-light':isFollowing}" (click)="sendRequest(user.username)"> {{isFollowing ? 'Following' : 'Follow +'}}</button>
+
+        <button class="btn btn-secondary w-50 mx-1" [routerLink]="'/message'" [queryParams]="{receiverName : user.username}" >Message</button>
+    </div>
+
+    <div class="container w-75 d-flex flex-column justify-content-center align-items-center pt-4">
         @for (post of posts; track $index) {
         <div class="d-flex flex-column m-1">
             <div>

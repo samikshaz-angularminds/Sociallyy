@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ApiService } from '../../../core/services/apiServices/api.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../../core/services/userService/user.service';
 import { tokenConstant } from '../../../core/constants/token';
 import { DecodeTokenService } from '../../../core/services/decodeToken/decode-token.service';
@@ -12,7 +12,7 @@ import { DecodeTokenService } from '../../../core/services/decodeToken/decode-to
 @Component({
   selector: 'app-user-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './user-login.component.html',
   styleUrl: './user-login.component.css'
 })

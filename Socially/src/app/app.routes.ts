@@ -8,6 +8,7 @@ import { MyRequestsComponent } from './pages/user/my-requests/my-requests.compon
 import { FollowersFollowingComponent } from './pages/user/followers-following/followers-following.component';
 import { authGuard } from './core/guards/authGuard/auth.guard';
 import { AnotherUserComponent } from './pages/user/another-user/another-user.component';
+import { MessagingComponent } from './pages/message/messaging/messaging.component';
 
 export const routes: Routes = [
     {
@@ -59,5 +60,9 @@ export const routes: Routes = [
         path: 'seeProfile',
         component : AnotherUserComponent,
         runGuardsAndResolvers: 'always'
+    },
+    {
+        path:'message',
+        component : MessagingComponent
     }
 ];

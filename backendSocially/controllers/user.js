@@ -55,7 +55,7 @@ async function loginUser(req, res) {
     if (!requiredUser)
         return res.status(400).json({ message: "no user found" })
 
-    
+
     const token = setUser(requiredUser)
     res.cookie("uid", token, {
         httpOnly: true,
@@ -79,7 +79,7 @@ async function getUsersForSearching(req, res) {
     const users = await User.find({})
         .select('-_id username full_name profileImage bio website followers followings posts isPrivate')
         .populate('profileImage')
-        .populate('posts','-accountHolderId')
+        .populate('posts', '-accountHolderId')
 
     return res.json(users)
 }
@@ -95,6 +95,7 @@ async function getUsersExceptMe(req, res) {
         .select('username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
 
+    console.log('alllllllllll: ', allUsers);
 
     return res.json(allUsers)
 }
@@ -108,22 +109,56 @@ async function getOneUser(req, res) {
 }
 
 async function seeAnotherUser(req, res) {
-    const username = req.params.name
+    try {
+        const username = req.query.username;
+        const viewer = req.query.profile;
+        console.log('JISKI PROFILE DEKHNI HAI: ', username);
+        console.log('LOGGED IN USER IS: ', viewer);
 
-    const user = await User.findOne({ username: username })
-        .select('-_id username full_name profileImage bio website followers followings posts isPrivate')
-        .populate('profileImage')
-        .populate('posts', '-accountHolderId')
+        const user = await User.findOne({ username: username })
+            .select('-_id username full_name profileImage bio website followers followings posts isPrivate')
+            .populate('profileImage')
+            .populate('posts', '-accountHolderId')
 
-    return res.json(user)
+        console.log('IS ACCOUNT PRIVATE? ', user.isPrivate);
+        console.log('IS VIEWER IN THE FOLLOWER? ', user.followers.includes(viewer));
 
+        if (user.isPrivate && (!user.followers.includes(viewer))) {
+            const updatedUser = {
+                username: user.username,
+                full_name: user.full_name,
+                profileImage: user.profileImage,
+                bio: user.bio,
+                website: user.website,
+                followersCount: user.followers.length,
+                followingsCount: user.followings.length,
+                postsCount: user.posts.length,
+                isPrivate: user.isPrivate,
+            }
+
+            console.log('UPDATED ONE: ', updatedUser);
+
+            return res.json(updatedUser)
+        }
+
+        return res.json(user)
+        return res.json({ message: 'Route logic executed' });
+    } catch (error) {
+        console.error('Error in seeAnotherUser:', error);
+        return res.status(500).json({ error: 'An error occurred' });
+    }
 }
 
 async function privateAccount(req, res) {
     const userId = req.params.userId
     const command = req.body.command
 
-    if (command === 'true') {
+    console.log('USER ID: ', userId);
+    console.log('COMMAND: ', command);
+
+
+
+    if (command === true) {
         const userPrivate = await User.findByIdAndUpdate(userId,
             {
                 $set: { isPrivate: true }
@@ -131,15 +166,22 @@ async function privateAccount(req, res) {
             { new: true }
         )
 
+        console.log('USER PRIVATE: ', userPrivate);
+
+
         return res.json(userPrivate)
     }
-    else if (command === 'false') {
+    else {
         const userPublic = await User.findByIdAndUpdate(userId,
             {
                 $set: { isPrivate: false }
             },
             { new: true }
         )
+
+        console.log('USER PUBLIC: ', userPublic);
+
+
         return res.json(userPublic)
     }
 
