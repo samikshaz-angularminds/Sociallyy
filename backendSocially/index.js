@@ -18,7 +18,7 @@ const RequestRoute = require('./routes/followRequests')
 const PostRoute = require('./routes/posts')
 const MessageRoute = require('./routes/message')
 
-connectMongoDb('mongodb+srv://samiksha_z:Samiksha_123@samikshaz.o5yqf.mongodb.net/')
+connectMongoDb(`${process.env.MONGODB_URL}`)
 .then(() => console.log('Db connected successfully!!'))
 .catch((e) => console.log(e))
 

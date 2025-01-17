@@ -32,7 +32,7 @@ export class UserRegistrationComponent implements OnInit {
       username: ['', Validators.required],
       email: ['', Validators.required],
       password: ['', Validators.required],
-      phone: '',
+      phone: ['', [Validators.maxLength(10),Validators.minLength(10),Validators.pattern(/^\d{10}$/)]],
       website: '',
     })
   }

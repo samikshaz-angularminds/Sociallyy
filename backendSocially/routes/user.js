@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {registerUser,getAllUsers, uploadImage,getUsersForSearching,loginUser,getOneUser,getUsersExceptMe,seeAnotherUser,privateAccount,deleteAccount} = require('../controllers/user')
+const {registerUser,getAllUsers, uploadImage,updateProfilePic,getUsersForSearching,loginUser,getOneUser,getUsersExceptMe,seeAnotherUser,privateAccount,deleteAccount} = require('../controllers/user')
 const upload = require('../middlewares/uploadImage')
 const {getUser} = require('../services/authLogin')
 
@@ -9,6 +9,7 @@ router.get('/',getAllUsers)
 router.get('/search',getUsersForSearching)
 
 router.post('/register',upload.single('profilePhoto'),registerUser)
+router.patch('/updatePic/:userId',upload.single('profilePhoto'),updateProfilePic)
 router.post('/login',loginUser)
 
 router.get('/:id',getUser,getOneUser)

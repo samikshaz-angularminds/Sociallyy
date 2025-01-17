@@ -11,6 +11,7 @@ export const apiConstant = {
     DELETE_ACCOUNT : 'user/delete/',
     ACCOUNT_PRIVACY : 'user/privacy/',
     SEARCHLIST_USERS : 'user/search',
+    UPDATE_PROFILE_PICTURE : 'user/updatePic/',
     
     
     // REQUESTS
@@ -23,6 +24,7 @@ export const apiConstant = {
     REMOVE_FOLLOWER : 'requests/removeFollower/',
     REMOVE_FOLLOWING : 'requests/removeFollowing/',
     DELETE_REJECTED_REQUESTS : 'requests/removeRejected',
+    PENDING_REQUESTS : 'requests/pending/',
     
     
     // POSTS
@@ -32,4 +34,9 @@ export const apiConstant = {
     SHOW_ONE_POST : 'posts/showOnePost/',
     LIKE_POST : 'posts/like/',
     UNLIKE_POST : 'posts/unlike/',
+
+    // MESSAGES
+    SEND_MESSAGE : 'message/send/',
+    SHOW_MY_MESSAGES : 'message/myMessages/',
+    SHOW_CONVERSATION : 'message/conv/'
 }

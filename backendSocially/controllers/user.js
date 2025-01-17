@@ -20,9 +20,28 @@ async function uploadImage(filePath) {
     }
 }
 
+async function updateProfilePic(req, res) {
+    const userId = req.params.userId
+    const profilePic = await uploadImage(req.file.path)
+
+    const newPic = await User.findByIdAndUpdate(userId,
+        {
+            $set: {
+                profileImage: profilePic
+            }
+
+        },
+        {
+            new: true
+        }
+    )
+
+    return res.json(newPic)
+}
+
 async function registerUser(req, res) {
     const { id, username, email, password, full_name, bio, phone, website } = req.body
-    const img = await uploadImage(req.file.path)
+    const img = await uploadImage(req.file?.path)
 
     const newUser = await User.create({
         id,
@@ -43,13 +62,13 @@ async function registerUser(req, res) {
 async function loginUser(req, res) {
     const { email, password } = req.body
 
-    console.log('EMAIL:::  ', email);
-    console.log('PASSWORD::: ', password);
+    // console.log('EMAIL:::  ', email);
+    // console.log('PASSWORD::: ', password);
 
 
     const requiredUser = await User.findOne({ email, password })
 
-    console.log('REQUIRED USER: ', requiredUser);
+    // console.log('REQUIRED USER: ', requiredUser);
 
 
     if (!requiredUser)
@@ -63,7 +82,7 @@ async function loginUser(req, res) {
 
     })
 
-    console.log('TOKEN HERE: ', token);
+    // console.log('TOKEN HERE: ', token);
 
     return res.json({ user: requiredUser, token: token })
 }
@@ -87,15 +106,15 @@ async function getUsersForSearching(req, res) {
 async function getUsersExceptMe(req, res) {
     const userId = req.params.id
     const userObjectId = new mongoose.Types.ObjectId(userId)
-    console.log('IS IT VALID? ', mongoose.isValidObjectId(userId));
-    console.log('USER OBJECT ID: ', userObjectId);
-    console.log('USER ID: ', userId);
+    // console.log('IS IT VALID? ', mongoose.isValidObjectId(userId));
+    // console.log('USER OBJECT ID: ', userObjectId);
+    // console.log('USER ID: ', userId);
 
     const allUsers = await User.find({ _id: { $ne: userObjectId } })
         .select('username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
 
-    console.log('alllllllllll: ', allUsers);
+    // console.log('alllllllllll: ', allUsers);
 
     return res.json(allUsers)
 }
@@ -112,16 +131,16 @@ async function seeAnotherUser(req, res) {
     try {
         const username = req.query.username;
         const viewer = req.query.profile;
-        console.log('JISKI PROFILE DEKHNI HAI: ', username);
-        console.log('LOGGED IN USER IS: ', viewer);
+        // console.log('JISKI PROFILE DEKHNI HAI: ', username);
+        // console.log('LOGGED IN USER IS: ', viewer);
 
         const user = await User.findOne({ username: username })
             .select('-_id username full_name profileImage bio website followers followings posts isPrivate')
             .populate('profileImage')
             .populate('posts', '-accountHolderId')
 
-        console.log('IS ACCOUNT PRIVATE? ', user.isPrivate);
-        console.log('IS VIEWER IN THE FOLLOWER? ', user.followers.includes(viewer));
+        // console.log('IS ACCOUNT PRIVATE? ', user.isPrivate);
+        // console.log('IS VIEWER IN THE FOLLOWER? ', user.followers.includes(viewer));
 
         if (user.isPrivate && (!user.followers.includes(viewer))) {
             const updatedUser = {
@@ -136,13 +155,12 @@ async function seeAnotherUser(req, res) {
                 isPrivate: user.isPrivate,
             }
 
-            console.log('UPDATED ONE: ', updatedUser);
+            // console.log('UPDATED ONE: ', updatedUser);
 
             return res.json(updatedUser)
         }
 
         return res.json(user)
-        return res.json({ message: 'Route logic executed' });
     } catch (error) {
         console.error('Error in seeAnotherUser:', error);
         return res.status(500).json({ error: 'An error occurred' });
@@ -153,10 +171,8 @@ async function privateAccount(req, res) {
     const userId = req.params.userId
     const command = req.body.command
 
-    console.log('USER ID: ', userId);
-    console.log('COMMAND: ', command);
-
-
+    // console.log('USER ID: ', userId);
+    // console.log('COMMAND: ', command);
 
     if (command === true) {
         const userPrivate = await User.findByIdAndUpdate(userId,
@@ -198,4 +214,4 @@ async function deleteAccount(req, res) {
     return res.json({ message: 'User deleted successfully!' })
 }
 
-module.exports = { registerUser, getAllUsers, getUsersForSearching, uploadImage, loginUser, getOneUser, getUsersExceptMe, seeAnotherUser, privateAccount, deleteAccount }
+module.exports = { registerUser, getAllUsers, getUsersForSearching, uploadImage, updateProfilePic,loginUser, getOneUser, getUsersExceptMe, seeAnotherUser, privateAccount, deleteAccount }

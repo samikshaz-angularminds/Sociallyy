@@ -26,6 +26,7 @@ export class UserLoginComponent implements OnInit {
   userService = inject(UserService)
   decodingService = inject(DecodeTokenService)
   isPassword = true
+  loginError = ''
 
 
   ngOnInit(): void {
@@ -56,6 +57,7 @@ export class UserLoginComponent implements OnInit {
 
         },
         error: (error) => {
+          this.loginError = error
           console.log(error);
         }
       })

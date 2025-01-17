@@ -1,4 +1,11 @@
 <div class="container d-flex flex-column justify-content-center align-items-center pt-5 ">
+
+  @if (loginError) {
+    <div class="alert alert-danger" role="alert">
+  {{loginError | json}}
+    </div>
+
+  }
   <div class="h2 d-flex justify-content-center align-items-center playwrite-is p-3 font-size-40 gradient-text">
     Socially
   </div>

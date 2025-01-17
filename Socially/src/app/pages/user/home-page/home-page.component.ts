@@ -5,7 +5,7 @@ import { apiConstant } from '../../../core/constants/apiConstants';
 import { Router, RouterModule } from '@angular/router';
 import { IUser } from '../../../core/models/user';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { tap } from 'rxjs';
+import { forkJoin, map, tap } from 'rxjs';
 import { tokenConstant } from '../../../core/constants/token';
 import { IPost } from '../../../core/models/post';
 
@@ -29,6 +29,7 @@ export class HomePageComponent implements OnInit {
   followings: IUser[] = []
   liked = { uname: '', post_id: '', isLiked: false }
   currentImageIndex = 0
+  pendingRequestsToUsers: string[] = []
 
 
   ngOnInit(): void {
@@ -37,51 +38,33 @@ export class HomePageComponent implements OnInit {
 
   getUser() {
     this.userService.user$.subscribe((res: any) => {
-      // console.log('USER FROM HOME PAGE: ', res);
-
       this.user = res
     })
+    this.getSuggestions()
 
-    // console.log('USER HERE HOME PAGE: ', this.user);
-
-    this.myFollowings(this.user.username).subscribe({
-      next: () => this.getSuggestions(),
-      error: (error) => console.log(error)
-    })
   }
 
-  myFollowings(username: string) {
-    return this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + username).pipe(
-      tap((res: IUser[]) => {
-        // console.log('FOOOLLLLLLOOOWIIIIIINGGGS: ',res);
-        this.followings = res
 
-        res.forEach(user => {
-          user.posts.forEach(post => {
-            if (post.likes.includes(username)) {
-              this.liked = {
-                uname: username,
-                post_id: post._id,
-                isLiked: true
-              }
-            }
-          });
-        });
-
-        this.followingNames = res.map((res: any) => res.username)
-        // console.log('FOLLOWINGS FROM HOME PAGE: ', this.followingNames)
-      })
-    )
-  }
 
   getSuggestions() {
-    console.log('FOLLOW NAMESSSSS: ', this.followingNames);
+    forkJoin({
+      suggestions: this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.GET_USERS_EXCEPT_ME + this.user._id),
+      pendingRequest: this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.username),
+      followings: this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + this.user.username)
+    }).subscribe({
+      next: (res: any) => {
+        const { suggestions, pendingRequest, followings } = res
+        // console.log( 'suggestions:: ',suggestions);
+        // console.log('pendingRequest:: ' ,pendingRequest);
+        // console.log('followings:: ',followings);
 
-    this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.GET_USERS_EXCEPT_ME + this.user._id).subscribe({
-      next: (res: IUser[]) => {
-        // console.log('SUGGESTIONS: ', res);
+        const pendingRequestNames = pendingRequest.map((request: any) => request.toUser)
+        const followingNames = followings.map((user: any) => user.username)
+        
+        this.users = suggestions.filter((res: any) => !followingNames.includes(res.username) && !pendingRequestNames.includes(res.username))
 
-        this.users = res.filter(res => !this.followingNames.includes(res.username))
+        // console.log('SUGGESTED USERS ARE: ', this.users);
+
       },
       error: (error) => {
         console.log(error)
@@ -89,12 +72,34 @@ export class HomePageComponent implements OnInit {
     })
   }
 
+  myPendingRequests() {
+    // this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.username).subscribe({
+    //   next: (res: any) => {
+    //     // this.users = this.users.f
+    //     console.log('MY PENDING REQUESTS:  ',res);
+    //     this.pendingRequestsToUsers = res.map((res:any) => res.username)
+    //     return 
+    //   },
+    //   error: (error) => console.log(error)
+    // })
+
+    return this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.username).pipe(
+      map((res: any) => {
+        console.log('response of requests: ', res);
+        return res.map((r: any) => r.username)
+
+      })
+    )
+
+
+  }
+
   seeUser(uname: string) {
-    this.router.navigate(['seeProfile'], { queryParams: { username: uname, profile : this.user.username } })
+    this.router.navigate(['seeProfile'], { queryParams: { username: uname, profile: this.user.username } })
   }
 
   sendRequest(name: string) {
-    this.apiService.post(apiConstant.API_HOST_URL + apiConstant.SEND_REQUEST + name, { username: name }).subscribe({
+    this.apiService.post(apiConstant.API_HOST_URL + apiConstant.SEND_REQUEST + this.user.username, { username: name }).subscribe({
       next: (res: any) => {
         console.log('REQUEST SENT BY ME: ', res);
         this.reqsent[name] = true
@@ -106,12 +111,11 @@ export class HomePageComponent implements OnInit {
     })
   }
 
-
-  nextImg(){
+  nextImg() {
     this.currentImageIndex++
   }
 
-  prevImg(){
+  prevImg() {
     this.currentImageIndex--
   }
 

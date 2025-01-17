@@ -10,15 +10,16 @@ async function sendRequest(req, res) {
     const senderName = req.params.name
     const receiverName = req.body.username
 
+    // console.log('SENDER name IS: ', senderName);
+    // console.log('RECEIVER name IS: ', receiverName);
+
     const sender = await User.findOne({ username: senderName })
     const receiver = await User.findOne({ username: receiverName })
 
-    console.log('SENDER IS: ',sender);
-    console.log('RECEIVER IS: ',receiver);
-    
-    
+    // console.log('SENDER IS: ', sender);
+    // console.log('RECEIVER IS: ', receiver);
 
-    if(senderName === receiverName) return res.json({message : 'Invalid Request'})
+    if (senderName === receiverName) return res.json({ message: 'Invalid Request' })
 
     const existingRequest = await FollowRequest.findOne({
         fromUser: sender,
@@ -75,7 +76,7 @@ async function showMyFollowing(req, res) {
     const followings = await User.find({ username: { $in: followingsNames } })
         .select('-_id username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
-        .populate('posts','-accountHolderId')
+        .populate('posts', '-accountHolderId')
 
     return res.json(followings)
 }
@@ -133,17 +134,28 @@ async function deleteRequest(req, res) {
     const deletor = req.params.name
     const beingdeleted = req.body.username
 
-    console.log('deletor : ', deletor);
-    console.log('being deleted: ', beingdeleted);
+    // console.log('deletor : ', deletor);
+    // console.log('being deleted: ', beingdeleted);
 
     const reqUser = await FollowRequest.findOneAndUpdate(
         { fromUser: beingdeleted, toUser: deletor },
-        { $set: { status: 'rejected' } }
+        { $set: { status: 'rejected' } },
+        { new: true }
     )
 
     if (!reqUser) return res.json({ message: "could not find the user" })
 
+    await removeRejectedRequests()
+
     return res.json({ message: "request deleted successfully!" })
+}
+
+async function pendingRequests(req, res) {
+    const requestor = req.params.name
+
+    const requests = await FollowRequest.find({ fromUser: requestor, status: 'pending' })
+
+    return res.json(requests)
 }
 
 async function removeFromFollowers(req, res) {
@@ -181,7 +193,7 @@ async function removeFromFollowers(req, res) {
         }
     )
 
-    console.log('UPDATED USER WHEN FOLLOWER REMOVED: ',updatedUser);
+    console.log('UPDATED USER WHEN FOLLOWER REMOVED: ', updatedUser);
 
     const updatedUser2 = await User.findOneAndUpdate(
         {
@@ -198,9 +210,9 @@ async function removeFromFollowers(req, res) {
         }
     )
 
-    console.log('UPDATED USER 2 WHEN FOLLOWER REMOVED: ',updatedUser);
+    console.log('UPDATED USER 2 WHEN FOLLOWER REMOVED: ', updatedUser2);
 
-    removeRejectedRequests()
+    await removeRejectedRequests()
 
     return res.json(removeFromRequests)
 }
@@ -237,41 +249,44 @@ async function removeFromFollowings(req, res) {
             {
                 followings: followingName
             }
+        },
+        {
+            new : true
         }
     )
 
-    console.log('UPDATED USER AFTER REMOVING FOLLOWING: ',updatedUser);
+    console.log('UPDATED USER AFTER REMOVING FOLLOWING: ', updatedUser);
 
-    const  updatedUser2 = await User.findOneAndUpdate(
+    const updatedUser2 = await User.findOneAndUpdate(
         {
-            username : followingName
+            username: followingName
         },
         {
-            $pull : 
+            $pull:
             {
                 followers: remover
             }
+        },
+        {
+            new : true
         }
     )
 
-    console.log('UPDATED USER 2 AFTER REMOVING FOLLOWING: ',updatedUser2);
-    
+    console.log('UPDATED USER 2 AFTER REMOVING FOLLOWING: ', updatedUser2);
 
-    removeRejectedRequests()
+
+    await removeRejectedRequests()
 
     return res.json(removeFollowing)
 }
 
 async function removeRejectedRequests() {
 
-    const rejectedReq = await FollowRequest.find({status : 'rejected'})
+    const rejectedReq = await FollowRequest.find({ status: 'rejected' })
 
-    if(rejectedReq) await FollowRequest.deleteMany({rejectedReq})
-
-
-    // console.log('DELETE COUNT: ', rejectedRequests.deletedCount);
+    if (rejectedReq) await FollowRequest.deleteMany({ rejectedReq })
 
 }
 
 
-module.exports = { sendRequest, showMyRequests, acceptRequest, showAllRequests, showMyFollowers, showMyFollowing, deleteRequest, removeRejectedRequests, removeFromFollowers, removeFromFollowings }
+module.exports = { sendRequest, showMyRequests, acceptRequest, pendingRequests, showAllRequests, showMyFollowers, showMyFollowing, deleteRequest, removeRejectedRequests, removeFromFollowers, removeFromFollowings }

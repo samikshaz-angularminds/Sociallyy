@@ -1,12 +1,16 @@
 const mongoose = require('mongoose')
 
 const messageSchema = new mongoose.Schema({
+    receiver: {
+        type: [String],
+        required: true
+    },
     sender: {
         type: String,
-        required : true
+        required: true
     },
     message: {
-        type: [String],
+        type: String,
         required: true
     },
     messageType: {
@@ -24,14 +28,14 @@ const messageSchema = new mongoose.Schema({
 })
 
 const threadSchema = new mongoose.Schema({
-    participants : {
-        type : [String],
-        required : true
+    participants: {
+        type: [String],
+        required: true
     },
-    message : [messageSchema],
-    lastUpdated : {
-        type : Date,
-        default : Date.now
+    message: [messageSchema],
+    lastUpdated: {
+        type: Date,
+        default: Date.now
     }
 })
 

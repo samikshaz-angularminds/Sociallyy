@@ -38,10 +38,6 @@
     font-size: 25px;
 }
 
-.font-size-90{
-    font-size: 90px;
-}
-
 input:focus{
     border: none;
     border-bottom: 1px solid black;
@@ -58,6 +54,11 @@ input:focus{
 
 .bg-blue{
     background-color: rgb(85, 160, 209);
+}
+
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 .border-sec{

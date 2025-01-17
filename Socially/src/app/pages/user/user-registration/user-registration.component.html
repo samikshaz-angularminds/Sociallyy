@@ -51,7 +51,15 @@
         <!-- Phone -->
         <div class="mb-3">
           <label for="phone" class="form-label">Phone</label>
-          <input id="phone" type="text" formControlName="phone" class="form-control" />
+          <input id="phone" type="text" formControlName="phone" class="form-control" maxlength="10" minlength="10" />
+          
+          <div *ngIf="userRegistrationForm.get('phone')?.invalid && userRegistrationForm.get('phone')?.touched" class="text-danger">
+            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['required']">Phone is required.</div>
+            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['maxlength']">Phone number cannot exceed 10 digits.</div>
+            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['minlength']">Phone number cannot exceed 10 digits.</div>
+            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['pattern']">Phone number must contain only digits.</div>
+          </div>
+          
         </div>
 
         <!-- Image -->
@@ -61,13 +69,14 @@
         </div>
 
         <!-- Submit Button -->
-         <div class="d-flex justify-content-center align-items-center">
-           <button type="submit" class="btn btn-primary" [disabled]="userRegistrationForm.invalid">Submit</button>
+        <div class="d-flex justify-content-center align-items-center">
+          <button type="submit" class="btn btn-primary" [disabled]="userRegistrationForm.invalid">Submit</button>
 
-         </div>
+        </div>
       </form>
       <div class="d-flex justify-content-center align-items-center">
-        Already Registered? &nbsp; <a class="link-offset-2 link-underline link-underline-opacity-0" routerLink="/account/login" > <strong>Login</strong> </a>
+        Already Registered? &nbsp; <a class="link-offset-2 link-underline link-underline-opacity-0"
+          routerLink="/account/login"> <strong>Login</strong> </a>
       </div>
     </div>
   </div>

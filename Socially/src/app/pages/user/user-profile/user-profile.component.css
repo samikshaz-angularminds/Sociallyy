@@ -26,9 +26,27 @@
   font-size: 40px;
 }
 
-.modal-content .img{
+.modal-content .img {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
 }
 
+.image-container {
+  position: relative;
+  display: inline-block;
+  
+}
+
+.camera-icon {
+  position: absolute;
+  bottom: -7px;
+  right: -3px;
+  background-color: rgb(255, 255, 255);
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.camera-icon i {
+  position: relative;
+}

@@ -1,36 +1,46 @@
 <div class="container d-flex">
 
-    <div class="w-25 border border-secondary mx-1">
+    <div class="w-25 border border-sec p-3">
 
-    </div>
+        @for (conversation of conversations; track $index) {
+        <div class="pt-3 lh-1 d-flex" (click)="userChange(uname)">
 
-    <div class="w-75 border border-secondary mx-1 height-500">
-        <div class="border border-secondary d-flex h-10">
-            <div class="d-flex">
-                <div>
-                    <img [src]="receiverUser.profileImage.url" class="rounded-circle width-20 height-20" alt=""
-                        srcset="">
-                </div>
-                <div>
-                    {{receiverUser.username}}
-                </div>
-
-
+            <div class="d-flex justify-content-center align-items-center px-2">
+                <img [src]="conversation.otherUser.profilePic" class="height-40 width-40 rounded-circle" alt=""
+                    srcset="">
             </div>
-        </div>
-        <div class="border border-secondary h-90">
 
-            <div class="border border-primary h-90">
-
-            </div>
-            <div class="border rounded-5 border-danger h-10">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                    <span class="input-group-text" id="basic-addon1">o</span>
-                  </div>
-<input type="text" class="form-control" placeholder="Message">
+            <div>
+                <div  #uname>
+                    {{ conversation.otherUser.username }}
+                </div>
+                <small class="text-secondary"> {{ conversation.message[conversation.message.length-1].message }}
+                </small>
             </div>
 
         </div>
 
+        }
     </div>
+
+    <div class="w-75 border border-sec height-600"
+        [ngClass]=" receiverUser ? [] : ['d-flex', 'flex-column', 'justify-content-center', 'align-items-center'] ">
+        @if(receiverUser){
+        <app-message-box [receiverUser]="receiverUser"></app-message-box>
+        }
+        @else {
+        <div class="font-size-90 ">
+            <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div class="fw-bold">
+            Your Messages
+        </div>
+        <div class="text-secondary">
+            Send Photos and messages to a friend or group
+        </div>
+        <div class="pt-2">
+            <button class="btn btn-sm btn-primary" >Send Message</button>
+        </div>
+        }
+    </div>
+</div>

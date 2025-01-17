@@ -7,11 +7,6 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IPost } from '../../../core/models/post';
 import { Modal } from 'bootstrap';
-import Swal from 'sweetalert2'
-import { tokenConstant } from '../../../core/constants/token';
-
-
-
 
 @Component({
   selector: 'app-user-profile',
@@ -63,10 +58,8 @@ export class UserProfileComponent {
       next: (res: any) => {
         this.onePost = res
 
-        console.log('ONE POST: ', this.onePost);
-
-        console.log('LIKE OBJJ: ', this.liked);
-
+        // console.log('ONE POST: ', this.onePost);
+        // console.log('LIKE OBJJ: ', this.liked);
 
         if (this.onePost.likes.includes(this.user.username)) {
           this.liked.uname = this.user.username
@@ -105,6 +98,10 @@ export class UserProfileComponent {
         console.log(error);
       }
     })
+  }
+
+  updateProfilePicture(userid:string){
+    // this.apiService.patch()
   }
 
 

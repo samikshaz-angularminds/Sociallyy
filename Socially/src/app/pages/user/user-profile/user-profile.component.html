@@ -4,8 +4,11 @@
    
     <div class="container d-flex justify-content-center align-items-center">
         <div class=" d-flex flex-column justify-content-center align-items-center">
-            <div class="p-1">
+            <div class="p-1 image-container">
                 <img class="width-100 height-100 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
+                <div class="d-flex justify-content-end m-0 camera-icon" data-bs-toggle="modal" data-bs-target="#updatePic">
+                    <i class="fa-solid fa-camera" style="font-size: 25px;"></i>
+                </div>
             </div>
             <div class="p-1">
                 {{user.username}}
@@ -31,6 +34,7 @@
     </div>
 
     <div class="container d-flex justify-content-center align-items-center pt-4">
+
         @for (post of posts; track $index) {
         <div class="d-flex flex-column m-1">
             <div>
@@ -38,6 +42,18 @@
             </div>
 
         </div>
+        }
+        @empty {
+            <div class="d-flex justify-content-center align-items-center pt-5 mt-5" >
+                <div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <i class="fa-solid fa-camera" style="font-size: 60px;"></i>
+                    </div>
+                    <div style="font-size: 40px;">
+                        No Posts Yet
+                    </div>
+                </div>
+            </div>
         }
     </div>
 
@@ -109,7 +125,27 @@
     </div>
 </div>
 
-
+<!-- UPDATE PROFILE PICTURE MODAL -->
+<div id="updatePic" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <label for="">Select a file</label>
+            <input type="file" class="form-control" src="" alt="">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 

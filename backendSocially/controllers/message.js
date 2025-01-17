@@ -6,23 +6,41 @@ async function sendMessage(req,res) {
 
     console.log('SENDER: ',sender);
     console.log('RECEIVER: ',req.body);
-    
-    
 
-    let conversation = await Thread.findOne({ participants : { $all : [sender,receiver] }  })
+    let conversation;
+
+    console.log(receiver.length);
+
+    console.log( typeof receiver );
+    
+    if(typeof receiver === Array){
+         conversation = await Thread.findOne({ participants : { $all : [sender,...receiver] }  })
+    }
+    else{
+        conversation = await Thread.findOne({ participants : { $all : [sender,receiver] }  })
+    }
+
 
     if(!conversation){
-        conversation = await Thread.create({
-            participants : [sender,receiver],
-            message : []
-        })
-
+        if(typeof receiver === Array){
+            conversation = await Thread.create({
+                participants :[sender, ...receiver],
+                message : []
+            })
+        }
+        else{
+            conversation = await Thread.create({
+                participants :[sender,receiver],
+                message : []
+            })
+        }
     }
     
     conversation.message.push({
         sender,
         message,
-        messageType
+        messageType,
+        receiver
     })
 
     conversation.lastUpdated = Date.now()
@@ -33,5 +51,37 @@ async function sendMessage(req,res) {
 
 }
 
+async function getAllMessages(req,res) {
+    const allMessages = await Thread.find({})
 
-module.exports = {sendMessage}
+    return res.json(allMessages)
+}
+
+async function myMessages(req,res) {
+    const me = req.params.myname
+
+    const myMessages = await Thread.find({
+        participants : me
+    })
+
+    return res.json(myMessages)
+}
+
+async function getConversation(req,res) {
+    const viewer = req.params.viewer
+
+    const other = req.query.otherUser
+
+    let conv = await Thread.find({ participants : {$all : [viewer,other]} })
+conv.receiver = await other
+
+console.log(conv)
+    return res.json(conv)
+}
+
+async function editMessage(req,res) {
+    
+}
+
+
+module.exports = {sendMessage, getAllMessages,myMessages,getConversation}
