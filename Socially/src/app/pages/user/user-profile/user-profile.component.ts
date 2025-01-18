@@ -7,11 +7,13 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IPost } from '../../../core/models/post';
 import { Modal } from 'bootstrap';
+import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule],
+  imports: [RouterModule, ReactiveFormsModule,CommonModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -29,6 +31,8 @@ export class UserProfileComponent {
   onePost !: IPost
   currentImageIndex = 0
   liked = { uname: '', post_id: '', isLiked: false }
+
+  updatedImage: File | null = null
 
   ngOnInit(): void {
     this.getUser()
@@ -100,10 +104,54 @@ export class UserProfileComponent {
     })
   }
 
-  updateProfilePicture(userid:string){
-    // this.apiService.patch()
+  onFileSelect(event: Event) {
+    const selectedFile = event.target as HTMLInputElement
+    console.log(selectedFile.value);
+
+    if (selectedFile.files?.length) {
+      this.updatedImage = selectedFile.files[0]
+    }
+
   }
 
+  isFile(file: File | null): file is File {
+    return file != null
+  }
+
+  updateProfilePicture(userid: string) {
+
+    const formData = new FormData()
+
+    if (this.isFile(this.updatedImage)) formData.append('profilePhoto', this.updatedImage)
+    this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.UPDATE_PROFILE_PICTURE + userid, formData).subscribe({
+      next: (res: any) => {
+        console.log('UPDATED: ', res);
+        this.getProfile(userid)
+      },
+      error: (error) => console.log(error)
+
+    })
+  }
+
+  prevImg(){
+    this.currentImageIndex -= 1
+  }
+
+  nextImg(){
+    this.currentImageIndex += 1
+  }
+
+  getPostLikes(postid:string){
+    console.log(apiConstant.API_HOST_URL+apiConstant.POST_LIKESS+postid);
+    
+    this.apiService.get(apiConstant.API_HOST_URL+apiConstant.POST_LIKESS+postid).subscribe({
+      next : (res:any) => {
+        console.log('likesss: ',res);
+        
+      },
+      error : (error) => console.log(error)
+    })
+  }
 
   likeToggle(post: IPost, username: string, liked: boolean) {
 
@@ -112,6 +160,7 @@ export class UserProfileComponent {
     if (liked) this.unlikeAPost(post, username)
     else this.likeAPost(post, username)
 
+    this.ngOnInit()
     this.changeRef.detectChanges()
   }
 
@@ -138,10 +187,21 @@ export class UserProfileComponent {
     })
   }
 
-  deletePost(id: string) {
-    this.apiService.delete(apiConstant.API_HOST_URL + apiConstant.DELETE_POST + id).subscribe({
-      next: (res: any) => console.log('POST DELETED: ', res),
-      error: (error) => console.log(error)
+  async deletePost(id: string) {
+
+    const confirmDelete = await Swal.fire({
+      title: 'Do you want to delete this post?',
+      confirmButtonText: 'Yes',
+      showCancelButton: true,
+      cancelButtonText: 'No'
     })
+
+    if (confirmDelete.isConfirmed) {
+      this.apiService.delete(apiConstant.API_HOST_URL + apiConstant.DELETE_POST + id).subscribe({
+        next: (res: any) => console.log('POST DELETED: ', res),
+        error: (error) => console.log(error)
+      })
+    }
+
   }
 }

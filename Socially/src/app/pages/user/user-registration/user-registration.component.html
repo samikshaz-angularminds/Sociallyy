@@ -38,9 +38,16 @@
         </div>
 
         <!-- Password -->
-        <div class="mb-3">
+
+
+        <div class=" mb-3">
           <label for="password" class="form-label">Password</label>
-          <input id="password" type="password" formControlName="password" class="form-control" required />
+          <div class="input-group">
+            <input id="password" [type]="isPassword ? 'password' : 'text'" formControlName="password"
+              class="form-control border-right-none" required>
+            <span class="input-group-text border-left-none" id="" (click)="togglePassword()"> <i
+                [ngClass]=" isPassword ? 'fa-solid fa-eye' :'fa-solid fa-eye-slash'"></i> </span>
+          </div>
           <div *ngIf="userRegistrationForm.get('password')?.invalid && userRegistrationForm.get('password')?.touched"
             class="text-danger">
             Password is required.
@@ -48,18 +55,23 @@
         </div>
 
 
+
         <!-- Phone -->
         <div class="mb-3">
           <label for="phone" class="form-label">Phone</label>
           <input id="phone" type="text" formControlName="phone" class="form-control" maxlength="10" minlength="10" />
-          
-          <div *ngIf="userRegistrationForm.get('phone')?.invalid && userRegistrationForm.get('phone')?.touched" class="text-danger">
+
+          <div *ngIf="userRegistrationForm.get('phone')?.invalid && userRegistrationForm.get('phone')?.touched"
+            class="text-danger">
             <div *ngIf="userRegistrationForm.get('phone')?.errors?.['required']">Phone is required.</div>
-            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['maxlength']">Phone number cannot exceed 10 digits.</div>
-            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['minlength']">Phone number cannot exceed 10 digits.</div>
-            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['pattern']">Phone number must contain only digits.</div>
+            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['maxlength']">Phone number cannot exceed 10 digits.
+            </div>
+            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['minlength']">Phone number cannot exceed 10 digits.
+            </div>
+            <div *ngIf="userRegistrationForm.get('phone')?.errors?.['pattern']">Phone number must contain only digits.
+            </div>
           </div>
-          
+
         </div>
 
         <!-- Image -->

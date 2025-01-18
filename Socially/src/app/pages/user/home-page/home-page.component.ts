@@ -38,13 +38,13 @@ export class HomePageComponent implements OnInit {
 
   getUser() {
     this.userService.user$.subscribe((res: any) => {
-      this.user = res
+      console.log();
+
+      this.getMe(res._id)
+
+
     })
-    this.getSuggestions()
-
   }
-
-
 
   getSuggestions() {
     forkJoin({
@@ -54,16 +54,16 @@ export class HomePageComponent implements OnInit {
     }).subscribe({
       next: (res: any) => {
         const { suggestions, pendingRequest, followings } = res
-        // console.log( 'suggestions:: ',suggestions);
-        // console.log('pendingRequest:: ' ,pendingRequest);
-        // console.log('followings:: ',followings);
+        console.log('suggestions:: ', suggestions);
+        console.log('pendingRequest:: ', pendingRequest);
+        console.log('followings:: ', followings);
 
         const pendingRequestNames = pendingRequest.map((request: any) => request.toUser)
         const followingNames = followings.map((user: any) => user.username)
-        
+
         this.users = suggestions.filter((res: any) => !followingNames.includes(res.username) && !pendingRequestNames.includes(res.username))
 
-        // console.log('SUGGESTED USERS ARE: ', this.users);
+        console.log('SUGGESTED USERS ARE: ', this.users);
 
       },
       error: (error) => {
@@ -73,25 +73,12 @@ export class HomePageComponent implements OnInit {
   }
 
   myPendingRequests() {
-    // this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.username).subscribe({
-    //   next: (res: any) => {
-    //     // this.users = this.users.f
-    //     console.log('MY PENDING REQUESTS:  ',res);
-    //     this.pendingRequestsToUsers = res.map((res:any) => res.username)
-    //     return 
-    //   },
-    //   error: (error) => console.log(error)
-    // })
-
     return this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.username).pipe(
       map((res: any) => {
         console.log('response of requests: ', res);
         return res.map((r: any) => r.username)
-
       })
     )
-
-
   }
 
   seeUser(uname: string) {
@@ -119,6 +106,17 @@ export class HomePageComponent implements OnInit {
     this.currentImageIndex--
   }
 
+  getMe(userid: string) {
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid).subscribe({
+      next: (res: any) => {
+        this.user = res
+        this.getSuggestions()
+        this.followingsOfUser(this.user.username)
+      },
+      error: (error) => console.log(error)
+
+    })
+  }
 
   likeToggle(post: IPost, username: string, liked: boolean) {
 
@@ -150,6 +148,18 @@ export class HomePageComponent implements OnInit {
         }
       },
       error: (error) => console.log(error)
+    })
+  }
+
+  followingsOfUser(username: string) {
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + username).subscribe({
+      next: (res: any) => {
+        console.log('followingss: ', res);
+        this.followings = res
+
+      },
+      error: (error) => console.log(error)
+
     })
   }
 

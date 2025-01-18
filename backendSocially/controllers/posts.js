@@ -81,8 +81,6 @@ async function filteredPosts(req,res) {
 
 
     const filteredPosts = allPosts.filter(post => {
-        // console.log('yayyy: ', post);
-
         const account = post.accountHolderId
 
         console.log('ACCOUNTS:: ', account);
@@ -190,5 +188,21 @@ async function unLikeAPost(req, res) {
 
 }
 
-module.exports = { uploadPostPhotos, uploadPost, showMyPosts, filteredPosts, showAllPosts, deletePost, showOnePost, likedAPost, unLikeAPost }
+async function myPostLikers(req,res) {
+    const postid = req.params.postId
+
+    const post = await Post.findById(postid).select('likes -_id')
+    const likersNames = post?.likes || []
+    console.log('likernames: ',likersNames);
+    
+    const likers = await User.find({ username : { $in : likersNames } })
+    .select('-_id username full_name profileImage bio website followers followings posts')
+        .populate('profileImage')
+
+    console.log(likers);
+    
+    return res.json(likers)
+}
+
+module.exports = { uploadPostPhotos, uploadPost, showMyPosts, filteredPosts, showAllPosts, deletePost, showOnePost, likedAPost, unLikeAPost, myPostLikers}
 

@@ -26,15 +26,12 @@
 
       <div class="d-flex flex-column justify-content-center align-items-start p-4">
         <div class="d-flex justify-content-start">
-          <label for="password">
+          <label for="password" class="form-label">
             Password
             <input id="password" class="single-border bg-transparent width-298" [type]="isPassword ? 'password' : 'text'" formControlName="password" />
             <span class="single-border pb-1 cursor-pointer" (click)="togglePassword()" ><i [ngClass]=" isPassword ? 'fa-solid fa-eye' :'fa-solid fa-eye-slash'"></i></span>
           </label>
 
-        </div>
-        <div>
-          
         </div>
         <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
           <small class="text-danger" *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</small>

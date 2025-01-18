@@ -34,6 +34,7 @@ export const apiConstant = {
     SHOW_ONE_POST : 'posts/showOnePost/',
     LIKE_POST : 'posts/like/',
     UNLIKE_POST : 'posts/unlike/',
+    POST_LIKESS : 'posts/myPostLikes/',
 
     // MESSAGES
     SEND_MESSAGE : 'message/send/',

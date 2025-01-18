@@ -77,8 +77,8 @@
     <div class="modal-content d-flex justify-content-center ">
 
       <div class="modal-body">
-        <form action="" [formGroup]="postForm">
-          <div class="d-flex">
+        <form action="" (ngSubmit)="postIt()" [formGroup]="postForm">
+          <div class="d-flex ">
             <div class="p-1">
               <div>
                 <label for="">Caption</label>

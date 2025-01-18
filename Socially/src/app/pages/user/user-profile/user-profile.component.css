@@ -14,12 +14,12 @@
   height: 250px;
 }
 
-.width-500 {
-  width: 500px;
+.width-400 {
+  width: 400px;
 }
 
-.height-500 {
-  height: 500px;
+.height-400 {
+  height: 400px;
 }
 
 .fs-40 {
@@ -34,7 +34,7 @@
 
 .image-container {
   position: relative;
-  display: inline-block;
+  display: inline-block4
   
 }
 
@@ -49,4 +49,10 @@
 
 .camera-icon i {
   position: relative;
+}
+
+.carousel {
+  width: 400px; /* Limit the carousel width to 400px */
+  height: 400px; /* Limit the carousel height to 400px */
+  overflow: hidden; /* Hide overflow content */
 }

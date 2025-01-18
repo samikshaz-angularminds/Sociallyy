@@ -20,6 +20,7 @@ export class UserRegistrationComponent implements OnInit {
   selectedImage : File | null = null
   apiService = inject(ApiService)
   new_user !: IUser
+  isPassword = true
 
 
   ngOnInit(): void {
@@ -37,6 +38,11 @@ export class UserRegistrationComponent implements OnInit {
     })
   }
 
+  togglePassword() {
+    // console.log(type);
+    this.isPassword = !this.isPassword
+  }
+
   onFileSelect(event: Event) {
     console.log(event);
     console.log(event.target);
@@ -51,9 +57,6 @@ export class UserRegistrationComponent implements OnInit {
 
   }
 
-  uploadProfilePhoto() {
-
-  }
 
   isFile(file : File | null) : file is File{
     return file != null

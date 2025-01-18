@@ -7,6 +7,8 @@ require('dotenv').config()
 
 async function uploadImage(filePath) {
     try {
+        console.log('FILE PATH: ',filePath);
+        
         const response = await cloudinary.uploader.upload(filePath)
 
         const newProfilePic = await ProfilePhoto.create({
@@ -14,6 +16,8 @@ async function uploadImage(filePath) {
             url: response.url
         })
 
+        console.log('NEW PROFILE PIC: ',newProfilePic);
+        
         return newProfilePic
     } catch (error) {
         console.log('ERROR HEREEEEEEEEEEEEE: ', error);
@@ -22,14 +26,13 @@ async function uploadImage(filePath) {
 
 async function updateProfilePic(req, res) {
     const userId = req.params.userId
-    const profilePic = await uploadImage(req.file.path)
+    const profilePic = await uploadImage(req.file?.path)
 
     const newPic = await User.findByIdAndUpdate(userId,
         {
             $set: {
                 profileImage: profilePic
             }
-
         },
         {
             new: true

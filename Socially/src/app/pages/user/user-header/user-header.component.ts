@@ -10,7 +10,6 @@ import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as bootstrap from 'bootstrap';
 
-
 @Component({
   selector: 'app-user-header',
   standalone: true,
