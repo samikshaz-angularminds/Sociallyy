@@ -12,6 +12,7 @@ export const apiConstant = {
     ACCOUNT_PRIVACY : 'user/privacy/',
     SEARCHLIST_USERS : 'user/search',
     UPDATE_PROFILE_PICTURE : 'user/updatePic/',
+    UPDATE_USER : 'user/update/',
     
     
     // REQUESTS

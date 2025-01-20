@@ -7,8 +7,8 @@ require('dotenv').config()
 
 async function uploadImage(filePath) {
     try {
-        console.log('FILE PATH: ',filePath);
-        
+        console.log('FILE PATH: ', filePath);
+
         const response = await cloudinary.uploader.upload(filePath)
 
         const newProfilePic = await ProfilePhoto.create({
@@ -16,8 +16,8 @@ async function uploadImage(filePath) {
             url: response.url
         })
 
-        console.log('NEW PROFILE PIC: ',newProfilePic);
-        
+        console.log('NEW PROFILE PIC: ', newProfilePic);
+
         return newProfilePic
     } catch (error) {
         console.log('ERROR HEREEEEEEEEEEEEE: ', error);
@@ -60,6 +60,35 @@ async function registerUser(req, res) {
 
     return res.json(newUser)
 
+}
+
+async function updateUser(req, res) {
+    const userid = req.params.userId
+    const { username, email, password, full_name, bio, phone, website } = req.body
+    const profilePic = await uploadImage(req.file?.path)
+
+
+    const user = await User.findByIdAndUpdate(userid,
+        {
+            $set: {
+                username : username,
+                email : email,
+                full_name : full_name,
+                bio : bio,
+                phone : phone,
+                website : website,
+                profileImage : profilePic
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    console.log(user);
+
+    return res.json(user)
+    
 }
 
 async function loginUser(req, res) {
@@ -217,4 +246,4 @@ async function deleteAccount(req, res) {
     return res.json({ message: 'User deleted successfully!' })
 }
 
-module.exports = { registerUser, getAllUsers, getUsersForSearching, uploadImage, updateProfilePic,loginUser, getOneUser, getUsersExceptMe, seeAnotherUser, privateAccount, deleteAccount }
+module.exports = { registerUser, updateUser ,getAllUsers, getUsersForSearching, uploadImage, updateProfilePic, loginUser, getOneUser, getUsersExceptMe, seeAnotherUser, privateAccount, deleteAccount }

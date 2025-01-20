@@ -42,17 +42,17 @@
 
     <!-- POST OF THE FOLLOWINGS -->
     <div>
-        @for (user of followings; track $index) {
-        @if(user.posts.length > 0){
-        @for (post of user.posts; track $index; let i=$index) {
+        @for (userr of followings; track $index) {
+        @if(userr.posts.length > 0){
+        @for (post of userr.posts; track $index; let i=$index) {
         <div class="d-flex flex-column m-2">
             <div class="d-flex p-2 cursor-pointer" [routerLink]="['/seeProfile']"
                 [queryParams]="{username : post.accountHolderName}">
                 <div>
-                    <img [src]="user.profileImage.url" class="width-30 height-30 rounded-circle" alt="" srcset="">
+                    <img [src]="userr.profileImage.url" class="width-30 height-30 rounded-circle" alt="" srcset="">
                 </div>
                 <div class="ps-2">
-                    {{user.username}}
+                    {{userr.username}}
                 </div>
             </div>
             <div>
@@ -87,12 +87,12 @@
 
                 </div>
             </div>
-            <div>
-                <div class="cursor-pointer">
-                    <i [class]=" liked.isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-                        (click)="likeToggle(post,user.username,liked.isLiked)"></i>
-                </div>
+            <div class="cursor-pointer">
                 <div>
+                    <i [class]=" post.likes.includes(user.username) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+                        (click)="likeToggle(post,user.username)"></i>
+                </div>
+                <div (click)="getPostLikes(post._id)" data-bs-toggle="modal" data-bs-target="#likesModal">
                     {{post.likes.length}} likes
                 </div>
             </div>
@@ -108,5 +108,29 @@
             nothing
         }
     </div>
+
+
+    <!-- LIKES MODAL -->
+    <div class="modal fade" id="likesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 300px;" >
+          <div class="modal-content">
+          @for (user of likerss; track $index) {
+            <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-center align-items-center p-1">
+                    <img style="height: 30px; width: 30px; border-radius: 50%;" [src]="user.profileImage.url" alt="" srcset="">
+                </div>
+                <div  class="d-flex flex-column justify-content-center align-items-center p-1">
+                    <div> {{user.username}} </div>
+                    <div> {{user.full_name}} </div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center p-1">
+                    <button class="btn btn-sm btn-secondary" data-bs-dismiss="modal" [routerLink]="'/message'" [queryParams]="{receiverName : user.username}"> Message </button>
+                </div>
+            </div>
+          }
+        
+          </div>
+        </div>
+      </div>
 
 </div>

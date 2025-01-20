@@ -4,7 +4,7 @@
 
 
 .gradient-text {
-    background-image: linear-gradient(to bottom right, rgb(255, 0, 234), yellow);
+    background-image: linear-gradient(to bottom right, rgb(255, 0, 234), rgb(84, 33, 204));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

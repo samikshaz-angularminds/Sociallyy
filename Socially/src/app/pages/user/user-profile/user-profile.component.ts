@@ -4,7 +4,7 @@ import { ApiService } from '../../../core/services/apiServices/api.service';
 import { UserService } from '../../../core/services/userService/user.service';
 import { IUser } from '../../../core/models/user';
 import { Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { IPost } from '../../../core/models/post';
 import { Modal } from 'bootstrap';
 import Swal from 'sweetalert2';
@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule,CommonModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -30,13 +30,13 @@ export class UserProfileComponent {
   posts: IPost[] = []
   onePost !: IPost
   currentImageIndex = 0
-  liked = { uname: '', post_id: '', isLiked: false }
+  likerss: IUser[] = []
 
   updatedImage: File | null = null
+  updatingUser !: IUser
 
   ngOnInit(): void {
     this.getUser()
-
   }
 
   getUser() {
@@ -44,7 +44,6 @@ export class UserProfileComponent {
       this.getProfile(res._id)
       this.getAvailablePosts(res._id)
     })
-
   }
 
   getAvailablePosts(userid: string) {
@@ -61,16 +60,6 @@ export class UserProfileComponent {
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ONE_POST + postId).subscribe({
       next: (res: any) => {
         this.onePost = res
-
-        // console.log('ONE POST: ', this.onePost);
-        // console.log('LIKE OBJJ: ', this.liked);
-
-        if (this.onePost.likes.includes(this.user.username)) {
-          this.liked.uname = this.user.username
-          this.liked.post_id = this.onePost._id
-          this.liked.isLiked = true
-        }
-
         const modalElement = this.showOnePost.nativeElement;
         const modalInstance = new Modal(modalElement);
         modalInstance.show();
@@ -94,14 +83,59 @@ export class UserProfileComponent {
   getProfile(userid: string) {
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid).subscribe({
       next: (res: any) => {
-        // console.log(res);
         this.user = res
-
       },
       error: (error) => {
         console.log(error);
       }
     })
+  }
+
+  updateUser(user: IUser) {
+    this.updatingUser = user
+  }
+
+
+
+  finallyUpdateUser(userUpdateForm: NgForm) {
+
+    const formValue = userUpdateForm.value
+    console.log('BIO: ',formValue.bio);
+    
+
+    const formData = new FormData()
+
+    formData.append('full_name', formValue.full_name)
+    formData.append('username', formValue.username)
+    formData.append('email', formValue.email)
+    formData.append('password', formValue.password)
+    formData.append('bio', formValue.bio)
+    formData.append('phone', formValue.phone)
+    formData.append('website', formValue.website)
+    formData.append('isVerified', String(formValue.isVerified))
+    formData.append('isPrivate', String(formValue.isPrivate))
+    formData.append('followers', String(formValue.followers))
+    formData.append('followings', String(formValue.followings))
+    formData.append('posts', String(formValue.posts))
+
+
+    console.log('form: ', userUpdateForm);
+    console.log('form value: ', userUpdateForm.value);
+
+    for (const [key, value] of (formData as any).entries()) {
+      console.log(`FORMDATA ${key}: ${value}`);
+    }
+
+    this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.UPDATE_USER + this.user._id, formValue).subscribe({
+      next: (res: any) => {
+        console.log('UPDATED USER: ', res);
+        this.getProfile(this.user._id)
+      },
+      error: (error) => console.log(error)
+
+    })
+
+
   }
 
   onFileSelect(event: Event) {
@@ -133,42 +167,44 @@ export class UserProfileComponent {
     })
   }
 
-  prevImg(){
+  prevImg() {
     this.currentImageIndex -= 1
   }
 
-  nextImg(){
+  nextImg() {
     this.currentImageIndex += 1
   }
 
-  getPostLikes(postid:string){
-    console.log(apiConstant.API_HOST_URL+apiConstant.POST_LIKESS+postid);
-    
-    this.apiService.get(apiConstant.API_HOST_URL+apiConstant.POST_LIKESS+postid).subscribe({
-      next : (res:any) => {
-        console.log('likesss: ',res);
-        
+  getPostLikes(postid: string) {
+    console.log(apiConstant.API_HOST_URL + apiConstant.POST_LIKESS + postid);
+
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.POST_LIKESS + postid).subscribe({
+      next: (res: any) => {
+        console.log('likesss: ', res);
+        this.likerss = res
+
       },
-      error : (error) => console.log(error)
+      error: (error) => console.log(error)
     })
   }
 
-  likeToggle(post: IPost, username: string, liked: boolean) {
+  likeToggle(post: IPost, username: string) {
 
-    console.log('LIKED? ', liked);
-
-    if (liked) this.unlikeAPost(post, username)
+    if (post.likes.includes(username)) this.unlikeAPost(post, username)
     else this.likeAPost(post, username)
 
-    this.ngOnInit()
-    this.changeRef.detectChanges()
+
+
   }
 
   likeAPost(post: IPost, liker: string) {
     console.log('POST ID: ', post._id);
 
     this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.LIKE_POST + post._id, { liker: liker }).subscribe({
-      next: (res: any) => console.log('LIKED A POST: ', res),
+      next: (res: any) => {
+        this.getAvailablePosts(post.accountHolderId)
+        this.changeRef.detectChanges()
+      },
       error: (error) => console.log(error)
     })
   }
@@ -176,12 +212,8 @@ export class UserProfileComponent {
   unlikeAPost(post: IPost, unliker: string) {
     this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.UNLIKE_POST + post._id, { unliker: unliker }).subscribe({
       next: (res: any) => {
-        console.log('UNLIKED A POST: ', res)
-        this.liked = {
-          post_id: post._id,
-          isLiked: false,
-          uname: unliker
-        }
+        this.getAvailablePosts(post.accountHolderId)
+        this.changeRef.detectChanges()
       },
       error: (error) => console.log(error)
     })

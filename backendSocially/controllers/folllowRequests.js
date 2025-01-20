@@ -162,8 +162,8 @@ async function removeFromFollowers(req, res) {
     const remover = req.params.name
     const followerName = req.body.username
 
-    console.log('REMOVER : ', remover);
-    console.log('FOLLOWER NAME : ', followerName);
+    // console.log('REMOVER : ', remover);
+    // console.log('FOLLOWER NAME : ', followerName);
 
     const removeFromRequests = await FollowRequest.findOneAndUpdate(
         {
@@ -179,7 +179,7 @@ async function removeFromFollowers(req, res) {
     )
 
     if (!removeFromRequests) return res.json({ message: "no such follower exists" })
-    console.log('THE REQUEST BEING REMOVED: ', removeFromRequests);
+    // console.log('THE REQUEST BEING REMOVED: ', removeFromRequests);
 
     const updatedUser = await User.findOneAndUpdate(
         {
@@ -193,7 +193,7 @@ async function removeFromFollowers(req, res) {
         }
     )
 
-    console.log('UPDATED USER WHEN FOLLOWER REMOVED: ', updatedUser);
+    // console.log('UPDATED USER WHEN FOLLOWER REMOVED: ', updatedUser);
 
     const updatedUser2 = await User.findOneAndUpdate(
         {
@@ -210,7 +210,7 @@ async function removeFromFollowers(req, res) {
         }
     )
 
-    console.log('UPDATED USER 2 WHEN FOLLOWER REMOVED: ', updatedUser2);
+    // console.log('UPDATED USER 2 WHEN FOLLOWER REMOVED: ', updatedUser2);
 
     await removeRejectedRequests()
 
@@ -255,7 +255,7 @@ async function removeFromFollowings(req, res) {
         }
     )
 
-    console.log('UPDATED USER AFTER REMOVING FOLLOWING: ', updatedUser);
+    // console.log('UPDATED USER AFTER REMOVING FOLLOWING: ', updatedUser);
 
     const updatedUser2 = await User.findOneAndUpdate(
         {
@@ -272,7 +272,7 @@ async function removeFromFollowings(req, res) {
         }
     )
 
-    console.log('UPDATED USER 2 AFTER REMOVING FOLLOWING: ', updatedUser2);
+    // console.log('UPDATED USER 2 AFTER REMOVING FOLLOWING: ', updatedUser2);
 
 
     await removeRejectedRequests()
@@ -284,7 +284,16 @@ async function removeRejectedRequests() {
 
     const rejectedReq = await FollowRequest.find({ status: 'rejected' })
 
-    if (rejectedReq) await FollowRequest.deleteMany({ rejectedReq })
+    console.log('REJECTED REQUEST: ',rejectedReq);
+    
+
+    if (rejectedReq.length > 1){
+
+        const rejectedIds = rejectedReq.map(req => req._id)
+
+        await FollowRequest.deleteMany({ _id : { $in : rejectedIds} })
+    } 
+        
 
 }
 

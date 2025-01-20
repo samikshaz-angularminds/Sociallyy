@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid d-flex align-items-center">
-    <div class="d-flex justify-content-center align-items-center playwrite-is gradient-text fs-25">
+    <div class="d-flex justify-content-center align-items-center playwrite-is gradient-text p-1 fs-25">
       <span class="logo" (click)="toggleSidebar()">Socially</span>
     </div>
 
@@ -27,7 +27,7 @@
       </ul>
     </div>
 
-    <div>
+    <div class="p-1">
       <img routerLink="/user/myProfile" [src]="user?.profileImage?.url" class="image-style" alt="">
     </div>
   </div>
@@ -89,7 +89,7 @@
               <div>
                 <label for="">Images</label>
               </div>
-              <input type="file" multiple (change)="onFileSelect($event)">
+              <input #fileInput type="file" multiple (change)="onFileSelect($event)">
             </div>
           </div>
         </form>

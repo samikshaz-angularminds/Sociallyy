@@ -2,7 +2,7 @@
 
 <div class="container d-flex flex-column justify-content-center align-items-center">
 
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="container d-flex justify-content-center align-items-center" style="min-width: 400px;">
         <div class=" d-flex flex-column justify-content-center align-items-center">
             <div class="p-1 image-container">
                 <img class="width-100 height-100 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
@@ -11,30 +11,48 @@
                     <i class="fa-solid fa-camera" style="font-size: 25px;"></i>
                 </div>
             </div>
-            <div class="p-1">
-                {{user.username}}
-            </div>
+            
         </div>
 
-        <div class="d-flex align-items-start">
-            <div class="p-2 d-flex flex-column justify-content-center align-items-center">
-                <div>{{user.posts.length}}</div>
-                <div>Posts</div>
+        <div class=" align-items-start">
+            <div class=" d-flex">
+                <div style="font-size: 30px;" class="p-2 d-flex align-items-center">
+                    {{user.username}}
+                </div>
+                <div class="p-2 d-flex align-items-center">
+                    <button class="btn btn-sm btn-light border  rounded border-2  border-secondary-subtle py-0" (click)="updateUser(user)" data-bs-toggle="modal" data-bs-target="#userUpdateModal"> Edit Profile </button>
+                </div>
             </div>
-            <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
-                [routerLink]="['/user/route','followers']" [queryParams]="{user : user._id}">
-                <div>{{user.followers.length}}</div>
-                <div>Followers</div>
-            </div>
-            <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
-                [routerLink]="['/user/route','followings']" [queryParams]="{user : user._id}">
-                <div>{{user.followings.length}}</div>
-                <div>Following</div>
+            <div class="d-flex">
+                <div class="p-2 d-flex flex-column justify-content-center align-items-center">
+                    <div>{{user.posts.length}}</div>
+                    <div>Posts</div>
+                </div>
+                <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
+                    [routerLink]="['/user/route','followers']" [queryParams]="{user : user._id}">
+                    <div>{{user.followers.length}}</div>
+                    <div>Followers</div>
+                </div>
+                <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
+                    [routerLink]="['/user/route','followings']" [queryParams]="{user : user._id}">
+                    <div>{{user.followings.length}}</div>
+                    <div>Following</div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <div class="container d-flex flex-column justify-content-center align-items-center pt-4">
+    <div style="min-width: 400px;">
+        <div >
+            {{user.bio}}
+        </div>
+        <div>
+            <a [href]="'https://'+user.website">{{user.website}}</a>
+            
+        </div>
+    </div>
+    <div class="container d-flex flex-column justify-content-center align-items-center pt-4" style="min-width: 400px;">
 
         <!-- @for (post of posts; track $index) {
         <div class="d-flex flex-column m-1">
@@ -65,17 +83,13 @@
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                <ul class="dropdown-item-text">
-                                    <li class="dropdown-item no-list-style">
-                                        <a>
-                                            <span class="cursor-pointer" (click)="deletePost(onePost._id)">Delete
-                                                Post</span>
-                                        </a>
+                            <div  class="dropdown-menu dropdown-menu-end p-1" style="min-width: 60px !important;" aria-labelledby="dropdownMenuButton">
+                                <ul class="dropdown-item-text m-0 p-0">
+                                    <li class="dropdown-item no-list-style p-0 text-danger cursor-pointer" (click)="deletePost(post._id)">
+                                        Delete
                                     </li>
-                                    <li class="no-list-style dropdown-item">
-                                        <a class="text-decoration-none text-danger bg-hover cursor-pointer">Edit
-                                            Post</a>
+                                    <li class="no-list-style dropdown-item p-0 cursor-pointerpo">
+                                       Edit
                                     </li>
 
                                 </ul>
@@ -112,11 +126,10 @@
                 }
             </div>
 
-            <div class="cursor-pointer" (click)="getPostLikes(post._id)" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                <i [class]=" liked.isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-                    (click)="likeToggle(post,user.username,liked.isLiked)"></i>
-                    <div>
-
+            <div class="cursor-pointer" >
+                <i  [class]=" post.likes.includes(user.username) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+                    (click)="likeToggle(post,user.username)"></i>
+                    <div (click)="getPostLikes(post._id)" data-bs-toggle="modal" data-bs-target="#likesModal">
                         {{post.likes.length}} likes
                     </div>
             </div>
@@ -188,8 +201,8 @@
                         <div class="bg-dark text-light">
 
                             <div>
-                                <i [class]=" liked.isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-                                    (click)="likeToggle(onePost,user.username,liked.isLiked)"></i>
+                                <i [class]=" onePost.likes.includes(user.username) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+                                    (click)="likeToggle(onePost,user.username)"></i>
                                 {{onePost.likes.length}}
                             </div>
                             <div>
@@ -233,15 +246,76 @@
 </div>
 
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- LIKES MODAL -->
+<div class="modal fade" id="likesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 300px;" >
       <div class="modal-content">
-       hh
+      @for (user of likerss; track $index) {
+        <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-center align-items-center p-1">
+                <img style="height: 30px; width: 30px; border-radius: 50%;" [src]="user.profileImage.url" alt="" srcset="">
+            </div>
+            <div  class="d-flex flex-column justify-content-center align-items-center p-1">
+                <div> {{user.username}} </div>
+                <div> {{user.full_name}} </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center p-1">
+                <button class="btn btn-sm btn-secondary" data-bs-dismiss="modal" [routerLink]="'/message'" [queryParams]="{receiverName : user.username}"> Message </button>
+            </div>
+        </div>
+      }
     
       </div>
     </div>
   </div>
   
 
+<!-- USER UPDATE MODAL -->
+  <div class="modal fade" id="userUpdateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+            <form #updateUserForm="ngForm" (ngSubmit)="finallyUpdateUser(updateUserForm)" action="" class="p-2">
+                <div>
+                    <label for="" class="form-label">Full Name</label>
+                    <input [(ngModel)]="user.full_name" name="full_name" type="text" class="form-control">
+                </div>
+                <div>
+                    <label for="" class="form-label">Username</label>
+                    <input [(ngModel)]="user.username" name="username" type="text" class="form-control">
+                </div>
+                <div>
+                    <label for="" class="form-label">Email</label>
+                    <input [(ngModel)]="user.email" name="email" type="text" class="form-control">
+                </div>
+                <div>
+                    <label for="" class="form-label">Bio</label>
+                    <input [(ngModel)]="user.bio" name="bio" type="text" class="form-control">
+                </div>
+                <div>
+                    <label for="" class="form-label">Website</label>
+                    <input [(ngModel)]="user.website" name="website" type="text" class="form-control">
+                </div>
+                <div>
+                    <label for="" class="form-label">Phone</label>
+                    <input maxlength="10" minlength="10" [(ngModel)]="user.phone" name="phone" type="text" class="form-control">
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="d-flex justify-content-center align-items-center p-2" >
+                        <button style="width: 60px;" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center p-2" >
+                        <button style="width: 60px;" type="submit" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Save</button>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 }
+

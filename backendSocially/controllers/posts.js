@@ -68,6 +68,10 @@ async function uploadPost(req, res) {
 
 }
 
+async function updatePost(params) {
+    
+}
+
 async function showAllPosts(req, res) {
     const allPosts = await Post.find({}).populate('accountHolderId','-id -_id')
 

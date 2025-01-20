@@ -19,6 +19,7 @@ import * as bootstrap from 'bootstrap';
 })
 export class UserHeaderComponent implements OnInit {
   @ViewChild('searchModal', { static: false }) searchModal !: ElementRef
+  @ViewChild('fileInput') fileInput !: ElementRef
 
   userService = inject(UserService)
   apiService = inject(ApiService)
@@ -143,6 +144,8 @@ export class UserHeaderComponent implements OnInit {
     this.postForm = this.fb.group({
       caption: ''
     })
+    // this.fileInput.nativeElement.value = ''
+
   }
 
   onFileSelect(event: Event) {
@@ -150,6 +153,8 @@ export class UserHeaderComponent implements OnInit {
 
     if (inputElement.files) {
       this.selectedFiles = Array.from(inputElement.files)
+      
+
     }
   }
 
@@ -164,8 +169,9 @@ export class UserHeaderComponent implements OnInit {
     this.apiService.post(apiConstant.API_HOST_URL + apiConstant.POST + this.user._id, formData).subscribe({
       next: (res: any) => {
         console.log('afterposting: ', res)
-        this.getPostForm()
         this.selectedFiles = []
+        if(this.fileInput) this.fileInput.nativeElement.value = []
+        this.getPostForm()
       },
       error: (error) => console.log(error)
     })

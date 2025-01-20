@@ -11,6 +11,11 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger/swagger-output.json')
+
+app.use('/api-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
 const connectMongoDb = require('./connection')
 
 const UserRoute = require('./routes/user')
@@ -24,6 +29,25 @@ connectMongoDb(`${process.env.MONGODB_URL}`)
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: "Get all users"
+ *     description: "Returns a list of all users"
+ *     responses:
+ *       200:
+ *         description: "List of users"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
 
 app.use('/user',UserRoute)
 app.use('/requests',RequestRoute)
