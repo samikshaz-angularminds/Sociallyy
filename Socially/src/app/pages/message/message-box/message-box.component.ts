@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { bottom } from '@popperjs/core';
 import { of } from 'rxjs';
+import { ChatService } from '../../../core/services/chatService/chat.service';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class MessageBoxComponent implements OnInit, OnChanges {
   @ViewChildren('uname') unameElements !: QueryList<any>
   @Input() receiverUser !: IUser
 
-
+  chatService = inject(ChatService)
   apiService = inject(ApiService)
   userService = inject(UserService)
   route = inject(ActivatedRoute)
@@ -44,7 +45,12 @@ export class MessageBoxComponent implements OnInit, OnChanges {
   ngOnInit(): void { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('CHANGE HAPPENEDDD');
+    // console.log('CHANGE HAPPENEDDD');
+
+    this.chatService.getMessages().subscribe((data:any)=>{
+      console.log('changes are:: ',data);
+      
+    })
 
     this.getUser()
     console.log(this.receiverUser.username);
@@ -70,10 +76,10 @@ export class MessageBoxComponent implements OnInit, OnChanges {
         console.log('CONVERSATION: ', res);
 
         this.conversationMessages = res[0]?.message
- 
+
 
         this.conversationMessages.reverse()
-        
+
         console.log('COOOOOOO: ', this.conversationMessages);
 
 

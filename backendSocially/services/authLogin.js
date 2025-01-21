@@ -5,6 +5,7 @@ const SECRET_WEB_KEY = 'MAINHOONGHATOTKCH'
 function setUser(user) {
     return jwt.sign({
         _id : user._id.toString(),
+        id : user.id,
         email : user.email,
         username : user.username,
         followings : user.followings,

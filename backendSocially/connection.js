@@ -1,8 +1,20 @@
+const { MongoClient } = require('mongodb');
 const mongoose = require('mongoose')
-// const {} = require('mo')
 
 async function connectMongoDb(url) {
-    return mongoose.connect(url)
+    const client = new MongoClient(url)
+
+    try {
+        return mongoose.connect(url)
+
+    } catch (error) {
+        console.log('MONGODB ERRRORR: ', error);
+
+        return false
+    }
+
 }
+
+
 
 module.exports = connectMongoDb

@@ -4,154 +4,229 @@ const {registerUser,updateUser,getAllUsers, uploadImage,updateProfilePic,getUser
 const upload = require('../middlewares/uploadImage')
 const {getUser} = require('../services/authLogin')
 
-// router.post('/uploadPhoto',upload.single('profilePhoto'),uploadImage)
+router.post('/uploadPhoto',upload.single('profilePhoto'),uploadImage)
 
-// router.get('/',getAllUsers)
+router.get('/',getAllUsers)
 
-// router.get('/search',getUsersForSearching)
+router.get('/search',getUsersForSearching)
 
-// router.post('/register',upload.single('profilePhoto'),registerUser)
-// router.patch('/updatePic/:userId',upload.single('profilePhoto'),updateProfilePic)
-// router.patch('/update/:userId',updateUser)
-// router.post('/login',loginUser)
+router.post('/register',upload.single('profilePhoto'),registerUser)
+router.patch('/updatePic/:userId',upload.single('profilePhoto'),updateProfilePic)
+router.patch('/update/:userId',updateUser)
+router.post('/login',loginUser)
 
-// router.get('/:id',getUser,getOneUser)
-// router.get('/notme/:id',getUser,getUsersExceptMe)
-// router.get('/other/user',seeAnotherUser)
+router.get('/:id',getUser,getOneUser)
+router.get('/notme/:id',getUser,getUsersExceptMe)
+router.get('/other/user',seeAnotherUser)
 
-// router.patch('/privacy/:userId',getUser,privateAccount)
-// router.delete('/delete/:userId',getUser,deleteAccount)
+router.patch('/privacy/:userId',getUser,privateAccount)
+router.delete('/delete/:userId',getUser,deleteAccount)
 
 
 
+module.exports = router
 
 /**
  * @swagger
- * tags:
- *   name: User
- *   description: Operations related to user
+ * /uploadPhoto:
+ *   post:
+ *     summary: Upload a profile photo.
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: formData
+ *         name: profilePhoto
+ *         type: file
+ *         required: true
+ *         description: Profile photo to upload.
+ *     responses:
+ *       200:
+ *         description: Photo uploaded successfully.
  */
+
 
 /**
  * @swagger
  * /:
  *   get:
- *     tags:
- *       - User
- *     summary: "Get all users"
- *     description: "Returns a list of all users"
+ *     summary: Get all users.
  *     responses:
  *       200:
- *         description: "List of users"
+ *         description: A list of users.
  */
-router.get('/', getAllUsers);
+
 
 /**
  * @swagger
  * /search:
  *   get:
- *     tags:
- *       - User
- *     summary: "Search for users"
- *     description: "Search for users by username or other criteria"
+ *     summary: Search for users.
  *     responses:
  *       200:
- *         description: "Search results"
+ *         description: A list of matching users.
  */
-router.get('/search', getUsersForSearching);
+
 
 /**
  * @swagger
  * /register:
  *   post:
- *     tags:
- *       - User
- *     summary: "Register a new user"
- *     description: "Registers a new user with details"
+ *     summary: Register a new user.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
- *       - name: body
- *         in: body
+ *       - in: formData
+ *         name: profilePhoto
+ *         type: file
  *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             username:
- *               example: "any"
- *             email:
- *               example: "any"
- *             password:
- *               example: "any"
- *             full_name:
- *               example: "any"
- *             bio:
- *               example: "any"
- *             phone:
- *               example: "any"
- *             website:
- *               example: "any"
+ *         description: Profile photo for the user.
  *     responses:
- *       200:
- *         description: "User successfully registered"
+ *       201:
+ *         description: User registered successfully.
  */
-router.post('/register', registerUser);
+
 
 /**
  * @swagger
  * /updatePic/{userId}:
  *   patch:
- *     tags:
- *       - User
- *     summary: "Update user profile picture"
- *     description: "Update the profile picture of the specified user"
+ *     summary: Update a user's profile picture.
  *     parameters:
- *       - name: userId
- *         in: path
+ *       - in: path
+ *         name: userId
  *         required: true
- *         type: string
+ *         description: ID of the user.
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: profilePhoto
+ *         type: file
+ *         required: true
+ *         description: New profile photo.
  *     responses:
  *       200:
- *         description: "Profile picture updated"
+ *         description: Profile picture updated successfully.
  */
-router.patch('/updatePic/:userId', updateProfilePic);
+
 
 /**
  * @swagger
  * /update/{userId}:
  *   patch:
- *     tags:
- *       - User
- *     summary: "Update user details"
- *     description: "Update the details of the specified user"
+ *     summary: Update user details.
  *     parameters:
- *       - name: userId
- *         in: path
+ *       - in: path
+ *         name: userId
  *         required: true
- *         type: string
- *       - name: body
- *         in: body
- *         required: true
+ *         description: ID of the user.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User details updated successfully.
+ */
+
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Log in a user.
+ *     parameters:
+ *       - in: body
+ *         name: user
+ *         description: User login credentials.
  *         schema:
  *           type: object
  *           properties:
- *             username:
- *               example: "any"
  *             email:
- *               example: "any"
+ *               type: string
  *             password:
- *               example: "any"
- *             full_name:
- *               example: "any"
- *             bio:
- *               example: "any"
- *             phone:
- *               example: "any"
- *             website:
- *               example: "any"
+ *               type: string
  *     responses:
  *       200:
- *         description: "User details updated"
+ *         description: Login successful.
  */
-router.patch('/update/:userId', updateUser);
 
 
-module.exports = router
+/**
+ * @swagger
+ * /{id}:
+ *   get:
+ *     summary: Get a user by ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User details.
+ */
+
+
+/**
+ * @swagger
+ * /notme/{id}:
+ *   get:
+ *     summary: Get users except the specified user.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to exclude.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of other users.
+ */
+
+
+/**
+ * @swagger
+ * /other/user:
+ *   get:
+ *     summary: See another user.
+ *     responses:
+ *       200:
+ *         description: User details.
+ */
+
+
+/**
+ * @swagger
+ * /privacy/{userId}:
+ *   patch:
+ *     summary: Make a user account private.
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID of the user.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Account privacy updated.
+ */
+
+
+/**
+ * @swagger
+ * /delete/{userId}:
+ *   delete:
+ *     summary: Delete a user account.
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID of the user.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully.
+ */
