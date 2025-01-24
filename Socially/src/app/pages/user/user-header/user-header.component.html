@@ -119,15 +119,15 @@
         </div>
 
         @if (filteredUsers !== undefined && searchQuery !== '') {
-        @for (user of filteredUsers; track $index) {
+        @for (userr of filteredUsers; track $index) {
         <div class="d-flex p-1 cursor-pointer" data-bs-dismiss="modal" [routerLink]="['/seeProfile']"
-          [queryParams]="{ username: user.username }">
+          [queryParams]="{ uid: userr.id,viewerUid:user.id}">
           <div class="p-1">
-            <img class="width-30 height-30 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
+            <img class="width-30 height-30 rounded-circle" [src]="userr.profileImage.url" alt="" srcset="">
           </div>
           <div class="p-1">
-            <div> {{user.username}} </div>
-            <div> {{user.full_name}} </div>
+            <div> {{userr.username}} </div>
+            <div> {{userr.full_name}} </div>
           </div>
         </div>
         }

@@ -20,7 +20,7 @@ import { MessageBoxComponent } from "../message-box/message-box.component";
   styleUrl: './messaging.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MessagingComponent implements OnInit, AfterViewInit {
+export class MessagingComponent implements OnInit {
   @ViewChild('emojiPicker') emojiPicker !: ElementRef
   @ViewChildren('uname') unameElements !: QueryList<any>
 
@@ -48,21 +48,21 @@ export class MessagingComponent implements OnInit, AfterViewInit {
     if (this.receiver !== undefined) this.getReceiver(this.receiver)
   }
 
-  ngAfterViewInit(): void {
-    // console.log('afterviewinit');
-    // console.log('QueryList:', this.unameElements);
-    setTimeout(() => this.getValue(), 100);
-  }
-
   getUser() {
-    this.userService.user$.subscribe((res: any) => this.loggedInUser = res)
-    this.getMyMessages(this.loggedInUser.username)
+    this.userService.user$.subscribe((res: any) => {
+      this.loggedInUser = res
+      this.getMyMessages(this.loggedInUser.id)
+    })
   }
 
-  getMyMessages(myname: string) {
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_MY_MESSAGES + myname).subscribe({
+  getMyMessages(myUid: string) {
+    // console.log('myuid: ',myUid);
+    // console.log('MY MESSAGES API AADDRESS: ',apiConstant.API_HOST_URL+apiConstant.SHOW_MY_MESSAGES+myUid);
+    
+    
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_MY_MESSAGES + myUid).subscribe({
       next: (res: any) => {
-        console.log('MY MESSAGES ARE: ', res);
+        // console.log('MY MESSAGES ARE: ', res);
         this.myMessages = res
         this.getFormattedConversation()
       },
@@ -73,17 +73,18 @@ export class MessagingComponent implements OnInit, AfterViewInit {
   async getFormattedConversation() {
     this.conversations = await Promise.all(
       this.myMessages.map(async (conversation) => {
-        const otherUser = conversation.participants.find(user => user !== this.loggedInUser.username)
-        console.log('OTHER USERS: ', otherUser);
+        const otherUser = conversation.participants.find(user => user !== this.loggedInUser.id)
+        // console.log('OTHER USERS: ', otherUser);
   
         if (otherUser) {
-          console.log('inside if block: ',otherUser);
+          // console.log('inside if block: ',otherUser);
           const user : any = await this.getAnotherUser(otherUser)
-          console.log('USER IS: ',user);
+          // console.log('USER IS: ',user);
 
           return {
             ...conversation,
             otherUser : {
+              otherUid : user.id,
               username : user.username,
               profilePic : user.profileImage.url
             }
@@ -100,18 +101,13 @@ export class MessagingComponent implements OnInit, AfterViewInit {
       })
     )
 
-    console.log(this.conversations);
+    // console.log('convossss: ', this.conversations);
     
-  }
-
-  getValue() {
-    // console.log('hii');
-    this.unameElements?.forEach((element) => this.getAnotherUser(element.nativeElement.innerText))
   }
 
   getAnotherUser(uname: string) {
     return new Promise( (resolve,reject) => {
-      this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?username=${uname}&profile=${this.loggedInUser.username}`).subscribe({
+      this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?uid=${uname}&viewerId=${this.loggedInUser.id}`).subscribe({
         next: (res: any) => {
           // console.log('AAAAAAAAAAA: ', res);
           // console.log(res.profileImage.url);
@@ -124,21 +120,17 @@ export class MessagingComponent implements OnInit, AfterViewInit {
   }
 
   getReceiver(receiver: string) {
-    console.log(receiver);
+    // console.log('hh',receiver);
 
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?username=${receiver}&profile=${this.loggedInUser.username}`).subscribe({
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?uid=${receiver}&viewerId=${this.loggedInUser.id}`).subscribe({
       next: (res: any) => this.receiverUser = res,
       error: (error) => console.log(error)
     })
   }
 
+  userChange(uid:string) {
+    this.getReceiver(uid)
 
-  userChange(uname: HTMLElement) {
-    this.getReceiver(uname.innerHTML.trim())
   }
-
-
-
-
 
 }

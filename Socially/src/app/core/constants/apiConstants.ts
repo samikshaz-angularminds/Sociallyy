@@ -26,6 +26,7 @@ export const apiConstant = {
     REMOVE_FOLLOWING : 'requests/removeFollowing/',
     DELETE_REJECTED_REQUESTS : 'requests/removeRejected',
     PENDING_REQUESTS : 'requests/pending/',
+    SUGGESTIONS : 'requests/suggestions/',
     
     
     // POSTS

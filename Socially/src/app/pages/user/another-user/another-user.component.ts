@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-another-user',
   standalone: true,
-  imports: [RouterModule,CommonModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './another-user.component.html',
   styleUrl: './another-user.component.css'
 })
@@ -32,42 +32,43 @@ export class AnotherUserComponent implements OnInit {
   reqsent: { [key: string]: boolean } = {}
   queryParamsSubject !: Subscription
   isFollowing = false
-  queryparams = {username:'',profile:''}
+  queryparams = { uid: '', viewerUid: '' }
 
   ngOnInit(): void {
-    
-    this.queryParamsSubject = this.route.queryParams.subscribe((params: any) => {
-      const newUserName = params['username']
-      const viewer = params['profile']
 
-      console.log('JYACHI PROFILE BAGHAT AAHE: '+newUserName+'LOGGEDIN: ',viewer);
+    this.queryParamsSubject = this.route.queryParams.subscribe((params: any) => {
+      const newUserName = params['uid']
+      const viewer = params['viewerUid']
+
+      // console.log('JYACHI PROFILE BAGHAT AAHE: '+newUserName+'LOGGEDIN: ',viewer);
 
       this.queryparams = {
-        username : newUserName,
-        profile : viewer
+        uid: newUserName,
+        viewerUid: viewer
       }
+
       
+
 
       if (newUserName !== this.username) {
         this.username = newUserName
-        this.getUser(this.username)
+        this.getLoggedInUser()
       }
     })
   }
 
-  getUser(uname: string) {
+  getUser() {
 
-    console.log('QUERYPARAMS: ',this.queryparams);
-    
-    console.log(apiConstant.API_HOST_URL+apiConstant.SHOW_ANOTHER_USER+`?username=${this.queryparams.username}&profile=${this.queryparams.profile}`);
-    
+    // console.log('QUERYPARAMS: ',this.queryparams);
 
-    this.apiService.get<IUser>(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?username=${this.queryparams.username}&profile=${this.queryparams.profile}`).subscribe({
+    console.log(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?uid=${this.queryparams.uid}&viewerId=${this.loggedInUser.id}`);
+
+
+    this.apiService.get<IUser>(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?uid=${this.queryparams.uid}&viewerId=${this.loggedInUser?.id}`).subscribe({
       next: (res: IUser) => {
-        console.log('ANOTHER USER: ', res);
+        // console.log('ANOTHER USER: ', res);
 
         this.user = res
-        this.getLoggedInUser()
         if (res.isPrivate === false) this.posts = res.posts
       },
       error: (error) => console.log(error)
@@ -76,26 +77,27 @@ export class AnotherUserComponent implements OnInit {
   }
 
   getLoggedInUser() {
-    this.userService.user$.subscribe((res: any) => this.loggedInUser = res)
-    console.log('LOGGED IN USER: ', this.loggedInUser);
+    this.userService.user$.subscribe((res: any) => {
+      this.loggedInUser = res
+      this.getUser()
+    })
+    // console.log('LOGGED IN USER: ', this.loggedInUser);
     this.loggedInUserFollowing()
 
   }
 
   loggedInUserFollowing() {
-    this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + this.loggedInUser.username).subscribe({
+    this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + this.loggedInUser.id).subscribe({
       next: (res: IUser[]) => {
-console.log(`FOLLOWING OF ${this.loggedInUser.username}: `,res);
-console.log(`ANOTHER USER IS ${this.user.username}`);
+        // console.log(`FOLLOWING OF ${this.loggedInUser.username}: `,res);
+        // console.log(`ANOTHER USER IS ${this.user.username}`);
 
-const followingNames = res.map( user => user.username )
-console.log('GGGGGGGG');
+        const followingNames = res.map(user => user.id)
+        // console.log('GGGGGGGG');
 
-console.log('ONLY NAMES: ',followingNames);
+        // console.log('ONLY NAMES: ',followingNames);
 
-if(followingNames.includes(this.user.username)) this.isFollowing = true
-
-
+        if (followingNames.includes(this.loggedInUser.id)) this.isFollowing = true
       },
       error: (error) => {
         console.log(error)
@@ -121,7 +123,7 @@ if(followingNames.includes(this.user.username)) this.isFollowing = true
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ONE_POST + postId).subscribe({
       next: (res: any) => {
         this.onePost = res
-       
+
         console.log('ONE POST: ', this.onePost);
 
 

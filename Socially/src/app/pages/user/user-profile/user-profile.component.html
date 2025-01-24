@@ -29,12 +29,12 @@
                     <div>Posts</div>
                 </div>
                 <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
-                    [routerLink]="['/user/route','followers']" [queryParams]="{user : user._id}">
+                    [routerLink]="['/user/route','followers']" [queryParams]="{user : user._id,uuid : user.id}">
                     <div>{{user.followers.length}}</div>
                     <div>Followers</div>
                 </div>
                 <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
-                    [routerLink]="['/user/route','followings']" [queryParams]="{user : user._id}">
+                    [routerLink]="['/user/route','followings']" [queryParams]="{user : user._id,uuid : user.id}">
                     <div>{{user.followings.length}}</div>
                     <div>Following</div>
                 </div>

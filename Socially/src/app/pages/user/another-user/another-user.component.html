@@ -20,12 +20,12 @@
                     <div>Posts</div>
                 </div>
                 <div class="p-2 d-flex cursor-pointer flex-column justify-content-center align-items-center"
-                    [routerLink]="['/user/route','followers']" [queryParams]="{username : user.username}">
+                    [routerLink]="['/user/route','followers']" [queryParams]="{username : user.id}">
                     <div>{{user.followers.length}}</div>
                     <div>Followers</div>
                 </div>
                 <div class="p-2 d-flex cursor-pointer flex-column justify-content-center align-items-center"
-                    [routerLink]="['/user/route','followings']" [queryParams]="{username : user.username}">
+                    [routerLink]="['/user/route','followings']" [queryParams]="{username : user.id}">
                     <div>{{user.followings.length}}</div>
                     <div>Following</div>
                 </div>
@@ -38,7 +38,7 @@
     <div class="container w-75 d-flex">
         <button class="btn btn-primary w-50 mx-1" [ngClass]="{'btn-light':isFollowing}" (click)="sendRequest(user.username)"> {{isFollowing ? 'Following' : 'Follow +'}}</button>
 
-        <button class="btn btn-secondary w-50 mx-1" [routerLink]="'/message'" [queryParams]="{receiverName : user.username}" >Message</button>
+        <button class="btn btn-secondary w-50 mx-1" [routerLink]="'/message'" [queryParams]="{receiverName : user.id}" >Message</button>
     </div>
 
     <div class="container w-75 d-flex flex-column justify-content-center align-items-center pt-4">

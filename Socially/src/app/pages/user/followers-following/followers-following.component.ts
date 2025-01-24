@@ -43,32 +43,32 @@ export class FollowersFollowingComponent implements OnInit {
 
   }
 
-  seeUser(uname: string) {
-    this.router.navigate(['seeProfile'], { queryParams: { username: uname, profile:this.user.username } })
+  seeUser(uid: string) {
+    this.router.navigate(['seeProfile'], { queryParams: { uid: uid, viewerUid:this.user.id } })
   }
 
-  getUser(element: string, username?: string) {
+  getUser(element: string, uid?: string) {
     this.userService.user$.subscribe((response: any) => this.user = response)
 
     console.log('ELEMENT: ',element);
-    console.log('USERNAME: ',username);
+    console.log('USERNAME: ',uid);
     
     
     console.log('USER IS: ', this.user);
 
-    if (username && element === 'followers') this.getFollowers(username)
-    if (username && element === 'followings') this.getFollowings(username)
+    if (uid && element === 'followers') this.getFollowers(uid)
+    if (uid && element === 'followings') this.getFollowings(uid)
 
 
-    if(element === 'followers') this.getFollowers(this.user.username)
-    if(element === 'followings') this.getFollowings(this.user.username)
+    if(element === 'followers') this.getFollowers(this.user.id)
+    if(element === 'followings') this.getFollowings(this.user.id)
 
   }
 
-  getFollowers(uname: string) {
-    console.log('URL:: ',apiConstant.API_HOST_URL+apiConstant.SHOW_FOLLOWERS+uname);
+  getFollowers(uid: string) {
+    console.log('URL:: ',apiConstant.API_HOST_URL+apiConstant.SHOW_FOLLOWERS+uid);
 
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWERS + uname).subscribe({
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWERS + uid).subscribe({
       next: (res: any) => {
         if (res) console.log('FOLLOWERS', res)
 
@@ -78,10 +78,10 @@ export class FollowersFollowingComponent implements OnInit {
     })
   }
 
-  getFollowings(uname: string) {
-    console.log('URL:: ',apiConstant.API_HOST_URL+apiConstant.SHOW_FOLLOWINGS+uname);
+  getFollowings(uid: string) {
+    console.log('URL:: ',apiConstant.API_HOST_URL+apiConstant.SHOW_FOLLOWINGS+uid);
     
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + uname).subscribe({
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + uid).subscribe({
       next: (res: any) => {
         console.log('FOLLOWING: ', res)
 

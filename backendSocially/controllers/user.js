@@ -6,6 +6,8 @@ const { default: mongoose } = require('mongoose')
 require('dotenv').config()
 
 async function uploadImage(filePath) {
+    // console.log('file path here: ', filePath);
+    
     try {
         console.log('FILE PATH: ', filePath);
 
@@ -111,7 +113,6 @@ async function loginUser(req, res) {
     res.cookie("uid", token, {
         httpOnly: true,
         secure: false,
-
     })
 
     // console.log('TOKEN HERE: ', token);
@@ -128,7 +129,7 @@ async function getAllUsers(req, res) {
 
 async function getUsersForSearching(req, res) {
     const users = await User.find({})
-        .select('-_id username full_name profileImage bio website followers followings posts isPrivate')
+        .select('-_id id username full_name profileImage bio website followers followings posts isPrivate')
         .populate('profileImage')
         .populate('posts', '-accountHolderId')
 
@@ -143,7 +144,7 @@ async function getUsersExceptMe(req, res) {
     // console.log('USER ID: ', userId);
 
     const allUsers = await User.find({ _id: { $ne: userObjectId } })
-        .select('username full_name profileImage bio website followers followings posts')
+        .select('id username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
 
     // console.log('alllllllllll: ', allUsers);
@@ -161,20 +162,23 @@ async function getOneUser(req, res) {
 
 async function seeAnotherUser(req, res) {
     try {
-        const username = req.query.username;
-        const viewer = req.query.profile;
-        // console.log('JISKI PROFILE DEKHNI HAI: ', username);
-        // console.log('LOGGED IN USER IS: ', viewer);
+        const uid = req.query.uid;
+        const viewerUid = req.query.viewerUid;
+        // console.log('JISKI PROFILE DEKHNI HAI: ', uid);
+        console.log('LOGGED IN USER IS: ', viewerUid);
 
-        const user = await User.findOne({ username: username })
-            .select('-_id username full_name profileImage bio website followers followings posts isPrivate')
+        const user = await User.findOne({ id: uid })
+            .select('-_id id username full_name profileImage bio website followers followings posts isPrivate')
             .populate('profileImage')
             .populate('posts', '-accountHolderId')
+
+        // console.log('USER: ',user);
+        
 
         // console.log('IS ACCOUNT PRIVATE? ', user.isPrivate);
         // console.log('IS VIEWER IN THE FOLLOWER? ', user.followers.includes(viewer));
 
-        if (user.isPrivate && (!user.followers.includes(viewer))) {
+        if (user.isPrivate && (!user.followers.includes(viewerUid))) {
             const updatedUser = {
                 username: user.username,
                 full_name: user.full_name,

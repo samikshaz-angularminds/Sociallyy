@@ -1,9 +1,4 @@
 const mongoose = require('mongoose')
-const http = require('http')
-const socketIo = require('socket.io')
-
-const server = http.createServer()
-const inpOut = socketIo(server)
 
 const messageSchema = new mongoose.Schema({
     receiver: {
@@ -49,24 +44,38 @@ const Thread = mongoose.model('Thread', threadSchema)
 function changeMessage() {
     const changeStream = Thread.watch()
 
-    inpOut.on('connection', (socket) => {
-
-        console.log('SOCKET:: ',socket);
-        
-
-        changeStream.on('change', (change) => {
-            console.log('CHANGE HAPPENED::: ', change);
-            socket.emit('new-message',change.updateDescription.updatedFields)
-    
-        })
-    
-        changeStream.on('error', (error) => {
-            console.log('ERRORRR: ', error);
-        })
+    changeStream.on('change', (change) => {
+        console.log('CHANGE HAPPENED::: ', change);
+        inpOut.emit('new-message', change.updateDescription.updatedFields)
     })
 
+    changeStream.on('error', (error) => {
+        console.log('ERRORRR: ', error);
+    })
+
+    inpOut.on('connection', (socket) => {
+
+        console.log('SOCKET:: ', socket);
+
+        socket.on('disconnect', () => {
+            console.log('SOCKET DISCONNECTED: ', socket.id);
+
+        })
+
+    })
+
+    inpOut.on('new-message', (socket) => {
+
+        console.log('SOCKET:: ', socket);
+
+        socket.on('disconnect', () => {
+            console.log('SOCKET DISCONNECTED: ', socket.id);
+
+        })
+
+    })
 }
 
-server.listen(9009, ()=>console.log(`SERVER PORT: 9009`))
 
-module.exports = { Thread, changeMessage }
+
+module.exports = Thread 

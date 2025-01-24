@@ -187,10 +187,10 @@ export class UserHeaderComponent implements OnInit {
   onSearch() {
     this.availableUsers()
     const query = this.searchQuery.toLowerCase()
-    console.log('SEARCHED USERS: ', this.searchedUsers);
+    // console.log('SEARCHED USERS: ', this.searchedUsers);
 
     this.filteredUsers = this.searchedUsers?.filter(user => user.username.startsWith(query))
-    console.log('FILTERED ONES: ', this.filteredUsers);
+    // console.log('FILTERED ONES: ', this.filteredUsers);
   }
 
   seeUser(username: string) {

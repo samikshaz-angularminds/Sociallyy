@@ -5,7 +5,7 @@
     @for (follower of followers; track $index) {
         <div class="card p-2 m-1" style="width: 300px;">
             <div class="d-flex justify-content-between">
-                <DIV class="d-flex" (click)="seeUser(follower.username)">
+                <DIV class="d-flex" (click)="seeUser(follower.id)">
                     <div class="px-1">
                         <img class="height-50 width-50 rounded-circle" [src]="follower.profileImage.url" alt=""
                             srcset="">
@@ -35,7 +35,7 @@
 
     <div class="card p-2 m-1" style="width: 300px;">
         <div class="d-flex  justify-content-between">
-            <div class="d-flex" (click)="seeUser(following.username)">
+            <div class="d-flex" (click)="seeUser(following.id)">
                 <div class="px-1">
                     <img class="height-50 width-50 rounded-circle " [src]="following.profileImage.url" alt="" srcset="">
                 </div>

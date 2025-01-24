@@ -8,7 +8,7 @@
 
 
                 <div class="d-flex flex-column justify-content-center align-items-center"
-                    (click)="seeUser(user.username)">
+                    (click)="seeUser(user.id)">
                     <div class="p-2">
                         <img [src]="user.profileImage.url" class="width-45 height-45 rounded-circle" alt="" srcset="">
                     </div>
@@ -31,7 +31,7 @@
                     }
                     @else {
                     <button class="btn btn-sm btn-primary w-100"
-                        (click)="sendRequest(user.username)"><small>Follow</small></button>
+                        (click)="sendRequest(user.id)"><small>Follow</small></button>
                     }
                 </div>
 
@@ -47,7 +47,7 @@
         @for (post of userr.posts; track $index; let i=$index) {
         <div class="d-flex flex-column m-2">
             <div class="d-flex p-2 cursor-pointer" [routerLink]="['/seeProfile']"
-                [queryParams]="{username : post.accountHolderName}">
+                [queryParams]="{uid : post.accountHolderName}">
                 <div>
                     <img [src]="userr.profileImage.url" class="width-30 height-30 rounded-circle" alt="" srcset="">
                 </div>

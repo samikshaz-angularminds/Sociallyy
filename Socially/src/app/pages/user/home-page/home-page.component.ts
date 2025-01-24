@@ -29,7 +29,7 @@ export class HomePageComponent implements OnInit {
   followings: IUser[] = []
   currentImageIndex = 0
   pendingRequestsToUsers: string[] = []
-  likerss : IUser[] = []
+  likerss: IUser[] = []
 
 
   ngOnInit(): void {
@@ -47,28 +47,37 @@ export class HomePageComponent implements OnInit {
   }
 
   getSuggestions() {
-    forkJoin({
-      suggestions: this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.GET_USERS_EXCEPT_ME + this.user._id),
-      pendingRequest: this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.username),
-      followings: this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + this.user.username)
-    }).subscribe({
+    // forkJoin({
+    //   suggestions: this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.GET_USERS_EXCEPT_ME + this.user._id),
+    //   pendingRequest: this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.id),
+    //   followings: this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + this.user.id)
+    // }).subscribe({
+    //   next: (res: any) => {
+    //     const { suggestions, pendingRequest, followings } = res
+    //     console.log('suggestions:: ', suggestions);
+    //     console.log('pendingRequest:: ', pendingRequest);
+    //     console.log('followings:: ', followings);
+
+    //     const pendingRequestNames = pendingRequest.map((request: any) => request.toUser)
+    //     const followingNames = followings.map((user: any) => user.username)
+
+    //     this.users = suggestions.filter((res: any) => !followingNames.includes(res.username) && !pendingRequestNames.includes(res.username))
+
+    //     console.log('SUGGESTED USERS ARE: ', this.users);
+
+    //   },
+    //   error: (error) => {
+    //     console.log(error)
+    //   }
+    // })
+
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SUGGESTIONS + this.user.id).subscribe({
       next: (res: any) => {
-        const { suggestions, pendingRequest, followings } = res
-        console.log('suggestions:: ', suggestions);
-        console.log('pendingRequest:: ', pendingRequest);
-        console.log('followings:: ', followings);
-
-        const pendingRequestNames = pendingRequest.map((request: any) => request.toUser)
-        const followingNames = followings.map((user: any) => user.username)
-
-        this.users = suggestions.filter((res: any) => !followingNames.includes(res.username) && !pendingRequestNames.includes(res.username))
-
-        console.log('SUGGESTED USERS ARE: ', this.users);
-
+        console.log('sugg: ', res);
+        this.users = res
       },
-      error: (error) => {
-        console.log(error)
-      }
+      error: (error) => console.log(error)
+
     })
   }
 
@@ -81,15 +90,18 @@ export class HomePageComponent implements OnInit {
     )
   }
 
-  seeUser(uname: string) {
-    this.router.navigate(['seeProfile'], { queryParams: { username: uname, profile: this.user.username } })
+  seeUser(uid: string) {
+    this.router.navigate(['seeProfile'], { queryParams: { uid: uid, viewerUid: this.user.id } })
   }
 
-  sendRequest(name: string) {
-    this.apiService.post(apiConstant.API_HOST_URL + apiConstant.SEND_REQUEST + this.user.username, { username: name }).subscribe({
+  sendRequest(myUid: string) {
+    console.log('myid: ', this.user.id);
+    console.log('others id: ', myUid);
+
+    this.apiService.post(apiConstant.API_HOST_URL + apiConstant.SEND_REQUEST + this.user.id, { myUid }).subscribe({
       next: (res: any) => {
         console.log('REQUEST SENT BY ME: ', res);
-        this.reqsent[name] = true
+        this.reqsent[myUid] = true
         this.getSuggestions()
       },
       error: (error) => {
@@ -111,29 +123,28 @@ export class HomePageComponent implements OnInit {
       next: (res: any) => {
         this.user = res
         this.getSuggestions()
-        this.followingsOfUser(this.user.username)
+        this.followingsOfUser(this.user.id)
       },
       error: (error) => console.log(error)
 
     })
   }
 
-  getPostLikes(postid:string){
-    console.log(apiConstant.API_HOST_URL+apiConstant.POST_LIKESS+postid);
-    
-    this.apiService.get(apiConstant.API_HOST_URL+apiConstant.POST_LIKESS+postid).subscribe({
-      next : (res:any) => {
-        console.log('likesss: ',res);
+  getPostLikes(postid: string) {
+    console.log(apiConstant.API_HOST_URL + apiConstant.POST_LIKESS + postid);
+
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.POST_LIKESS + postid).subscribe({
+      next: (res: any) => {
+        console.log('likesss: ', res);
         this.likerss = res
-        
+
       },
-      error : (error) => console.log(error)
+      error: (error) => console.log(error)
     })
   }
 
 
   likeToggle(post: IPost, username: string) {
-
 
     if (post.likes.includes(username)) this.unlikeAPost(post, username)
     else this.likeAPost(post, username)
@@ -154,14 +165,14 @@ export class HomePageComponent implements OnInit {
     this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.UNLIKE_POST + post._id, { unliker: unliker }).subscribe({
       next: (res: any) => {
         this.getMe(this.user._id)
-        
+
       },
       error: (error) => console.log(error)
     })
   }
 
-  followingsOfUser(username: string) {
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + username).subscribe({
+  followingsOfUser(myUid: string) {
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_FOLLOWINGS + myUid).subscribe({
       next: (res: any) => {
         console.log('followingss: ', res);
         this.followings = res

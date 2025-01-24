@@ -49,15 +49,9 @@ async function uploadPost(req, res) {
     })
 
     const userUpdate = await User.findOneAndUpdate(
-        {
-            _id: userId
-        },
-        {
-            $push: { posts: newPost._id }
-        },
-        {
-            new : true
-        }
+        { _id: userId },
+        { $push: { posts: newPost._id } },
+        { new: true }
     )
 
     console.log('NEW POST: ', newPost);
@@ -69,19 +63,19 @@ async function uploadPost(req, res) {
 }
 
 async function updatePost(params) {
-    
+
 }
 
 async function showAllPosts(req, res) {
-    const allPosts = await Post.find({}).populate('accountHolderId','-id -_id')
+    const allPosts = await Post.find({}).populate('accountHolderId', '-id -_id')
 
     return res.json(allPosts)
 }
 
-async function filteredPosts(req,res) {
+async function filteredPosts(req, res) {
     const username = req.params.username
 
-    const allPosts = await Post.find({}).populate('accountHolderId','-password')
+    const allPosts = await Post.find({}).populate('accountHolderId', '-password')
 
 
     const filteredPosts = allPosts.filter(post => {
@@ -94,11 +88,11 @@ async function filteredPosts(req,res) {
         }
 
         return account.followers.includes(username)
-        
-        
+
+
     })
 
-    return res.json({filteredPosts})
+    return res.json({ filteredPosts })
 }
 
 async function showMyPosts(req, res) {
@@ -163,7 +157,7 @@ async function likedAPost(req, res) {
             $push: { likes: liker }
         },
         {
-            new : true
+            new: true
         }
     )
 
@@ -174,39 +168,39 @@ async function likedAPost(req, res) {
 }
 
 async function unLikeAPost(req, res) {
-   const postId = req.params.postId
-   const {unliker} = req.body
+    const postId = req.params.postId
+    const { unliker } = req.body
 
     const updatedPost = await Post.findOneAndUpdate(
         {
-            _id : postId
+            _id: postId
         },
         {
             $pull: { likes: unliker }
         }
     )
 
-    console.log('UPDATED POST: ',updatedPost);
-    
+    console.log('UPDATED POST: ', updatedPost);
+
     return res.json(updatedPost)
 
 }
 
-async function myPostLikers(req,res) {
+async function myPostLikers(req, res) {
     const postid = req.params.postId
 
     const post = await Post.findById(postid).select('likes -_id')
     const likersNames = post?.likes || []
-    console.log('likernames: ',likersNames);
-    
-    const likers = await User.find({ username : { $in : likersNames } })
-    .select('-_id username full_name profileImage bio website followers followings posts')
+    console.log('likernames: ', likersNames);
+
+    const likers = await User.find({ username: { $in: likersNames } })
+        .select('-_id username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
 
     console.log(likers);
-    
+
     return res.json(likers)
 }
 
-module.exports = { uploadPostPhotos, uploadPost, showMyPosts, filteredPosts, showAllPosts, deletePost, showOnePost, likedAPost, unLikeAPost, myPostLikers}
+module.exports = { uploadPostPhotos, uploadPost, showMyPosts, filteredPosts, showAllPosts, deletePost, showOnePost, likedAPost, unLikeAPost, myPostLikers }
 

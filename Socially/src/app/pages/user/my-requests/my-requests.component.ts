@@ -25,11 +25,15 @@ export class MyRequestsComponent implements OnInit {
 
   getUser() {
     this.userService.user$.subscribe((res: any) => this.user = res)
-    this.getRequests(this.user.username)
+    this.getRequests(this.user.id)
   }
 
-  getRequests(username: string) {
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.MY_REQUESTS + username).subscribe({
+  getRequests(uid: string) {
+    console.log(this.user);
+    
+    console.log(apiConstant.API_HOST_URL + apiConstant.MY_REQUESTS + uid);
+    
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.MY_REQUESTS + uid).subscribe({
       next: (res: any) => {
         this.requests = res
         console.log(res);
@@ -50,30 +54,30 @@ export class MyRequestsComponent implements OnInit {
     })
   }
 
-  acceptRequest(username: string) {
-    console.log('username: ', username);
+  acceptRequest(requestorUid: string) {
+    console.log('username: ', requestorUid);
     console.log('url: ', apiConstant.API_HOST_URL + apiConstant.ACCEPT_REQUEST + this.user.username);
 
 
-    this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.ACCEPT_REQUEST + this.user.username, { username: username }).subscribe({
+    this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.ACCEPT_REQUEST + this.user.id, { requestorUid }).subscribe({
       next: (res: any) => {
         console.log('accepting requests: ', res);
-        this.getRequests(username)
+        this.getRequests(requestorUid)
       },
       error: (error) => console.log(error)
 
     })
   }
 
-  denyRequest(uname: string) {
+  denyRequest(deletingUid: string) {
     console.log('deletor: ',this.user.username);
-    console.log('being deleted: ',uname);
+    console.log('being deleted: ',deletingUid);
     
     
-    this.apiService.delete(apiConstant.API_HOST_URL + apiConstant.DELETE_REQUEST + this.user.username, '', { username: uname }).subscribe({
+    this.apiService.delete(apiConstant.API_HOST_URL + apiConstant.DELETE_REQUEST + this.user.id, '', { deletingUid }).subscribe({
       next: (res: any) => {
         if (res) console.log(res)
-          this.getRequests(uname)
+          this.getRequests(deletingUid)
       },
       error: (error) => console.log(error)
 

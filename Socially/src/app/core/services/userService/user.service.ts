@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { IUser } from '../../models/user';
+import { followerFollowing, IUser, UserProfilePhoto } from '../../models/user';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tokenConstant } from '../../constants/token';
 import * as jwt_decode from 'jwt-decode';
@@ -8,9 +8,15 @@ import { apiConstant } from '../../constants/apiConstants';
 import { Router } from '@angular/router';
 
 interface CustomJwtPayload extends jwt_decode.JwtPayload {
-  _id: string;
-  email: string;
+  _id: string
+  id: string
+  email: string
   username : string
+  full_name: string
+followers: followerFollowing[]
+followings: followerFollowing[]
+profileImage: UserProfilePhoto
+
 }
 
 @Injectable({
@@ -18,11 +24,8 @@ interface CustomJwtPayload extends jwt_decode.JwtPayload {
 })
 export class UserService {
 
-  user !: IUser
   private userSubject = new BehaviorSubject<CustomJwtPayload | undefined>(undefined)
   isUserLoggedIn = false
-router = inject(Router)
-
 
   constructor(){
     this.initializeUserState()
@@ -47,7 +50,6 @@ router = inject(Router)
     this.isUserLoggedIn = false
   }
 
-
   private decodeToken(token: string) {
     // return JwtDecode(token)
     return jwt_decode.jwtDecode(token) as CustomJwtPayload
@@ -61,7 +63,12 @@ router = inject(Router)
       const user: CustomJwtPayload = {
         _id: decodedToken._id,
         email: decodedToken.email,
-        username: decodedToken.username
+        username: decodedToken.username,
+        full_name: decodedToken.full_name,
+        id: decodedToken.id,
+        followers: decodedToken.followers,
+        followings: decodedToken.followings,
+        profileImage: decodedToken.profileImage
       }
 
       this.setUser(user)

@@ -7,23 +7,23 @@ async function showAllRequests(req, res) {
 }
 
 async function sendRequest(req, res) {
-    const senderName = req.params.name
-    const receiverName = req.body.username
+    const senderUid = req.params.senderUid
+    const receiverUid = req.body.myUid
 
-    // console.log('SENDER name IS: ', senderName);
-    // console.log('RECEIVER name IS: ', receiverName);
+    console.log('SENDER id IS: ', senderUid);
+    console.log('RECEIVER id IS: ', receiverUid);
 
-    const sender = await User.findOne({ username: senderName })
-    const receiver = await User.findOne({ username: receiverName })
+    const sender = await User.findOne({ id: senderUid })
+    const receiver = await User.findOne({ id: receiverUid })
 
-    // console.log('SENDER IS: ', sender);
-    // console.log('RECEIVER IS: ', receiver);
+    console.log('SENDER IS: ', sender);
+    console.log('RECEIVER IS: ', receiver);
 
-    if (senderName === receiverName) return res.json({ message: 'Invalid Request' })
+    if (senderUid === receiverUid) return res.json({ message: 'Invalid Request' })
 
     const existingRequest = await FollowRequest.findOne({
-        fromUser: sender,
-        toUser: receiver
+        fromUser: senderUid,
+        toUser: receiverUid
     })
 
     if (existingRequest) return res.json({ message: "request already exists" })
@@ -31,49 +31,55 @@ async function sendRequest(req, res) {
     if (!sender || !receiver) return res.json({ message: "user not found" })
 
     const newRequest = await FollowRequest.create({
-        fromUser: senderName,
-        toUser: receiverName
+        fromUser: senderUid,
+        toUser: receiverUid
     })
 
     return res.json(newRequest)
 }
 
 async function showMyRequests(req, res) {
-    const userName = req.params.name
+    const myUid = req.params.myUid
 
-    const requests = (await FollowRequest.find({ toUser: userName, status: "pending" })).filter(request => request.fromUser !== userName)
+    const requests = (await FollowRequest.find({ toUser: myUid, status: "pending" })).filter(request => request.fromUser !== myUid)
 
-    const fromUserNames = requests.map((request) => request.fromUser)
+    const fromUserIds = requests.map((request) => request.fromUser)
 
-    const userRequests = await User.find({ username: { $in: fromUserNames } })
-        .select('-_id username full_name profileImage bio website followers followings posts')
+    const userRequests = await User.find({ id: { $in: fromUserIds } })
+        .select('-_id id username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
 
     return res.json(userRequests)
 }
 
 async function showMyFollowers(req, res) {
-    const username = req.params.name
+    const myUid = req.params.myUid
 
-    const acceptedRequests = await FollowRequest.find({ toUser: username, status: "accepted" })
+    console.log('my uid: ',myUid);
+    
 
-    const followerNames = acceptedRequests.map(request => request.fromUser)
+    const acceptedRequests = await FollowRequest.find({ toUser: myUid, status: "accepted" })
 
-    const followerss = await User.find({ username: { $in: followerNames } })
-        .select('-_id username full_name profileImage bio website followers followings posts')
+    console.log('accepted requets: ',acceptedRequests);
+    
+
+    const followerUids = acceptedRequests.map(request => request.fromUser)
+
+    const followerss = await User.find({ id: { $in: followerUids } })
+        .select('-_id id username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
 
     return res.json(followerss)
 }
 
 async function showMyFollowing(req, res) {
-    const holder = req.params.name
+    const myUid = req.params.myUid
 
-    const sentRequestAccepted = await FollowRequest.find({ fromUser: holder, status: 'accepted' })
+    const sentRequestAccepted = await FollowRequest.find({ fromUser: myUid, status: 'accepted' })
 
-    const followingsNames = sentRequestAccepted.map(request => request.toUser)
+    const followingUids = sentRequestAccepted.map(request => request.toUser)
 
-    const followings = await User.find({ username: { $in: followingsNames } })
+    const followings = await User.find({ id: { $in: followingUids } })
         .select('-_id username full_name profileImage bio website followers followings posts')
         .populate('profileImage')
         .populate('posts', '-accountHolderId')
@@ -82,14 +88,14 @@ async function showMyFollowing(req, res) {
 }
 
 async function acceptRequest(req, res) {
-    const acceptor = req.params.name
-    const requestor = req.body.username
+    const acceptorUid = req.params.acceptorUid
+    const requestorUid = req.body.requestorUid
 
-    console.log('ACCEPTOR: ', acceptor);
-    console.log('REQUESTOR: ', requestor);
+    console.log('ACCEPTOR: ', acceptorUid);
+    console.log('REQUESTOR: ', requestorUid);
 
     const reqUser = await FollowRequest.findOneAndUpdate(
-        { fromUser: requestor, toUser: acceptor },
+        { fromUser: requestorUid, toUser: acceptorUid },
         { $set: { status: 'accepted' } },
         { new: true }
     )
@@ -98,8 +104,8 @@ async function acceptRequest(req, res) {
 
     const existingFollower = await User.findOne(
         {
-            username: acceptor,
-            followers: { $in: requestor }
+            id: acceptorUid,
+            followers: { $in: requestorUid }
         }
     )
 
@@ -110,8 +116,8 @@ async function acceptRequest(req, res) {
     if (!reqUser) return res.json({ message: "there is no request found" })
 
     const userUpdate = await User.findOneAndUpdate(
-        { username: acceptor },
-        { $push: { followers: requestor } },
+        { id: acceptorUid },
+        { $push: { followers: requestorUid } },
         { new: true }
     )
 
@@ -119,8 +125,8 @@ async function acceptRequest(req, res) {
 
 
     const user2Update = await User.findOneAndUpdate(
-        { username: requestor },
-        { $push: { followings: acceptor } },
+        { id: requestorUid },
+        { $push: { followings: acceptorUid } },
         { new: true }
     )
 
@@ -131,8 +137,8 @@ async function acceptRequest(req, res) {
 }
 
 async function deleteRequest(req, res) {
-    const deletor = req.params.name
-    const beingdeleted = req.body.username
+    const deletor = req.params.myUid
+    const beingdeleted = req.body.deletingUid
 
     // console.log('deletor : ', deletor);
     // console.log('being deleted: ', beingdeleted);
@@ -151,7 +157,7 @@ async function deleteRequest(req, res) {
 }
 
 async function pendingRequests(req, res) {
-    const requestor = req.params.name
+    const requestor = req.params.myUid
 
     const requests = await FollowRequest.find({ fromUser: requestor, status: 'pending' })
 
@@ -159,8 +165,8 @@ async function pendingRequests(req, res) {
 }
 
 async function removeFromFollowers(req, res) {
-    const remover = req.params.name
-    const followerName = req.body.username
+    const remover = req.params.myUid
+    const followerName = req.body.removingUid
 
     // console.log('REMOVER : ', remover);
     // console.log('FOLLOWER NAME : ', followerName);
@@ -218,9 +224,8 @@ async function removeFromFollowers(req, res) {
 }
 
 async function removeFromFollowings(req, res) {
-    let remover = ''
-    if (req.params.name) remover = req.params.name
-    const followingName = req.body.username
+    const remover = req.params.myUid
+    const followingName = req.body.removingUid
 
     const removeFollowing = await FollowRequest.findOneAndUpdate(
         {
@@ -242,7 +247,7 @@ async function removeFromFollowings(req, res) {
 
     const updatedUser = await User.findOneAndUpdate(
         {
-            username: remover
+            id: remover
         },
         {
             $pull:
@@ -259,7 +264,7 @@ async function removeFromFollowings(req, res) {
 
     const updatedUser2 = await User.findOneAndUpdate(
         {
-            username: followingName
+            id: followingName
         },
         {
             $pull:
@@ -280,6 +285,22 @@ async function removeFromFollowings(req, res) {
     return res.json(removeFollowing)
 }
 
+async function requestSuggestions(req,res) {
+    const myUid = req.params.myUid
+
+    const myRequests = await FollowRequest.find({ fromUser:myUid })
+
+    let toUsers = myRequests.map(request => request.toUser)
+
+    toUsers.push(myUid)
+
+    const suggestions = await User.find({ id : {$nin : toUsers} })
+    .select('-_id id username full_name profileImage bio website followers followings posts')
+    .populate('profileImage')
+
+    return res.json(suggestions)
+}
+
 async function removeRejectedRequests() {
 
     const rejectedReq = await FollowRequest.find({ status: 'rejected' })
@@ -298,4 +319,4 @@ async function removeRejectedRequests() {
 }
 
 
-module.exports = { sendRequest, showMyRequests, acceptRequest, pendingRequests, showAllRequests, showMyFollowers, showMyFollowing, deleteRequest, removeRejectedRequests, removeFromFollowers, removeFromFollowings }
+module.exports = { sendRequest, showMyRequests, requestSuggestions,acceptRequest, pendingRequests, showAllRequests, showMyFollowers, showMyFollowing, deleteRequest, removeRejectedRequests, removeFromFollowers, removeFromFollowings }

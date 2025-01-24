@@ -13,7 +13,7 @@
         </div>
 
         <div routerLink="/seeProfile"
-            [queryParams]="{username: receiverUser?.username, profile : loggedInUser.username}"
+            [queryParams]="{uid: receiverUser?.id, viewerId : loggedInUser.id}"
             class="p-4 d-flex justify-content-center align-items-center">
             <i class="fa-solid fa-circle-info font-size-25"></i>
         </div>
@@ -27,17 +27,11 @@
 
                 @for (msg of conversationMessages; track $index) {
                <div class="d-flex m-1 px-2"  style=" height: 30px; width: 100%; transform: rotate(180deg);" 
-                   [ngClass]="msg.sender===loggedInUser.username ? [ 'justify-content-end'] : ['justify-content-start']">
+                   [ngClass]="msg.sender===loggedInUser.id ? [ 'justify-content-end'] : ['justify-content-start']">
    
                    <div class="max-w-50 rounded-5 py-2 px-3 d-flex align-items-center "
-                       [ngClass]="msg.sender===loggedInUser.username ? [ 'bg-blue'] : ['bg-pink']"> {{msg.message}}
+                       [ngClass]="msg.sender===loggedInUser.id ? [ 'bg-blue'] : ['bg-pink']"> {{ msg.message }}
                    </div>
-   
-                   <div>
-                       
-                   </div>
-                   
-   
                </div>
    
                }
@@ -52,7 +46,7 @@
 
             </div>
             <div class="w-80">
-                <form action="" (ngSubmit)="onSend(receiverUser.username)">
+                <form action="" (ngSubmit)="onSend(receiverUser.id)">
                     <input class="border border-0 w-100" [(ngModel)]="msg" name="msg" type="text"
                         placeholder="Message..." aria-label="Username" aria-describedby="basic-addon1"
                         (input)="getMessageType($event)">
@@ -65,7 +59,7 @@
                 pic
                 }
                 @else {
-                <button class="btn btn-primary rounded-5" (click)="onSend(receiverUser.username)">Send</button>
+                <button class="btn btn-primary rounded-5" type="submit">Send</button>
                 }
 
 

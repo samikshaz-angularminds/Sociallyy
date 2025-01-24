@@ -7,26 +7,35 @@ import { io, Socket } from 'socket.io-client'
 })
 export class ChatService {
 
-  private socket !: Socket
-  private serverUrl = 'http://localhost:9009'
+  socket !: Socket
+  messageSubject = new Subject<any>()
 
-  constructor() {
-    this.socket = io(this.serverUrl)
+  constructor() { }
+
+  createSocketConnection() {
+    this.socket = io('http://localhost:9000')
+    console.log('CONNECTION CREATED');
+    
   }
 
-  sendMessage(msg: string) {
-    this.socket.emit('new-message',msg)
+  emitMessage(message: string) {
+
+    this.socket.emit('new-message', message)
+    console.log('EMITTED MESSAGE IS-- ',message);
+    
   }
 
-  getMessages() {
-    const sub = new Subject<any>()
-    this.socket.on('new-message', (data: any) => sub.next(data))
-    return sub.asObservable()
+  seeNewMessage() {
+    this.socket.on('message', (data: any) => {
+      console.log('DATA HERE:: ',data);
+      this.messageSubject.next(data)
+      
+    })
   }
 
-  disconnect() {
-    if (this.socket) {
-      this.socket.disconnect()
-    }
+  getMessages(){
+   return this.messageSubject.asObservable()
   }
+
+
 }

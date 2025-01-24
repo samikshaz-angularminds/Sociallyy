@@ -22,7 +22,7 @@ import { ChatService } from '../../../core/services/chatService/chat.service';
   styleUrl: './message-box.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MessageBoxComponent implements OnInit, OnChanges {
+export class MessageBoxComponent implements OnInit {
   @ViewChild('emojiPicker') emojiPicker !: ElementRef
   @ViewChildren('uname') unameElements !: QueryList<any>
   @Input() receiverUser !: IUser
@@ -41,29 +41,20 @@ export class MessageBoxComponent implements OnInit, OnChanges {
   hideEmoji = true
   conversationMessages: any[] = []
   userImage: { [key: string]: string } = {}
+  newMsg !: string
 
-  ngOnInit(): void { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // console.log('CHANGE HAPPENEDDD');
-
-    this.chatService.getMessages().subscribe((data:any)=>{
-      console.log('changes are:: ',data);
-      
-    })
-
+  ngOnInit(): void {
     this.getUser()
-    console.log(this.receiverUser.username);
-    if (changes['receiverUser']) this.getConversation(this.receiverUser.username)
+    console.log('userid here?? ', this.receiverUser.id);
+    this.getConversation(this.receiverUser.id)
+    this.chatService.createSocketConnection()
   }
-
 
   getUser() {
     this.userService.user$.subscribe((res: any) => {
       this.loggedInUser = res
       console.log('LOGGEDIN User: ', this.loggedInUser);
     })
-
   }
 
   getConversation(other: string) {
@@ -71,18 +62,15 @@ export class MessageBoxComponent implements OnInit, OnChanges {
 
     console.log(apiConstant.API_HOST_URL + apiConstant.SHOW_CONVERSATION + this.loggedInUser.username + `?otherUser=${other}`);
 
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_CONVERSATION + this.loggedInUser?.username + `?otherUser=${other}`).subscribe({
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_CONVERSATION + this.loggedInUser?.id + `?otherUser=${other}`).subscribe({
       next: (res: any) => {
         console.log('CONVERSATION: ', res);
-
         this.conversationMessages = res[0]?.message
+        this.chatService.seeNewMessage()
 
-
-        this.conversationMessages.reverse()
+        this.conversationMessages?.reverse()
 
         console.log('COOOOOOO: ', this.conversationMessages);
-
-
 
       }
     })
@@ -98,7 +86,7 @@ export class MessageBoxComponent implements OnInit, OnChanges {
   }
 
   getAnotherUser(uname: string) {
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?username=${uname}&profile=${this.loggedInUser.username}`).subscribe({
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_ANOTHER_USER + `?uid=${uname}&viewerId=${this.loggedInUser.id}`).subscribe({
       next: (res: any) => {
         console.log('AAAAAAAAAAA: ', res);
         console.log(res.profileImage.url);
@@ -133,17 +121,26 @@ export class MessageBoxComponent implements OnInit, OnChanges {
     this.msg = this.msg + emoji
   }
 
-  onSend(receiverUserName: string) {
-    const msgObj = { message: this.msg, messageType: this.msgType, receiver: receiverUserName }
+  onSend(receiverUserId: string) {
+    const msgObj = { message: this.msg, messageType: this.msgType, receiver: receiverUserId }
+    console.log('------------------------------------------------------------------------------------------------------------------------');
+    
 
     console.log(msgObj);
 
+    // this.chatService.sendMessage(this.msg);
 
-    this.apiService.post(apiConstant.API_HOST_URL + apiConstant.SEND_MESSAGE + this.loggedInUser.username, msgObj).subscribe({
+    this.apiService.post(apiConstant.API_HOST_URL + apiConstant.SEND_MESSAGE + this.loggedInUser.id, msgObj).subscribe({
       next: (res: any) => {
         console.log('MSG RESPONSE: ', res);
+        this.chatService.emitMessage(this.msg)
+        // this.conversationMessages.push(this.msg)
         this.msg = ''
-        this.getConversation(receiverUserName)
+
+        this.chatService.getMessages().subscribe((data: any) => {
+          console.log('changes are:: ', data);
+          this.getConversation(receiverUserId)
+        })
       },
       error: (error) => console.log(error)
 
@@ -152,3 +149,4 @@ export class MessageBoxComponent implements OnInit, OnChanges {
   }
 
 }
+

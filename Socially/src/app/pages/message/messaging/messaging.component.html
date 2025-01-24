@@ -3,7 +3,10 @@
     <div class="w-25 border border-sec p-3">
 
         @for (conversation of conversations; track $index) {
-        <div class="pt-3 lh-1 d-flex" (click)="userChange(uname)">
+<!-- {{conversation.otherUser.otherUid}}             -->
+<!-- kk -->
+<!-- {{conversation | json}} -->
+        <div class="pt-3 lh-1 d-flex" (click)="userChange(conversation.otherUser.otherUid)">
 
             <div class="d-flex justify-content-center align-items-center px-2">
                 <img [src]="conversation.otherUser.profilePic" class="height-40 width-40 rounded-circle" alt=""
