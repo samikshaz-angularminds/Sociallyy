@@ -4,6 +4,9 @@ const { setUser, getUser } = require('../services/authLogin')
 const { cloudinary } = require('../config/cloudinaryConfig')
 const { default: mongoose } = require('mongoose')
 require('dotenv').config()
+const nodemailer = require('nodemailer')
+const crypto = require('crypto')
+const { text } = require('express')
 
 async function uploadImage(filePath) {
     // console.log('file path here: ', filePath);
@@ -250,4 +253,28 @@ async function deleteAccount(req, res) {
     return res.json({ message: 'User deleted successfully!' })
 }
 
-module.exports = { registerUser, updateUser ,getAllUsers, getUsersForSearching, uploadImage, updateProfilePic, loginUser, getOneUser, getUsersExceptMe, seeAnotherUser, privateAccount, deleteAccount }
+async function forgotPassword(req,res) {
+    const email = req.body.email
+
+     let transpoter = nodemailer.createTransport({
+        service : 'gmail',
+        auth : {
+            user : 'samikshazamde18576@gmail.com',
+            pass : 'odbz gdyw dqss igxj'
+        }
+     })
+
+     let mailOptions = {
+        from : 'samikshazamde18576@gmail.com',
+        to : `${email}`,
+        subject : 'Forgot Instagram Password',
+        text : 'You have to change the passsword by clicking on link'
+     }
+
+     transpoter.sendMail(mailOptions,(error,info) => {
+        if(error) console.log('Error sending mail: ',error)
+        else console.log('Email sent: ',info.response)
+     })
+}
+
+module.exports = { registerUser, forgotPassword,updateUser ,getAllUsers, getUsersForSearching, uploadImage, updateProfilePic, loginUser, getOneUser, getUsersExceptMe, seeAnotherUser, privateAccount, deleteAccount }

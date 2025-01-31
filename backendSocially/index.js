@@ -102,7 +102,7 @@ mongoose.connection.once('open', () => {
   const changeStream = Thread.watch()
 
   changeStream.on('change', (change) => {
-    const udtField = change.updateDescription.updatedFields
+    const udtField = change?.updateDescription?.updatedFields
     const updatedMsg = Object.values(udtField)[2].message
 
     console.log('UPDATE IN DB: ',udtField);

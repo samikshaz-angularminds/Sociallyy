@@ -9,6 +9,7 @@ import { FollowersFollowingComponent } from './pages/user/followers-following/fo
 import { authGuard } from './core/guards/authGuard/auth.guard';
 import { AnotherUserComponent } from './pages/user/another-user/another-user.component';
 import { MessagingComponent } from './pages/message/messaging/messaging.component';
+import { ForgotPasswordComponent } from './pages/user/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
     {
@@ -64,5 +65,9 @@ export const routes: Routes = [
     {
         path:'message',
         component : MessagingComponent
+    },
+    {
+        path : 'password',
+        component : ForgotPasswordComponent
     }
 ];

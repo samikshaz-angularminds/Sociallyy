@@ -70,19 +70,10 @@ export class MessageBoxComponent implements OnInit {
 
         this.conversationMessages?.reverse()
 
-        console.log('COOOOOOO: ', this.conversationMessages);
+        console.log('COONVERSATION: ', this.conversationMessages);
 
       }
     })
-  }
-
-
-
-  getValue() {
-    console.log('hii');
-
-    this.unameElements?.forEach((element) => this.getAnotherUser(element.nativeElement.innerText))
-
   }
 
   getAnotherUser(uname: string) {
@@ -103,7 +94,6 @@ export class MessageBoxComponent implements OnInit {
     this.msgType = msgEvent.type
   }
 
-
   openEmojiPicker() {
     this.hideEmoji = !this.hideEmoji
   }
@@ -117,7 +107,6 @@ export class MessageBoxComponent implements OnInit {
 
   selectedEmoji(event: EmojiClickEvent) {
     const emoji = event.detail.unicode
-
     this.msg = this.msg + emoji
   }
 
