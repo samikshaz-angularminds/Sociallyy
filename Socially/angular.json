@@ -67,6 +67,9 @@
             },
             "development": {
               "buildTarget": "Socially:build:development"
+            },
+            "options" : {
+              "proxyConfig" : "proxy.config.json"
             }
           },
           "defaultConfiguration": "development"

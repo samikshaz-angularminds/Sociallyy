@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { UserLoginComponent } from './pages/user/user-login/user-login.component';
 import { UserRegistrationComponent } from './pages/user/user-registration/user-registration.component';
 import { HomePageComponent } from './pages/user/home-page/home-page.component';
@@ -14,12 +13,8 @@ import { ForgotPasswordComponent } from './pages/user/forgot-password/forgot-pas
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'landing-page',
+        redirectTo: 'account/login',
         pathMatch: 'full'
-    },
-    {
-        path: 'landing-page',
-        component: LandingPageComponent
     },
     {
         path: 'account',

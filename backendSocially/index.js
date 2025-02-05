@@ -1,13 +1,11 @@
 const express = require('express')
 const app = express()
-// const PORT = 5005
 const cors = require('cors')
-// const { changeMessage } = require('./models/message')
 const mongoose = require('mongoose')
-
 const Thread = require('./models/message')
 const { io, server } = require('./socket')
 
+console.log('ENVVVVVVV ',`${process.env.PORT}`);
 
 
 const corsOptions = {
@@ -17,7 +15,6 @@ const corsOptions = {
   credentials: true // Allow credentials
 };
 app.use(cors(corsOptions));
-// app.options('*', cors(corsOptions));
 
 // Swagger definition
 const swaggerDefinition = {
@@ -29,9 +26,19 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: 'http://localhost:5005',
+      url: `http://localhost:${process.env.PORT}`,
     },
   ],
+  components: {
+    securitySchemes: {
+      BearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT", // Specifies that the token is a JWT
+      },
+    },
+    security: []
+  }
 };
 
 // Swagger options
@@ -43,61 +50,20 @@ const optionsOfSwagger = {
 
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsdoc = require('swagger-jsdoc')
-const swaggerDocument = require('./swagger/swagger-output.json')
 const swaggerSpec = swaggerJsdoc(optionsOfSwagger)
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec,{explorer:true}))
 
-const connectMongoDb = require('./connection')
 
 const UserRoute = require('./routes/user')
 const RequestRoute = require('./routes/followRequests')
 const PostRoute = require('./routes/posts')
 const MessageRoute = require('./routes/message')
 
-// connectMongoDb(`${process.env.MONGODB_URL}`)
-//   .then(() => {
-//     console.log('DB connected successfully!!'.toUpperCase())
-//     // changeMessage()
-
-//     // const changeinMsg = Thread.watch()
-
-//     // changeinMsg.on('change', (change) => {
-//     //   console.log('change happened in msgs----- ', change);
-//     //   const udtField = change.updateDescription.updatedFields
-//     //   console.log(udtField);
-
-//     //   const updatedMsg = Object.values(udtField)[0];
-
-//     //   io.emit('new-message', updatedMsg)
-//     // })
-
-//     // changeinMsg.on('error', (error) => {
-//     //   console.log(error);
-//     // })
-
-//      server.listen(9000 , () => console.log(`SERVER PORT: 9000`))
-
-
-//     io.on('new-message', (socket) => {
-//       console.log('new-message socket--> ', socket);
-//     })
-
-//     process.on('SIGINT', () => {
-//       console.log('closing the serverr....');
-//       server.close(() => {
-//         console.log('server closed');
-//         process.exit(0)
-//       })
-//     })
-//   })
-//   .catch((e) => console.log('ERRRORRRRRR:::: ', e))
-
-
 mongoose.connect(`${process.env.MONGODB_URL}`)
 mongoose.connection.once('open', () => {
   console.log('connected and open');
-  server.listen(9000, () => console.log('listening to 9000'))
+  server.listen(process.env.SERVER_PORT, () => console.log(`listening to ${process.env.SERVER_PORT}`))
 
   const changeStream = Thread.watch()
 
@@ -118,18 +84,17 @@ mongoose.connection.once('open', () => {
       process.exit(0)
     })
   })
-
-
 })
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.use('/user', UserRoute)
-app.use('/requests', RequestRoute)
-app.use('/posts', PostRoute)
-app.use('/message', MessageRoute)
+app.use('/api/user', UserRoute)
+app.use('/api/requests', RequestRoute)
+app.use('/api/posts', PostRoute)
+app.use('/api/message', MessageRoute)
 
 app.listen(process.env.PORT, () => console.log(`LISTENING TO PORT ${process.env.PORT}`))
 
 
+console.log('ENVVVVVVV22 ',`${process.env.PORT}`);

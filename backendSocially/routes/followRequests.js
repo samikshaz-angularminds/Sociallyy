@@ -49,7 +49,7 @@ module.exports = router
  * /requests/suggestions/{myUid}:
  *   get:
  *     tags:
- *       - User
+ *       - Request
  *     summary: Get suggested users for a specific user.
  *     parameters:
  *       - in: path

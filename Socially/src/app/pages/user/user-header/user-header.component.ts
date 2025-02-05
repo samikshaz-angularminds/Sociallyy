@@ -125,7 +125,11 @@ export class UserHeaderComponent implements OnInit {
 
     if (consent.isConfirmed) {
       this.apiService.delete(apiConstant.API_HOST_URL + apiConstant.DELETE_ACCOUNT + this.user._id).subscribe({
-        next: (res: any) => console.log('DELETE ACCOUNT: ', res),
+        next: (res: any) => {
+          this.userService.clearToken();
+          this.router.navigateByUrl('account/login')
+        
+        },
         error: (error) => console.log(error)
       })
 

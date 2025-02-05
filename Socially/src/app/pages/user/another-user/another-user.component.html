@@ -35,10 +35,10 @@
         
     </div>
 
-    <div class="container w-75 d-flex">
-        <button class="btn btn-primary w-50 mx-1" [ngClass]="{'btn-light':isFollowing}" (click)="sendRequest(user.username)"> {{isFollowing ? 'Following' : 'Follow +'}}</button>
+    <div class="container w-75 d-flex justify-content-center align-items-center">
+        <button class="btn btn-primary w-25 mx-1" [ngClass]="{'btn-light':isFollowing}" (click)="sendRequest(user.username)"> {{isFollowing ? 'Following' : 'Follow +'}}</button>
 
-        <button class="btn btn-secondary w-50 mx-1" [routerLink]="'/message'" [queryParams]="{receiverName : user.id}" >Message</button>
+        <button class="btn btn-secondary w-25 mx-1" [routerLink]="'/message'" [queryParams]="{receiverName : user.id}" >Message</button>
     </div>
 
     <div class="container w-75 d-flex flex-column justify-content-center align-items-center pt-4">

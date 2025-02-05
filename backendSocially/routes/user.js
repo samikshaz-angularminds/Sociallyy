@@ -1,29 +1,29 @@
 const express = require('express')
 const router = express.Router()
-const { registerUser, updateUser, forgotPassword,getAllUsers, uploadImage, updateProfilePic, getUsersForSearching, loginUser, getOneUser, getUsersExceptMe, seeAnotherUser, privateAccount, deleteAccount } = require('../controllers/user')
+const userController = require('../controllers/user')
 const upload = require('../middlewares/uploadImage')
 const { getUser } = require('../services/authLogin')
 
-router.post('/uploadPhoto', upload.single('profilePhoto'), uploadImage)
+router.post('/uploadPhoto', upload.single('profilePhoto'), userController.uploadImage)
 
-router.get('/', getAllUsers)
+router.get('/', userController.getAllUsers)
 
-router.get('/search', getUsersForSearching)
+router.get('/search', userController.getUsersForSearching)
 
-router.post('/register', upload.single('profilePhoto'), registerUser)
-router.patch('/updatePic/:userId', upload.single('profilePhoto'), updateProfilePic)
-router.patch('/update/:userId', updateUser)
-router.post('/login', loginUser)
+router.post('/register', upload.single('profilePhoto'), userController.registerUser)
+router.patch('/updatePic/:userId', upload.single('profilePhoto'), userController.updateProfilePic)
+router.patch('/update/:userId', userController.updateUser)
+router.post('/login', userController.loginUser)
 
-router.get('/:id', getUser, getOneUser)
-router.get('/notme/:id', getUser, getUsersExceptMe)
-router.get('/other/user', seeAnotherUser)
+router.get('/:id', getUser, userController.getOneUser)
+router.get('/notme/:id', getUser, userController.getUsersExceptMe)
+router.get('/other/user', userController.seeAnotherUser)
 
-router.patch('/privacy/:userId', getUser, privateAccount)
-router.delete('/delete/:userId', getUser, deleteAccount)
+router.patch('/privacy/:userId', getUser, userController.privateAccount)
+router.delete('/delete/:userId', getUser, userController.deleteAccount)
 
-router.post('/forgot-password',forgotPassword)
-
+router.post('/sendotp',userController.sendOtp)
+router.post('/verifyotp',userController.verifyOtp)
 
 
 module.exports = router
