@@ -68,7 +68,6 @@ export class UserHeaderComponent implements OnInit {
     }
   }
 
-
   // Toggle the open/close state of the accordion
   toggleAccordion(): void {
     this.accordionIsOpen = !this.accordionIsOpen
@@ -170,6 +169,8 @@ export class UserHeaderComponent implements OnInit {
     this.selectedFiles.forEach(file => {
       formData.append('images', file)
     })
+
+
     this.apiService.post(apiConstant.API_HOST_URL + apiConstant.POST + this.user._id, formData).subscribe({
       next: (res: any) => {
         console.log('afterposting: ', res)

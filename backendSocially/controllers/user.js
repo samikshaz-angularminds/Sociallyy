@@ -11,6 +11,7 @@ const { text } = require('express')
 const { error } = require('console')
 const httpStatus = require('http-status')
 const { type } = require('os')
+const path = require('path');
 
 async function uploadImage(filePath) {
     console.log('file path here: ', filePath);
@@ -353,6 +354,15 @@ async function deleteAccount(req, res) {
     return res.json({ message: 'User deleted successfully!' })
 }
 
+async function downloadPic(req,res) {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname,"../downloads");
+
+    res.download(filePath,filename,(err)=>{
+        console.log('an error has occured during downloading... ',err);
+    })
+}
+
 module.exports = {
     registerUser,
     updateUser, 
@@ -367,5 +377,6 @@ module.exports = {
     getUsersExceptMe, 
     seeAnotherUser, 
     privateAccount, 
-    deleteAccount
+    deleteAccount,
+    downloadPic
 }

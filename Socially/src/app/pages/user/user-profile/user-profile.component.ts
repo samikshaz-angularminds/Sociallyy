@@ -46,6 +46,27 @@ export class UserProfileComponent {
     })
   }
 
+  
+  downloadProfilePic(url:string){
+    const url1 = new URL(url)
+const filename = url1.pathname.split("/")    
+console.log(filename);
+console.log(filename[filename.length-1]);
+const download = filename[filename.length-1]
+
+
+    this.apiService.get(apiConstant.API_HOST_URL+apiConstant.DOWNLOAD_PROFILE_PIC+download).subscribe({
+      next : (res:any) => {
+console.log(res);
+
+      },
+      error : (error) => {
+        console.log(error);
+        
+      }
+    })
+  }
+
   getAvailablePosts(userid: string) {
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SHOW_MY_POSTS + userid).subscribe({
       next: (res: any) => {

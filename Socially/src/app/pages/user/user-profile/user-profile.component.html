@@ -5,7 +5,8 @@
     <div class="container d-flex justify-content-center align-items-center" style="min-width: 400px;">
         <div class=" d-flex flex-column justify-content-center align-items-center">
             <div class="p-1 image-container">
-                <img class="width-100 height-100 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
+                <!-- {{user.profileImage.url}} -->
+                <img class="width-100 height-100 rounded-circle" (click)="downloadProfilePic(user.profileImage.url)" [src]="user.profileImage.url" alt="" srcset="">
                 <div class="d-flex justify-content-end m-0 camera-icon" data-bs-toggle="modal"
                     data-bs-target="#updatePic">
                     <i class="fa-solid fa-camera" style="font-size: 25px;"></i>

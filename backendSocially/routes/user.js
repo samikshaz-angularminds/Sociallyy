@@ -24,6 +24,8 @@ router.delete('/delete/:userId', getUser, userController.deleteAccount)
 
 router.post('/sendotp',userController.sendOtp)
 router.post('/verifyotp',userController.verifyOtp)
+router.get('/download/:filename',userController.downloadPic)
+
 
 
 module.exports = router

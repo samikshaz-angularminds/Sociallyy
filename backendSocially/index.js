@@ -4,6 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const Thread = require('./models/message')
 const { io, server } = require('./socket')
+require('dotenv').config();
 
 console.log('ENVVVVVVV ',`${process.env.PORT}`);
 

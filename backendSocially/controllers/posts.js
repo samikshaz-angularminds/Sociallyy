@@ -3,14 +3,18 @@ const { cloudinary } = require('../config/cloudinaryConfig');
 const User = require('../models/user');
 const { default: mongoose } = require('mongoose');
 
+
+// for below line we need type:module in package.json
+// import path from 'path';
+
 async function uploadPostPhotos(files) {
 
     console.log('files in post: ', files);
 
     filePaths = files.map(file => file.path)
 
-    console.log(typeof Promise); // Should print "function"
-    console.log(typeof Promise.all); // Should print "function"
+    // console.log(typeof Promise); // Should print "function"
+    // console.log(typeof Promise.all); // Should print "function"
 
 
     const mediaArray = await Promise?.all(
@@ -24,7 +28,6 @@ async function uploadPostPhotos(files) {
     );
 
     console.log('MEDIA ARRAY: ', mediaArray);
-
 
     return mediaArray
 }
@@ -134,6 +137,8 @@ async function showOnePost(req, res) {
     return res.json(post)
 }
 
+
+
 async function likedAPost(req, res) {
     const postId = req.params.postId
 
@@ -202,5 +207,15 @@ async function myPostLikers(req, res) {
     return res.json(likers)
 }
 
-module.exports = { uploadPostPhotos, uploadPost, showMyPosts, filteredPosts, showAllPosts, deletePost, showOnePost, likedAPost, unLikeAPost, myPostLikers }
+module.exports = { 
+    uploadPostPhotos, 
+    uploadPost, 
+    showMyPosts, 
+    filteredPosts, 
+    showAllPosts, 
+    deletePost, 
+    showOnePost, 
+    likedAPost, 
+    unLikeAPost, 
+    myPostLikers }
 
