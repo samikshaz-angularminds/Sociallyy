@@ -9,35 +9,33 @@ const nodemailer = require('nodemailer')
 const crypto = require('crypto');
 const httpStatus = require('http-status')
 const path = require('path');
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle')
 
-async function uploadImage(filePath) {
 
-    try {
-        console.log('FILE PATH: ', filePath);
+const uploadImage = asyncErrorHandler(async function (filePath) {
+    console.log('FILE PATH: ', filePath);
 
-        const mainFolderName = "Socially";
-        const filePathOnCloudinary = `${mainFolderName}${filePath}`;
-        console.log('file path cloudinry: ',filePathOnCloudinary);
-        
-        const response = await cloudinary.uploader.upload(filePath, {
-            folder: "Socially"
-        })
+    const mainFolderName = "Socially";
+    const filePathOnCloudinary = `${mainFolderName}${filePath}`;
+    console.log('file path cloudinry: ', filePathOnCloudinary);
 
-        console.log("UPLOAD RESPONSE: ", response);
-        const newProfilePic = await ProfilePhoto.create({
-            public_id: response.public_id,
-            url: response.url
-        })
+    const response = await cloudinary.uploader.upload(filePath, {
+        folder: "Socially"
+    })
 
-        console.log('NEW PROFILE PIC: ', newProfilePic);
+    console.log("UPLOAD RESPONSE: ", response);
+    const newProfilePic = await ProfilePhoto.create({
+        public_id: response.public_id,
+        url: response.url
+    })
 
-        return newProfilePic
-    } catch (error) {
-        console.log('ERROR HEREEEEEEEEEEEEE: ', error);
-    }
-}
+    console.log('NEW PROFILE PIC: ', newProfilePic);
 
-async function updateProfilePic(req, res) {
+    return newProfilePic
+
+});
+
+const updateProfilePic = asyncErrorHandler(async function (req, res) {
     const userId = req.params.userId
     const profilePic = await uploadImage(req.file?.path)
 
@@ -52,10 +50,14 @@ async function updateProfilePic(req, res) {
         }
     )
 
-    return res.json(newPic)
-}
+    return res
+    .status(200)
+    .json(
+        new apire
+    )
+});
 
-async function registerUser(req, res) {
+const registerUser = asyncErrorHandler(async function (req, res) {
     const { id, username, email, password, full_name, bio, phone, website } = req.body
     console.log('REQUEST BODY:: ', req.body);
 
@@ -89,12 +91,12 @@ async function registerUser(req, res) {
 
     return res.json(newUser)
 
-}
+});
 
-async function updateUser(req, res) {
+const updateUser = asyncErrorHandler(async function (req, res) {
     const userid = req.params.userId
     const { username, email, password, full_name, bio, phone, website } = req.body
-    const profilePic = await uploadImage(req.file?.path)
+    const profilePic = uploadImage(req.file?.path)
 
 
     const user = await User.findByIdAndUpdate(userid,
@@ -118,13 +120,13 @@ async function updateUser(req, res) {
 
     return res.json(user)
 
-}
+});
 
-async function loginUser(req, res) {
+const loginUser = asyncErrorHandler(async function (req, res) {
     const { email, password } = req.body
 
-    console.log('EMAIL:::  ', email);
-    console.log('PASSWORD::: ', password);
+    // console.log('EMAIL:::  ', email);
+    // console.log('PASSWORD::: ', password);
 
 
     const requiredUser = await User.findOne({ email, password })
@@ -145,9 +147,9 @@ async function loginUser(req, res) {
     // console.log('TOKEN HERE: ', token);
 
     return res.json({ user: requiredUser, token: token })
-}
+});
 
-async function sendOtp(req, res) {
+const sendOtp = asyncErrorHandler( async function (req, res) {
     const email = req.body.email;
     const otp = crypto.randomInt(100000, 999999);
 
@@ -188,9 +190,10 @@ async function sendOtp(req, res) {
     })
 
     return res.json({ message: "mail sent successfully!" })
-}
+});
 
-async function verifyOtp(req, res) {
+
+const verifyOtp = asyncErrorHandler( async function (req, res) {
     const { email, otp } = req.body;
     console.log('email: ', email);
     console.log('otp: ', otp);
@@ -219,29 +222,27 @@ async function verifyOtp(req, res) {
     }
 
     return res.status(400);
-}
+});
 
-async function loginByOtp(req, res) {
 
-}
-
-async function getAllUsers(req, res) {
+const getAllUsers = asyncErrorHandler( async function (req, res) {
 
     const allusers = await User.find({})
 
     return res.json(allusers)
-}
+});
 
-async function getUsersForSearching(req, res) {
+const getUsersForSearching= asyncErrorHandler( async function (req, res) {
     const users = await User.find({})
         .select('-_id id username full_name profileImage bio website followers followings posts isPrivate')
         .populate('profileImage')
         .populate('posts', '-accountHolderId')
 
     return res.json(users)
-}
+});
 
-async function getUsersExceptMe(req, res) {
+
+const getUsersExceptMe = asyncErrorHandler( async function (req, res) {
     console.log('hiiiiiii');
 
     const userId = req.params.id
@@ -257,17 +258,19 @@ async function getUsersExceptMe(req, res) {
     console.log('alllllllllll: ', allUsers);
 
     return res.json(allUsers)
-}
+});
 
-async function getOneUser(req, res) {
+
+const getOneUser = asyncErrorHandler( async function (req, res) {
     const userId = req.params.id
 
     const user = await User.findById(userId).populate('profileImage')
 
     return res.json(user)
-}
+});
 
-async function seeAnotherUser(req, res) {
+
+const seeAnotherUser = asyncErrorHandler( async function (req, res) {
     try {
         const uid = req.query.uid;
         const viewerUid = req.query.viewerUid;
@@ -308,9 +311,10 @@ async function seeAnotherUser(req, res) {
         console.error('Error in seeAnotherUser:', error);
         return res.status(500).json({ error: 'An error occurred' });
     }
-}
+});
 
-async function privateAccount(req, res) {
+
+const privateAccount = asyncErrorHandler( async function (req, res) {
     const userId = req.params.userId
     const command = req.body.command
 
@@ -345,9 +349,10 @@ async function privateAccount(req, res) {
     }
 
     return res.json({ message: 'bham bham bhole' })
-}
+});
 
-async function deleteAccount(req, res) {
+
+const deleteAccount = asyncErrorHandler( async function (req, res) {
     const userId = req.params.userId
 
     const deleteUser = await User.findByIdAndDelete(userId)
@@ -355,16 +360,24 @@ async function deleteAccount(req, res) {
     if (!deleteUser) return res.json({ message: 'could not delete an user' })
 
     return res.json({ message: 'User deleted successfully!' })
-}
+});
 
-async function downloadPic(req, res) {
-    const filename = req.params.filename;
-    const filePath = path.join(__dirname, "../downloads");
 
-    res.download(filePath, filename, (err) => {
-        console.log('an error has occured during downloading... ', err);
-    })
-}
+const downloadPic = asyncErrorHandler(async function (req, res) {
+    // const filename = req.params.filename;
+    // const filePath = path.join(__dirname, "../downloads");
+
+    const downloadingFile = req.query.fileUrl;
+    // const response = await fetch(downloadingFile);
+    console.log('downloading file is... ', downloadingFile);
+    console.log(decodeURIComponent(downloadingFile));
+
+
+
+    // res.download(filePath, filename, (err) => {
+    //     console.log('an error has occured during downloading... ', err);
+    // })
+});
 
 module.exports = {
     registerUser,

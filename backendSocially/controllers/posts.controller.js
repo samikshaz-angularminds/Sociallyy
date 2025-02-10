@@ -1,20 +1,16 @@
 const Post = require('../models/uploadPosts.model')
 const { cloudinary } = require('../config/cloudinaryConfig');
 const User = require('../models/user.model');
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle');
 
 
 // for below line we need type:module in package.json
 // import path from 'path';
-
-async function uploadPostPhotos(files) {
+const uploadPostPhotos = asyncErrorHandler( async function (files) {
 
     console.log('files in post: ', files);
 
     filePaths = files.map(file => file.path)
-
-    // console.log(typeof Promise); // Should print "function"
-    // console.log(typeof Promise.all); // Should print "function"
-
 
     const mediaArray = await Promise?.all(
         filePaths.map(async (filepath) => {
@@ -29,9 +25,9 @@ async function uploadPostPhotos(files) {
     console.log('MEDIA ARRAY: ', mediaArray);
 
     return mediaArray
-}
+});
 
-async function uploadPost(req, res) {
+const uploadPost = asyncErrorHandler( async function (req, res) {
     const userId = req.params.userId
 
     console.log('FILESS: ', req.files);
@@ -62,19 +58,19 @@ async function uploadPost(req, res) {
 
     return res.json(newPost)
 
-}
+});
 
-async function updatePost(params) {
+const updatePost = asyncErrorHandler( async function (params) {
 
-}
+});
 
-async function showAllPosts(req, res) {
+const showAllPosts = asyncErrorHandler( async function (req, res) {
     const allPosts = await Post.find({}).populate('accountHolderId', '-id -_id')
 
     return res.json(allPosts)
-}
+});
 
-async function filteredPosts(req, res) {
+const filteredPosts = asyncErrorHandler( async function (req, res) {
     const username = req.params.username
 
     const allPosts = await Post.find({}).populate('accountHolderId', '-password')
@@ -95,18 +91,18 @@ async function filteredPosts(req, res) {
     })
 
     return res.json({ filteredPosts })
-}
+});
 
-async function showMyPosts(req, res) {
+const showMyPosts = asyncErrorHandler( async function (req, res) {
     const userId = req.params.userId
 
     const posts = await Post.find({ accountHolderId: userId })
 
     // console.log('MY POSTS: ', posts);
     return res.json(posts)
-}
+});
 
-async function deletePost(req, res) {
+const deletePost = asyncErrorHandler( async function (req, res) {
     const postId = req.params.postId
 
     const postToBeDeleted = await Post.findByIdAndDelete(postId)
@@ -122,23 +118,17 @@ async function deletePost(req, res) {
 
 
     return res.json({ message: "post deleted successfully" })
-}
+});
 
-async function editPost(req) {
-
-}
-
-async function showOnePost(req, res) {
+const showOnePost = asyncErrorHandler( async function (req, res) {
     const postId = req.params.postId
 
     const post = await Post.findById(postId)
 
     return res.json(post)
-}
+});
 
-
-
-async function likedAPost(req, res) {
+const likedAPost= asyncErrorHandler( async function (req, res) {
     const postId = req.params.postId
 
     const { liker } = req.body
@@ -169,9 +159,9 @@ async function likedAPost(req, res) {
 
     return res.json(updatedPost)
 
-}
+});
 
-async function unLikeAPost(req, res) {
+const unLikeAPost = asyncErrorHandler( async function (req, res) {
     const postId = req.params.postId
     const { unliker } = req.body
 
@@ -188,9 +178,9 @@ async function unLikeAPost(req, res) {
 
     return res.json(updatedPost)
 
-}
+});
 
-async function myPostLikers(req, res) {
+const myPostLikers = asyncErrorHandler( async function (req, res) {
     const postid = req.params.postId
 
     const post = await Post.findById(postid).select('likes -_id')
@@ -204,7 +194,8 @@ async function myPostLikers(req, res) {
     console.log(likers);
 
     return res.json(likers)
-}
+});
+
 
 module.exports = { 
     uploadPostPhotos, 

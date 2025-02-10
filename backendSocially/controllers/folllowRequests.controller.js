@@ -1,12 +1,13 @@
 const FollowRequest = require('../models/followRequests.model')
 const User = require('../models/user.model')
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle')
 
-async function showAllRequests(req, res) {
+const showAllRequests = asyncErrorHandler( async function (req, res) {
     const requests = await FollowRequest.find({})
     return res.json(requests)
-}
+});
 
-async function sendRequest(req, res) {
+const sendRequest = asyncErrorHandler( async function (req, res) {
     const senderUid = req.params.senderUid
     const receiverUid = req.body.myUid
 
@@ -36,9 +37,9 @@ async function sendRequest(req, res) {
     })
 
     return res.json(newRequest)
-}
+});
 
-async function showMyRequests(req, res) {
+const showMyRequests = asyncErrorHandler( async function (req, res) {
     const myUid = req.params.myUid
 
     const requests = (await FollowRequest.find({ toUser: myUid, status: "pending" })).filter(request => request.fromUser !== myUid)
@@ -50,9 +51,9 @@ async function showMyRequests(req, res) {
         .populate('profileImage')
 
     return res.json(userRequests)
-}
+});
 
-async function showMyFollowers(req, res) {
+const showMyFollowers = asyncErrorHandler( async function (req, res) {
     const myUid = req.params.myUid
 
     console.log('my uid: ',myUid);
@@ -70,9 +71,9 @@ async function showMyFollowers(req, res) {
         .populate('profileImage')
 
     return res.json(followerss)
-}
+});
 
-async function showMyFollowing(req, res) {
+const showMyFollowing = asyncErrorHandler( async function (req, res) {
     const myUid = req.params.myUid
 
     const sentRequestAccepted = await FollowRequest.find({ fromUser: myUid, status: 'accepted' })
@@ -85,9 +86,9 @@ async function showMyFollowing(req, res) {
         .populate('posts', '-accountHolderId')
 
     return res.json(followings)
-}
+});
 
-async function acceptRequest(req, res) {
+const acceptRequest = asyncErrorHandler( async function (req, res) {
     const acceptorUid = req.params.acceptorUid
     const requestorUid = req.body.requestorUid
 
@@ -134,9 +135,9 @@ async function acceptRequest(req, res) {
 
 
     return res.json(reqUser)
-}
+});
 
-async function deleteRequest(req, res) {
+const deleteRequest = asyncErrorHandler( async function (req, res) {
     const deletor = req.params.myUid
     const beingdeleted = req.body.deletingUid
 
@@ -154,17 +155,17 @@ async function deleteRequest(req, res) {
     await removeRejectedRequests()
 
     return res.json({ message: "request deleted successfully!" })
-}
+});
 
-async function pendingRequests(req, res) {
+const pendingRequests = asyncErrorHandler( async function (req, res) {
     const requestor = req.params.myUid
 
     const requests = await FollowRequest.find({ fromUser: requestor, status: 'pending' })
 
     return res.json(requests)
-}
+});
 
-async function removeFromFollowers(req, res) {
+const removeFromFollowers = asyncErrorHandler( async function (req, res) {
     const remover = req.params.myUid
     const followerName = req.body.removingUid
 
@@ -221,9 +222,9 @@ async function removeFromFollowers(req, res) {
     await removeRejectedRequests()
 
     return res.json(removeFromRequests)
-}
+});
 
-async function removeFromFollowings(req, res) {
+const removeFromFollowings = asyncErrorHandler( async function (req, res) {
     const remover = req.params.myUid
     const followingName = req.body.removingUid
 
@@ -283,9 +284,9 @@ async function removeFromFollowings(req, res) {
     await removeRejectedRequests()
 
     return res.json(removeFollowing)
-}
+});
 
-async function requestSuggestions(req,res) {
+const requestSuggestions = asyncErrorHandler( async function (req,res) {
     const myUid = req.params.myUid
 
     const myRequests = await FollowRequest.find({ fromUser:myUid })
@@ -299,9 +300,9 @@ async function requestSuggestions(req,res) {
     .populate('profileImage')
 
     return res.json(suggestions)
-}
+});
 
-async function removeRejectedRequests() {
+const removeRejectedRequests = asyncErrorHandler( async function () {
 
     const rejectedReq = await FollowRequest.find({ status: 'rejected' })
 
@@ -316,7 +317,19 @@ async function removeRejectedRequests() {
     } 
         
 
+});
+
+module.exports = { 
+    sendRequest, 
+    showMyRequests, 
+    requestSuggestions,
+    acceptRequest, 
+    pendingRequests, 
+    showAllRequests, 
+    showMyFollowers, 
+    showMyFollowing, 
+    deleteRequest, 
+    removeRejectedRequests, 
+    removeFromFollowers, 
+    removeFromFollowings 
 }
-
-
-module.exports = { sendRequest, showMyRequests, requestSuggestions,acceptRequest, pendingRequests, showAllRequests, showMyFollowers, showMyFollowing, deleteRequest, removeRejectedRequests, removeFromFollowers, removeFromFollowings }

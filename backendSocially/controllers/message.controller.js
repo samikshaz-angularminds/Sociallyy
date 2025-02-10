@@ -1,6 +1,7 @@
-const Thread  = require('../models/message.model')
+const Thread = require('../models/message.model')
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle')
 
-async function sendMessage(req, res) {
+const sendMessage = asyncErrorHandler(async function (req, res) {
     const sender = req.params.senderUid
     const { receiver, message, messageType } = req.body
 
@@ -51,42 +52,46 @@ async function sendMessage(req, res) {
 
     return res.json(conversation)
 
-}
+});
 
-async function getAllMessages(req, res) {
+const getAllMessages = asyncErrorHandler(async function (req, res) {
     const allMessages = await Thread.find({})
 
     return res.json(allMessages)
-}
+});
 
-async function myMessages(req, res) {
+const myMessages = asyncErrorHandler(async function (req, res) {
     const me = req.params.myUid
-    
+
     const myMessages = await Thread.find({
         participants: me
-    })    
+    })
 
     return res.json(myMessages)
-}
+});
 
-async function getConversation(req, res) {
+const getConversation = asyncErrorHandler(async function (req, res) {
     const viewer = req.params.viewerUid
 
     const other = req.query.otherUser
 
     let conv = await Thread.find({ participants: { $all: [viewer, other] } })
-    if(other) conv.receiver = await other
+    if (other) conv.receiver = await other
 
     // console.log(conv)
     return res.json(conv)
+});
+
+const editMessage = asyncErrorHandler(async function (req, res) {
+
+});
+
+module.exports = { 
+    sendMessage, 
+    getAllMessages, 
+    myMessages, 
+    getConversation 
 }
-
-async function editMessage(req, res) {
-
-}
-
-
-module.exports = { sendMessage, getAllMessages, myMessages, getConversation }
 
 
 

@@ -6,9 +6,6 @@ const Thread = require('./models/message.model')
 const { io, server } = require('./socket')
 require('dotenv').config();
 
-console.log('ENVVVVVVV ',`${process.env.PORT}`);
-
-
 const corsOptions = {
   origin: 'http://localhost:4200',
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
@@ -98,4 +95,3 @@ app.use('/api/message', MessageRoute)
 app.listen(process.env.PORT, () => console.log(`LISTENING TO PORT ${process.env.PORT}`))
 
 
-console.log('ENVVVVVVV22 ',`${process.env.PORT}`);

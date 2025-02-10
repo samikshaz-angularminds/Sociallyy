@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../../core/services/userService/user.service';
 import { tokenConstant } from '../../../core/constants/token';
-import { DecodeTokenService } from '../../../core/services/decodeToken/decode-token.service';
 
 @Component({
   selector: 'app-user-login',
@@ -24,7 +23,6 @@ export class UserLoginComponent implements OnInit {
   apiService = inject(ApiService)
   router = inject(Router)
   userService = inject(UserService)
-  decodingService = inject(DecodeTokenService)
   isPassword = true
   loginError = ''
 

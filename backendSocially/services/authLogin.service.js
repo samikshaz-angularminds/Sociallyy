@@ -8,9 +8,7 @@ function setUser(user) {
         id : user.id,
         email : user.email,
         username : user.username,
-        followings : user.followings,
-        followers : user.followers,
-        profileImage : user.profileImage,
+        
         full_name : user.full_name,
     }, SECRET_WEB_KEY, {expiresIn:'1d'})
 }

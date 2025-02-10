@@ -46,23 +46,27 @@ export class UserProfileComponent {
     })
   }
 
-  
-  downloadProfilePic(url:string){
-    const url1 = new URL(url)
-const filename = url1.pathname.split("/")    
-console.log(filename);
-console.log(filename[filename.length-1]);
-const download = filename[filename.length-1]
+
+  downloadProfilePic(url: string) {
+    // const url1 = new URL(url)
+    // const filename = url1.pathname.split("/")
+    // const download = filename[filename.length - 1]
+    // const contentType = filename[2];
+    const encodedurl = encodeURIComponent(url);
+    // console.log('type: ', contentType);
+    // console.log(filename[filename.length - 1]);
+
+    console.log('encoded url: ', encodedurl);
 
 
-    this.apiService.get(apiConstant.API_HOST_URL+apiConstant.DOWNLOAD_PROFILE_PIC+download).subscribe({
-      next : (res:any) => {
-console.log(res);
+    this.apiService.get(`${apiConstant.API_HOST_URL}${apiConstant.DOWNLOAD_PROFILE_PIC}?fileUrl=${encodedurl}` ).subscribe({
+      next: (res: any) => {
+        console.log(res);
 
       },
-      error : (error) => {
+      error: (error) => {
         console.log(error);
-        
+
       }
     })
   }
@@ -121,8 +125,8 @@ console.log(res);
   finallyUpdateUser(userUpdateForm: NgForm) {
 
     const formValue = userUpdateForm.value
-    console.log('BIO: ',formValue.bio);
-    
+    console.log('BIO: ', formValue.bio);
+
 
     const formData = new FormData()
 

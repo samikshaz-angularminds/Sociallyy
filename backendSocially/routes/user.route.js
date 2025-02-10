@@ -1,30 +1,30 @@
-const express = require('express')
-const router = express.Router()
-const userController = require('../controllers/user.controller')
-const upload = require('../middlewares/uploadImage.middleware')
-const { getUser } = require('../services/authLogin.service')
+const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/user.controller');
+const upload = require('../middlewares/uploadImage.middleware');
+const { getUser } = require('../services/authLogin.service');
 
-router.post('/uploadPhoto', upload.single('profilePhoto'), userController.uploadImage)
+router.post('/uploadPhoto', upload.single('profilePhoto'), userController.uploadImage);
 
-router.get('/', userController.getAllUsers)
+router.get('/', userController.getAllUsers);
 
-router.get('/search', userController.getUsersForSearching)
+router.get('/search', userController.getUsersForSearching);
 
-router.post('/register', upload.single('profilePhoto'), userController.registerUser)
-router.patch('/updatePic/:userId', upload.single('profilePhoto'), userController.updateProfilePic)
-router.patch('/update/:userId', userController.updateUser)
-router.post('/login', userController.loginUser)
+router.post('/register', upload.single('profilePhoto'), userController.registerUser);
+router.patch('/updatePic/:userId', upload.single('profilePhoto'), userController.updateProfilePic);
+router.patch('/update/:userId', userController.updateUser);
+router.post('/login', userController.loginUser);
 
-router.get('/:id', getUser, userController.getOneUser)
-router.get('/notme/:id', getUser, userController.getUsersExceptMe)
-router.get('/other/user', userController.seeAnotherUser)
+router.get('/:id', getUser, userController.getOneUser);
+router.get('/notme/:id', getUser, userController.getUsersExceptMe);
+router.get('/other/user', userController.seeAnotherUser);
 
-router.patch('/privacy/:userId', getUser, userController.privateAccount)
-router.delete('/delete/:userId', getUser, userController.deleteAccount)
+router.patch('/privacy/:userId', getUser, userController.privateAccount);
+router.delete('/delete/:userId', getUser, userController.deleteAccount);
 
-router.post('/sendotp',userController.sendOtp)
-router.post('/verifyotp',userController.verifyOtp)
-router.get('/download/:filename',userController.downloadPic)
+router.post('/sendotp',userController.sendOtp);
+router.post('/verifyotp',userController.verifyOtp);
+router.post('/download/img',userController.downloadPic);
 
 
 

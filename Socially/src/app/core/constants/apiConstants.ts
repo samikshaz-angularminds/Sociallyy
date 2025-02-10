@@ -15,7 +15,7 @@ export const apiConstant = {
     UPDATE_USER : 'api/user/update/',
     SEND_OTP : 'api/user/sendotp',
     VERIFY_OTP : 'api/user/verifyotp',
-    DOWNLOAD_PROFILE_PIC : 'api/user/download/',
+    DOWNLOAD_PROFILE_PIC : 'api/user/download/img',
     
     
     // REQUESTS
