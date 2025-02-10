@@ -1,5 +1,4 @@
-const Thread  = require('../models/message')
-const {io} = require('../socket')
+const Thread  = require('../models/message.model')
 
 async function sendMessage(req, res) {
     const sender = req.params.senderUid

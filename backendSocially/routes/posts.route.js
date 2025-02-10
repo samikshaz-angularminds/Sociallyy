@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const postController = require('../controllers/posts')
-const upload = require('../middlewares/uploadPosts')
+const postController = require('../controllers/posts.controller')
+const upload = require('../middlewares/uploadPosts.middleware')
 
 router.post('/upload',upload.array('images',10),postController.uploadPostPhotos)
 

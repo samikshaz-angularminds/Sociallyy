@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
-const Thread = require('./models/message')
+const Thread = require('./models/message.model')
 const { io, server } = require('./socket')
 require('dotenv').config();
 
@@ -56,10 +56,10 @@ const swaggerSpec = swaggerJsdoc(optionsOfSwagger)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec,{explorer:true}))
 
 
-const UserRoute = require('./routes/user')
-const RequestRoute = require('./routes/followRequests')
-const PostRoute = require('./routes/posts')
-const MessageRoute = require('./routes/message')
+const UserRoute = require('./routes/user.route')
+const RequestRoute = require('./routes/followRequests.route')
+const PostRoute = require('./routes/posts.route')
+const MessageRoute = require('./routes/message.route')
 
 mongoose.connect(`${process.env.MONGODB_URL}`)
 mongoose.connection.once('open', () => {

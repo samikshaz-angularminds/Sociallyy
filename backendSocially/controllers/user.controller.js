@@ -1,16 +1,13 @@
-const User = require('../models/user')
-const OTP = require('../models/otp')
-const ProfilePhoto = require('../models/uploadPhoto')
-const { setUser, getUser } = require('../services/authLogin')
+const User = require('../models/user.model')
+const OTP = require('../models/otp.model')
+const ProfilePhoto = require('../models/uploadPhoto.model')
+const { setUser, getUser } = require('../services/authLogin.service')
 const { cloudinary } = require('../config/cloudinaryConfig')
 const { default: mongoose } = require('mongoose')
 require('dotenv').config()
 const nodemailer = require('nodemailer')
 const crypto = require('crypto');
-const { text } = require('express')
-const { error } = require('console')
 const httpStatus = require('http-status')
-const { type } = require('os')
 const path = require('path');
 
 async function uploadImage(filePath) {

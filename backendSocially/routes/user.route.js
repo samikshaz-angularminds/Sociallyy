@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const userController = require('../controllers/user')
-const upload = require('../middlewares/uploadImage')
-const { getUser } = require('../services/authLogin')
+const userController = require('../controllers/user.controller')
+const upload = require('../middlewares/uploadImage.middleware')
+const { getUser } = require('../services/authLogin.service')
 
 router.post('/uploadPhoto', upload.single('profilePhoto'), userController.uploadImage)
 

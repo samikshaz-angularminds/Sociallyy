@@ -1,5 +1,5 @@
-const FollowRequest = require('../models/followRequests')
-const User = require('../models/user')
+const FollowRequest = require('../models/followRequests.model')
+const User = require('../models/user.model')
 
 async function showAllRequests(req, res) {
     const requests = await FollowRequest.find({})

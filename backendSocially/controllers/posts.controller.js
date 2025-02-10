@@ -1,7 +1,6 @@
-const Post = require('../models/uploadPosts')
+const Post = require('../models/uploadPosts.model')
 const { cloudinary } = require('../config/cloudinaryConfig');
-const User = require('../models/user');
-const { default: mongoose } = require('mongoose');
+const User = require('../models/user.model');
 
 
 // for below line we need type:module in package.json

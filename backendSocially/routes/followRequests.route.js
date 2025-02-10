@@ -1,20 +1,20 @@
-const { showAllRequests,requestSuggestions ,sendRequest,showMyRequests,acceptRequest, pendingRequests,showMyFollowers, showMyFollowing,deleteRequest,removeRejectedRequests,removeFromFollowers,removeFromFollowings } = require('../controllers/folllowRequests')
+const requestController = require('../controllers/folllowRequests.controller')
 const express = require('express')
 const router = express.Router()
 
-router.get('/showAll',showAllRequests)
-router.get('/suggestions/:myUid',requestSuggestions)
-router.post('/send/:senderUid',sendRequest)
-router.get('/received/:myUid',showMyRequests)
-router.patch('/accept/:acceptorUid',acceptRequest)
-router.get('/followers/:myUid',showMyFollowers)
-router.get('/followings/:myUid',showMyFollowing)
-router.get('/pending/:myUid', pendingRequests)
+router.get('/showAll',requestController.showAllRequests)
+router.get('/suggestions/:myUid',requestController.requestSuggestions)
+router.post('/send/:senderUid',requestController.sendRequest)
+router.get('/received/:myUid',requestController.showMyRequests)
+router.patch('/accept/:acceptorUid',requestController.acceptRequest)
+router.get('/followers/:myUid',requestController.showMyFollowers)
+router.get('/followings/:myUid',requestController.showMyFollowing)
+router.get('/pending/:myUid', requestController.pendingRequests)
 
-router.delete('/delete/:myUid',deleteRequest)
-router.delete('/removeFollower/:myUid',removeFromFollowers)
-router.delete('/removeFollowing/:myUid',removeFromFollowings)
-router.delete('/removeRejected',removeRejectedRequests)
+router.delete('/delete/:myUid',requestController.deleteRequest)
+router.delete('/removeFollower/:myUid',requestController.removeFromFollowers)
+router.delete('/removeFollowing/:myUid',requestController.removeFromFollowings)
+router.delete('/removeRejected',requestController.removeRejectedRequests)
 
 
 

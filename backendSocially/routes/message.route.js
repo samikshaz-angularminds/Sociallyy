@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 
-const {sendMessage,getAllMessages,myMessages,getConversation} = require('../controllers/message')
+const messageController = require('../controllers/message.controller')
 
-router.get('/',getAllMessages)
-router.get('/myMessages/:myUid',myMessages)
-router.get('/conv/:viewerUid',getConversation)
+router.get('/',messageController.getAllMessages)
+router.get('/myMessages/:myUid',messageController.myMessages)
+router.get('/conv/:viewerUid',messageController.getConversation)
 
-router.post('/send/:senderUid',sendMessage)
+router.post('/send/:senderUid',messageController.sendMessage)
 
 module.exports = router
 
