@@ -14,13 +14,19 @@ const { type } = require('os')
 const path = require('path');
 
 async function uploadImage(filePath) {
-    console.log('file path here: ', filePath);
 
     try {
         console.log('FILE PATH: ', filePath);
 
-        const response = await cloudinary.uploader.upload(filePath)
+        const mainFolderName = "Socially";
+        const filePathOnCloudinary = `${mainFolderName}${filePath}`;
+        console.log('file path cloudinry: ',filePathOnCloudinary);
+        
+        const response = await cloudinary.uploader.upload(filePath, {
+            folder: "Socially"
+        })
 
+        console.log("UPLOAD RESPONSE: ", response);
         const newProfilePic = await ProfilePhoto.create({
             public_id: response.public_id,
             url: response.url
@@ -154,7 +160,7 @@ async function sendOtp(req, res) {
 
     await OTP.findOneAndUpdate(
         { email },
-        { otp, expiresAt: Date.now() + 5 * 60 * 1000,type:'forgot-password'},
+        { otp, expiresAt: Date.now() + 5 * 60 * 1000, type: 'forgot-password' },
         { upsert: true, new: true }
     )
 
@@ -189,37 +195,37 @@ async function sendOtp(req, res) {
 
 async function verifyOtp(req, res) {
     const { email, otp } = req.body;
-    console.log('email: ',email);
-    console.log('otp: ',otp);
+    console.log('email: ', email);
+    console.log('otp: ', otp);
 
     const requiredOtpDoc = await OTP.findOne({ email: email });
 
-    console.log('requiredOtpDoc: ',requiredOtpDoc);
-    
+    console.log('requiredOtpDoc: ', requiredOtpDoc);
+
 
     if (!requiredOtpDoc) return res.status(404);
 
-    console.log('otp exp date: ',requiredOtpDoc.expiresAt);
-    console.log('now date: ',new Date());
-    
+    console.log('otp exp date: ', requiredOtpDoc.expiresAt);
+    console.log('now date: ', new Date());
+
     if (requiredOtpDoc.expiresAt.getTime() < new Date()) return res.status(400).json({ error: 'OTP Expired' });
 
     const otpMatch = requiredOtpDoc.otp == otp;
-    console.log('otpMatch: ',otpMatch);
-    
+    console.log('otpMatch: ', otpMatch);
+
 
     if (otpMatch) {
-        const requiredUser = await User.findOne({email:email})
-        req.body = {email:requiredUser.email,password:requiredUser.password}
-        return loginUser(req,res);
+        const requiredUser = await User.findOne({ email: email })
+        req.body = { email: requiredUser.email, password: requiredUser.password }
+        return loginUser(req, res);
 
     }
 
     return res.status(400);
 }
 
-async function loginByOtp(req,res) {
-     
+async function loginByOtp(req, res) {
+
 }
 
 async function getAllUsers(req, res) {
@@ -354,29 +360,29 @@ async function deleteAccount(req, res) {
     return res.json({ message: 'User deleted successfully!' })
 }
 
-async function downloadPic(req,res) {
+async function downloadPic(req, res) {
     const filename = req.params.filename;
-    const filePath = path.join(__dirname,"../downloads");
+    const filePath = path.join(__dirname, "../downloads");
 
-    res.download(filePath,filename,(err)=>{
-        console.log('an error has occured during downloading... ',err);
+    res.download(filePath, filename, (err) => {
+        console.log('an error has occured during downloading... ', err);
     })
 }
 
 module.exports = {
     registerUser,
-    updateUser, 
-    getAllUsers, 
-    sendOtp, 
-    verifyOtp, 
-    getUsersForSearching, 
-    uploadImage, 
-    updateProfilePic, 
-    loginUser, 
-    getOneUser, 
-    getUsersExceptMe, 
-    seeAnotherUser, 
-    privateAccount, 
+    updateUser,
+    getAllUsers,
+    sendOtp,
+    verifyOtp,
+    getUsersForSearching,
+    uploadImage,
+    updateProfilePic,
+    loginUser,
+    getOneUser,
+    getUsersExceptMe,
+    seeAnotherUser,
+    privateAccount,
     deleteAccount,
     downloadPic
 }
