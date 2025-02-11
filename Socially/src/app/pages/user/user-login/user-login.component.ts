@@ -26,6 +26,12 @@ export class UserLoginComponent implements OnInit {
   isPassword = true
   loginError = ''
 
+  loginObject = {
+    username: '',
+    email: '',
+    password: ''
+  }
+
 
   ngOnInit(): void {
     this.getLoginForm()
@@ -33,7 +39,7 @@ export class UserLoginComponent implements OnInit {
 
   getLoginForm() {
     this.loginForm = this.fb.group({
-      email: ['', Validators.required],
+      emailorusername : ['', Validators.required],
       password: ['', Validators.required]
     })
   }
@@ -43,6 +49,9 @@ export class UserLoginComponent implements OnInit {
       this.apiService.post(apiConstant.API_HOST_URL + apiConstant.USER_LOGIN, this.loginForm.value).subscribe({
         next: (res: any) => {
 
+          console.log("token frrom frontend: ",res.token);
+          
+
           if(res){
             this.userService.saveToken(res.token)
             this.userService.setUser(res.user)
@@ -51,8 +60,6 @@ export class UserLoginComponent implements OnInit {
           else{
             alert('Need correct details')
           }
-
-
         },
         error: (error) => {
           this.loginError = error

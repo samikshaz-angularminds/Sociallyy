@@ -13,10 +13,10 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="d-flex flex-column justify-content-center align-items-start p-4">
         <div class="d-flex justify-content-start">
-          <label for="email">Email</label>
+          <label for="email">Email/Username</label>
         </div>
         <div>
-          <input id="email" class="single-border bg-transparent width-315 " type="email" formControlName="email" />
+          <input id="email" class="single-border bg-transparent width-315 " type="email" formControlName="emailorusername" />
         </div>
         <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
           <small class="text-danger" *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</small>

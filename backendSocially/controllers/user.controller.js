@@ -1,20 +1,72 @@
-const User = require('../models/user.model')
-const OTP = require('../models/otp.model')
-const ProfilePhoto = require('../models/uploadPhoto.model')
-const { setUser, getUser } = require('../services/authLogin.service')
-const { cloudinary } = require('../config/cloudinaryConfig')
-const { default: mongoose } = require('mongoose')
-require('dotenv').config()
-const nodemailer = require('nodemailer')
+const User = require('../models/user.model');
+const OTP = require('../models/otp.model');
+const ProfilePhoto = require('../models/uploadPhoto.model');
+const { setUser, getUser } = require('../services/authLogin.service');
+const { cloudinary } = require('../config/cloudinaryConfig');
+const { default: mongoose } = require('mongoose');
+require('dotenv').config();
+const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const httpStatus = require('http-status')
+const httpStatus = require('http-status');
 const path = require('path');
 const fs = require('fs');
-const { asyncErrorHandler } = require('../utils/asyncErrorHandle')
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle');
 const axios = require('axios');
-const { error } = require('console')
+const jwt = require('jsonwebtoken');
 
+const options = {
+    httpOnly: true,
+    secure: false
+};
 
+const generateAccessAndRefreshTokens = async (userId) => {
+
+    try {
+        const user = await User.findById(userId);
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+
+        console.log('accesstoken: ',accessToken);
+        console.log('refreshtoken: ',refreshToken);
+        
+        
+
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
+
+        return { accessToken, refreshToken };
+    } catch (error) {
+        console.log("error occurred during generation of tokens");
+    }
+};
+
+const refreshAccessToken = asyncErrorHandler(async (req,res) => {
+    const refreshTokenFromUser = req.cookies.refreshToken || req.body.refreshToken;
+
+    if(!refreshTokenFromUser) return res.status(401)
+
+    try {
+        const decodedToken = jwt.verify(refreshTokenFromUser, process.env.REFRESH_TOKEN_SECRET);
+        const user = await User.findById(decodedToken._id);
+
+        if(!user) return res.status(401).json({error: "invalid refresh token"})
+        
+        if(refreshTokenFromUser !== user?.refreshToken){
+            return res.status(401).json({error: "refresh token is expired or used"});
+        }
+
+        const {accessToken,newRefreshToken} = await generateAccessAndRefreshTokens(user._id);
+        
+        return res
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", newRefreshToken, options)
+        .json({message: "access token has been refreshed successfully!!"});
+
+    } catch (error) {
+        console.log("error while refreshing the access token");
+        
+    }
+});
 
 const uploadImage = asyncErrorHandler(async function (filePath) {
     console.log('FILE PATH: ', filePath);
@@ -127,30 +179,43 @@ const updateUser = asyncErrorHandler(async function (req, res) {
 });
 
 const loginUser = asyncErrorHandler(async function (req, res) {
-    const { email, password } = req.body
-
-    // console.log('EMAIL:::  ', email);
-    // console.log('PASSWORD::: ', password);
+    const { emailorusername, password} = req.body
 
 
-    const requiredUser = await User.findOne({ email, password })
+    const user = await User.findOne({
+        $or: [{ username : emailorusername}, { email:emailorusername }]
+    })
 
-    // console.log('REQUIRED USER: ', requiredUser);
-
-
-    if (!requiredUser)
+    if (!user)
         return res.status(400).json({ message: "no user found" })
 
 
-    const token = setUser(requiredUser)
-    res.cookie("uid", token, {
-        httpOnly: true,
-        secure: false,
-    })
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
     // console.log('TOKEN HERE: ', token);
 
-    return res.json({ user: requiredUser, token: token })
+    return res
+        .cookie("accessToken",accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json({ user, token: accessToken });
+});
+
+const logOutUser = asyncErrorHandler(async (req,res) => {
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                refreshToken: undefined
+            }
+        },
+        {new:true}
+    );
+
+    return res
+    .status(200)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken", options)
+    .json({message: "User logged out successfully"});
 });
 
 const sendOtp = asyncErrorHandler(async function (req, res) {
@@ -196,7 +261,6 @@ const sendOtp = asyncErrorHandler(async function (req, res) {
     return res.json({ message: "mail sent successfully!" })
 });
 
-
 const verifyOtp = asyncErrorHandler(async function (req, res) {
     const { email, otp } = req.body;
     console.log('email: ', email);
@@ -228,7 +292,6 @@ const verifyOtp = asyncErrorHandler(async function (req, res) {
     return res.status(400);
 });
 
-
 const getAllUsers = asyncErrorHandler(async function (req, res) {
 
     const allusers = await User.find({})
@@ -244,7 +307,6 @@ const getUsersForSearching = asyncErrorHandler(async function (req, res) {
 
     return res.json(users)
 });
-
 
 const getUsersExceptMe = asyncErrorHandler(async function (req, res) {
     console.log('hiiiiiii');
@@ -264,7 +326,6 @@ const getUsersExceptMe = asyncErrorHandler(async function (req, res) {
     return res.json(allUsers)
 });
 
-
 const getOneUser = asyncErrorHandler(async function (req, res) {
     const userId = req.params.id
 
@@ -272,7 +333,6 @@ const getOneUser = asyncErrorHandler(async function (req, res) {
 
     return res.json(user)
 });
-
 
 const seeAnotherUser = asyncErrorHandler(async function (req, res) {
     try {
@@ -317,7 +377,6 @@ const seeAnotherUser = asyncErrorHandler(async function (req, res) {
     }
 });
 
-
 const privateAccount = asyncErrorHandler(async function (req, res) {
     const userId = req.params.userId
     const command = req.body.command
@@ -355,7 +414,6 @@ const privateAccount = asyncErrorHandler(async function (req, res) {
     return res.json({ message: 'bham bham bhole' })
 });
 
-
 const deleteAccount = asyncErrorHandler(async function (req, res) {
     const userId = req.params.userId
 
@@ -365,7 +423,6 @@ const deleteAccount = asyncErrorHandler(async function (req, res) {
 
     return res.json({ message: 'User deleted successfully!' })
 });
-
 
 const downloadPic = asyncErrorHandler(async function (req, res) {
 
@@ -433,5 +490,7 @@ module.exports = {
     seeAnotherUser,
     privateAccount,
     deleteAccount,
-    downloadPic
+    downloadPic,
+    refreshAccessToken,
+    logOutUser
 }

@@ -1,5 +1,6 @@
-const mongoose = require('mongoose')
-const { v4: uuidv4 } = require('uuid')
+const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
     id: {
@@ -59,9 +60,39 @@ const userSchema = new mongoose.Schema({
         type : [mongoose.Schema.Types.ObjectId],
         ref : 'Post',
         default : []
-    },            
-}, { timestamps: true })
+    },         
+    refreshToken: {
+        type : String
+    }   
+}, { timestamps: true });
 
-const User = mongoose.model('User',userSchema)
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id,
+            id: this.id,
+            email: this.email,
+            username: this.username
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn:process.env.ACCESS_TOKEN_EXPIRY
+        }
+    )
+};
 
-module.exports = User
+userSchema.methods.generateRefreshToken = function(){
+    return jwt.sign(
+        {
+            _id: this._id
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn:process.env.REFRESH_TOKEN_EXPIRY
+        }
+    )
+};
+
+const User = mongoose.model('User',userSchema);
+
+module.exports = User;

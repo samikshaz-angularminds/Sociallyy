@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const SECRET_WEB_KEY = 'MAINHOONGHATOTKCH'
 
 
 function setUser(user) {

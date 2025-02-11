@@ -38,11 +38,7 @@ export class HomePageComponent implements OnInit {
 
   getUser() {
     this.userService.user$.subscribe((res: any) => {
-      console.log();
-
       this.getMe(res._id)
-
-
     })
   }
 
