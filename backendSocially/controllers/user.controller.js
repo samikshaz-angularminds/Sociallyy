@@ -9,7 +9,11 @@ const nodemailer = require('nodemailer')
 const crypto = require('crypto');
 const httpStatus = require('http-status')
 const path = require('path');
+const fs = require('fs');
 const { asyncErrorHandler } = require('../utils/asyncErrorHandle')
+const axios = require('axios');
+const { error } = require('console')
+
 
 
 const uploadImage = asyncErrorHandler(async function (filePath) {
@@ -51,10 +55,10 @@ const updateProfilePic = asyncErrorHandler(async function (req, res) {
     )
 
     return res
-    .status(200)
-    .json(
-        new apire
-    )
+        .status(200)
+        .json(
+            new apire
+        )
 });
 
 const registerUser = asyncErrorHandler(async function (req, res) {
@@ -149,7 +153,7 @@ const loginUser = asyncErrorHandler(async function (req, res) {
     return res.json({ user: requiredUser, token: token })
 });
 
-const sendOtp = asyncErrorHandler( async function (req, res) {
+const sendOtp = asyncErrorHandler(async function (req, res) {
     const email = req.body.email;
     const otp = crypto.randomInt(100000, 999999);
 
@@ -193,7 +197,7 @@ const sendOtp = asyncErrorHandler( async function (req, res) {
 });
 
 
-const verifyOtp = asyncErrorHandler( async function (req, res) {
+const verifyOtp = asyncErrorHandler(async function (req, res) {
     const { email, otp } = req.body;
     console.log('email: ', email);
     console.log('otp: ', otp);
@@ -225,14 +229,14 @@ const verifyOtp = asyncErrorHandler( async function (req, res) {
 });
 
 
-const getAllUsers = asyncErrorHandler( async function (req, res) {
+const getAllUsers = asyncErrorHandler(async function (req, res) {
 
     const allusers = await User.find({})
 
     return res.json(allusers)
 });
 
-const getUsersForSearching= asyncErrorHandler( async function (req, res) {
+const getUsersForSearching = asyncErrorHandler(async function (req, res) {
     const users = await User.find({})
         .select('-_id id username full_name profileImage bio website followers followings posts isPrivate')
         .populate('profileImage')
@@ -242,7 +246,7 @@ const getUsersForSearching= asyncErrorHandler( async function (req, res) {
 });
 
 
-const getUsersExceptMe = asyncErrorHandler( async function (req, res) {
+const getUsersExceptMe = asyncErrorHandler(async function (req, res) {
     console.log('hiiiiiii');
 
     const userId = req.params.id
@@ -261,7 +265,7 @@ const getUsersExceptMe = asyncErrorHandler( async function (req, res) {
 });
 
 
-const getOneUser = asyncErrorHandler( async function (req, res) {
+const getOneUser = asyncErrorHandler(async function (req, res) {
     const userId = req.params.id
 
     const user = await User.findById(userId).populate('profileImage')
@@ -270,7 +274,7 @@ const getOneUser = asyncErrorHandler( async function (req, res) {
 });
 
 
-const seeAnotherUser = asyncErrorHandler( async function (req, res) {
+const seeAnotherUser = asyncErrorHandler(async function (req, res) {
     try {
         const uid = req.query.uid;
         const viewerUid = req.query.viewerUid;
@@ -314,7 +318,7 @@ const seeAnotherUser = asyncErrorHandler( async function (req, res) {
 });
 
 
-const privateAccount = asyncErrorHandler( async function (req, res) {
+const privateAccount = asyncErrorHandler(async function (req, res) {
     const userId = req.params.userId
     const command = req.body.command
 
@@ -352,7 +356,7 @@ const privateAccount = asyncErrorHandler( async function (req, res) {
 });
 
 
-const deleteAccount = asyncErrorHandler( async function (req, res) {
+const deleteAccount = asyncErrorHandler(async function (req, res) {
     const userId = req.params.userId
 
     const deleteUser = await User.findByIdAndDelete(userId)
@@ -364,19 +368,54 @@ const deleteAccount = asyncErrorHandler( async function (req, res) {
 
 
 const downloadPic = asyncErrorHandler(async function (req, res) {
-    // const filename = req.params.filename;
-    // const filePath = path.join(__dirname, "../downloads");
 
     const downloadingFile = req.query.fileUrl;
-    // const response = await fetch(downloadingFile);
-    console.log('downloading file is... ', downloadingFile);
-    console.log(decodeURIComponent(downloadingFile));
+    const fileElementsArray = downloadingFile.split('/');
+    const filename = fileElementsArray[fileElementsArray.length - 1];
+
+    console.log('downloading file: ', downloadingFile);
+
+
+    if (!downloadingFile || !downloadingFile.startsWith("http")) {
+        return res.status(400).json({ error: "invalid file url" });
+    }
+
+    // const downloadPath = path.resolve(__dirname, '../../../../../Downloads', filename);
+    // const writer = fs.createWriteStream(downloadPath);
+
+    try {
+        const response = await axios({
+            method: "GET",
+            url: downloadingFile,
+            responseType: "stream"
+        });
+
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+        res.setHeader("Content-Type", response.headers["content-type"] || "application/octet-stream");
+        res.setHeader("Content-Length", response.headers["content-length"]);
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+        response.data.pipe(res);
+
+        response.data.on("end", () => {
+            console.log("Download completed:", filename);
+        });
+
+        response.data.on("error", (err) => {
+            console.error("Error during file streaming:", err);
+            res.status(500).json({ error: "Error downloading file" });
+        });
+    } catch (error) {
+        console.log('error occured while downloading the file..', error);
+    }
 
 
 
-    // res.download(filePath, filename, (err) => {
-    //     console.log('an error has occured during downloading... ', err);
-    // })
+    // return new Promise((resolve, reject) => {
+    //     writer.on("finish", resolve);
+    //     writer.on("error", reject);
+    // });
 });
 
 module.exports = {

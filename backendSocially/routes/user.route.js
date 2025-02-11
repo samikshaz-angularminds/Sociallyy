@@ -24,7 +24,7 @@ router.delete('/delete/:userId', getUser, userController.deleteAccount);
 
 router.post('/sendotp',userController.sendOtp);
 router.post('/verifyotp',userController.verifyOtp);
-router.post('/download/img',userController.downloadPic);
+router.get('/download/img',userController.downloadPic);
 
 
 

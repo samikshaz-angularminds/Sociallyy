@@ -13,10 +13,6 @@ interface CustomJwtPayload extends jwt_decode.JwtPayload {
   email: string
   username : string
   full_name: string
-followers: followerFollowing[]
-followings: followerFollowing[]
-profileImage: UserProfilePhoto
-
 }
 
 @Injectable({
@@ -66,9 +62,6 @@ export class UserService {
         username: decodedToken.username,
         full_name: decodedToken.full_name,
         id: decodedToken.id,
-        followers: decodedToken.followers,
-        followings: decodedToken.followings,
-        profileImage: decodedToken.profileImage
       }
 
       this.setUser(user)

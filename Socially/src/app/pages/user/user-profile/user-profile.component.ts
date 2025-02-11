@@ -52,14 +52,12 @@ export class UserProfileComponent {
     // const filename = url1.pathname.split("/")
     // const download = filename[filename.length - 1]
     // const contentType = filename[2];
-    const encodedurl = encodeURIComponent(url);
     // console.log('type: ', contentType);
     // console.log(filename[filename.length - 1]);
 
-    console.log('encoded url: ', encodedurl);
 
 
-    this.apiService.get(`${apiConstant.API_HOST_URL}${apiConstant.DOWNLOAD_PROFILE_PIC}?fileUrl=${encodedurl}` ).subscribe({
+    this.apiService.get(`${apiConstant.API_HOST_URL}${apiConstant.DOWNLOAD_PROFILE_PIC}?fileUrl=${url}` ).subscribe({
       next: (res: any) => {
         console.log(res);
 
