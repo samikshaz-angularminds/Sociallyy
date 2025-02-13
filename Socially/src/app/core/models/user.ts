@@ -16,6 +16,7 @@ export interface IUser {
   followings: followerFollowing[],
   posts: IPost[],
   _id: string,
+  refreshToken: string,
   createdAt: string,
   updatedAt: string,
 }

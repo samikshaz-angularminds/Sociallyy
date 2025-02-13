@@ -5,10 +5,10 @@ import { apiConstant } from '../../../core/constants/apiConstants';
 import { IUser } from '../../../core/models/user';
 import { IPost } from '../../../core/models/post';
 import { Modal } from 'bootstrap';
-import { UserService } from '../../../core/services/userService/user.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { UserService } from '../../../core/services/userService/user.service';
 
 @Component({
   selector: 'app-another-user',

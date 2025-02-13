@@ -1,3 +1,4 @@
 export const tokenConstant = {
-    LOGIN_TOKEN : 'loginToken'
+    LOGIN_TOKEN : 'loginToken',
+    REFRESH_TOKEN: 'refreshToken'
 }

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DecodeTokenService } from './user.service';
+import { DecodeTokenService } from './decode-token.service';
 
 describe('DecodeTokenService', () => {
   let service: DecodeTokenService;

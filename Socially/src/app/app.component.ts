@@ -22,15 +22,15 @@ export class AppComponent {
   userService = inject(UserService)
 
   constructor(){
-    this.deleteRejectedRequests()
+    // this.deleteRejectedRequests()
   }
 
-  deleteRejectedRequests(){
-    this.apiService.delete(apiConstant.API_HOST_URL+apiConstant.DELETE_REJECTED_REQUESTS).subscribe({
-      next : (res:any) => console.log('delete response: ',res),
-      error : (error) => console.log(error)
-    })
-  }
+  // deleteRejectedRequests(){
+  //   this.apiService.delete(apiConstant.API_HOST_URL+apiConstant.DELETE_REJECTED_REQUESTS).subscribe({
+  //     next : (res:any) => console.log('delete response: ',res),
+  //     error : (error) => console.log(error)
+  //   })
+  // }
 
   
 }

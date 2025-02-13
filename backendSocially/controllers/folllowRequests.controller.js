@@ -1,6 +1,6 @@
 const FollowRequest = require('../models/followRequests.model')
 const User = require('../models/user.model')
-const { asyncErrorHandler } = require('../utils/asyncErrorHandle')
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle.utils')
 
 const showAllRequests = asyncErrorHandler( async function (req, res) {
     const requests = await FollowRequest.find({})

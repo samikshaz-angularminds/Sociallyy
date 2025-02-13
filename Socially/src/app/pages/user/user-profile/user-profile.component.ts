@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { ApiService } from '../../../core/services/apiServices/api.service';
-import { UserService } from '../../../core/services/userService/user.service';
 import { IUser } from '../../../core/models/user';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
@@ -9,6 +8,7 @@ import { IPost } from '../../../core/models/post';
 import { Modal } from 'bootstrap';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../../core/services/userService/user.service';
 
 @Component({
   selector: 'app-user-profile',

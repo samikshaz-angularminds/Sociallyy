@@ -4,16 +4,16 @@
         <div class="d-flex">
 
             <div class="px-2 d-flex justify-content-center align-items-center">
-                <img [src]="receiverUser?.profileImage?.url" class="rounded-circle width-40 height-40" alt=""
+                <img [src]="receiverUser.profileImage.url" class="rounded-circle width-40 height-40" alt=""
                     srcset="">
             </div>
             <div class="px-2 d-flex justify-content-center align-items-center">
-                <strong> {{receiverUser?.username}} </strong>
+                <strong> {{receiverUser.username}} </strong>
             </div>
         </div>
 
         <div routerLink="/seeProfile"
-            [queryParams]="{uid: receiverUser?.id, viewerId : loggedInUser.id}"
+            [queryParams]="{uid: receiverUser.id, viewerId : loggedInUser.id}"
             class="p-4 d-flex justify-content-center align-items-center">
             <i class="fa-solid fa-circle-info font-size-25"></i>
         </div>

@@ -2,8 +2,8 @@ import { Component, inject, Input, OnChanges, OnInit } from '@angular/core';
 import { ApiService } from '../../../core/services/apiServices/api.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { IUser } from '../../../core/models/user';
-import { UserService } from '../../../core/services/userService/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../core/services/userService/user.service';
 
 @Component({
   selector: 'app-followers-following',

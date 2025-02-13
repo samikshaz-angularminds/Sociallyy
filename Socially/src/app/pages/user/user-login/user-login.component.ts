@@ -5,8 +5,9 @@ import { ApiService } from '../../../core/services/apiServices/api.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../../core/services/userService/user.service';
 import { tokenConstant } from '../../../core/constants/token';
+import { DecodeTokenService } from '../../../core/services/decodeTokenService/decode-token.service';
+import { UserService } from '../../../core/services/userService/user.service';
 
 @Component({
   selector: 'app-user-login',
@@ -22,7 +23,8 @@ export class UserLoginComponent implements OnInit {
   loginForm !: FormGroup
   apiService = inject(ApiService)
   router = inject(Router)
-  userService = inject(UserService)
+  decodeTokenService = inject(DecodeTokenService)
+  userService = inject(UserService);
   isPassword = true
   loginError = ''
 
@@ -48,13 +50,11 @@ export class UserLoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.apiService.post(apiConstant.API_HOST_URL + apiConstant.USER_LOGIN, this.loginForm.value).subscribe({
         next: (res: any) => {
-
-          console.log("token frrom frontend: ",res.token);
-          
-
           if(res){
-            this.userService.saveToken(res.token)
+            this.decodeTokenService.saveToken(res.token)
+
             this.userService.setUser(res.user)
+            this.decodeTokenService.saveRefreshToken(res.user.refreshToken)
             this.router.navigate(['/user/home'])
           }
           else{

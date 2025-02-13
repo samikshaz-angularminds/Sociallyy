@@ -1,5 +1,5 @@
 const Thread = require('../models/message.model')
-const { asyncErrorHandler } = require('../utils/asyncErrorHandle')
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle.utils')
 
 const sendMessage = asyncErrorHandler(async function (req, res) {
     const sender = req.params.senderUid

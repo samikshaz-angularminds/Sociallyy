@@ -1,37 +1,39 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid d-flex align-items-center">
-    <div class="d-flex justify-content-center align-items-center playwrite-is gradient-text p-1 fs-25">
-      <span class="logo" (click)="toggleSidebar()">Socially</span>
+@if (user) {
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid d-flex align-items-center">
+      <div class="d-flex justify-content-center align-items-center playwrite-is gradient-text p-1 fs-25">
+        <span class="logo" (click)="toggleSidebar()">Socially</span>
+      </div>
+  
+      <div class="collapse navbar-collapse p-1 justify-content-center">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item px-3">
+            <i routerLink="/user/home" class="fa-solid fs-25 fa-house cursor-pointer"></i>
+          </li>
+          <li class="nav-item px-3">
+            <i routerLink="/user/requests" class="fa-regular fs-25 r fa-heart cursor-pointer"></i>
+          </li>
+          <li class="nav-item px-3">
+            <i data-bs-toggle="modal" data-bs-target="#postModal" class="fa-solid fs-25 fa-plus cursor-pointer"></i>
+          </li>
+          <li class="nav-item px-3">
+            <i data-bs-toggle="modal" data-bs-target="#searchModal"
+              class="fa-solid fs-25 fa-magnifying-glass cursor-pointer"></i>
+          </li>
+  
+          <li class="nav-item px-3">
+            <i routerLink="/message" class="fs-25 fa-solid fa-message"></i>
+          </li>
+  
+        </ul>
+      </div>
+  
+      <div class="p-1">
+        <img routerLink="/user/myProfile" [src]="user.profileImage.url" class="image-style" alt="">
+      </div>
     </div>
-
-    <div class="collapse navbar-collapse p-1 justify-content-center">
-      <ul class="navbar-nav mb-2 mb-lg-0">
-        <li class="nav-item px-3">
-          <i routerLink="/user/home" class="fa-solid fs-25 fa-house cursor-pointer"></i>
-        </li>
-        <li class="nav-item px-3">
-          <i routerLink="/user/requests" class="fa-regular fs-25 r fa-heart cursor-pointer"></i>
-        </li>
-        <li class="nav-item px-3">
-          <i data-bs-toggle="modal" data-bs-target="#postModal" class="fa-solid fs-25 fa-plus cursor-pointer"></i>
-        </li>
-        <li class="nav-item px-3">
-          <i data-bs-toggle="modal" data-bs-target="#searchModal"
-            class="fa-solid fs-25 fa-magnifying-glass cursor-pointer"></i>
-        </li>
-
-        <li class="nav-item px-3">
-          <i routerLink="/message" class="fs-25 fa-solid fa-message"></i>
-        </li>
-
-      </ul>
-    </div>
-
-    <div class="p-1">
-      <img routerLink="/user/myProfile" [src]="user?.profileImage?.url" class="image-style" alt="">
-    </div>
-  </div>
-</nav>
+  </nav>
+}
 
 <!-- WHEN USER CLICKS ON AREA OTHER THAN SIDEBAR, THE SIDEBAR DISAPPEARS -->
 <div class="backdrop" [ngClass]="{'active':isSidebarVisible}" (click)="toggleSidebar()"></div>

@@ -3,6 +3,7 @@ import { ApiService } from '../../../core/services/apiServices/api.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { IUser } from '../../../core/models/user';
 import { UserService } from '../../../core/services/userService/user.service';
+import { DecodeTokenService } from '../../../core/services/decodeTokenService/decode-token.service';
 
 @Component({
   selector: 'app-my-requests',
@@ -15,6 +16,7 @@ export class MyRequestsComponent implements OnInit {
 
   apiService = inject(ApiService)
   userService = inject(UserService)
+  DecodeTokenService = inject(DecodeTokenService)
   user !: IUser
   requests !: IUser[]
 

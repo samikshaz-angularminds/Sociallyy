@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const httpStatus = require('http-status');
 const path = require('path');
 const fs = require('fs');
-const { asyncErrorHandler } = require('../utils/asyncErrorHandle');
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle.utils');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
@@ -26,10 +26,10 @@ const generateAccessAndRefreshTokens = async (userId) => {
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
 
-        console.log('accesstoken: ',accessToken);
-        console.log('refreshtoken: ',refreshToken);
-        
-        
+        console.log('accesstoken: ', accessToken);
+        console.log('refreshtoken: ', refreshToken);
+
+
 
         user.refreshToken = refreshToken;
         await user.save({ validateBeforeSave: false });
@@ -40,31 +40,44 @@ const generateAccessAndRefreshTokens = async (userId) => {
     }
 };
 
-const refreshAccessToken = asyncErrorHandler(async (req,res) => {
+const refreshAccessToken = asyncErrorHandler(async (req, res) => {
     const refreshTokenFromUser = req.cookies.refreshToken || req.body.refreshToken;
 
-    if(!refreshTokenFromUser) return res.status(401)
+    if (!refreshTokenFromUser) return res.status(401)
+
+    console.log('REFRESH TOKEN FROM USER IS: ', refreshTokenFromUser);
 
     try {
         const decodedToken = jwt.verify(refreshTokenFromUser, process.env.REFRESH_TOKEN_SECRET);
+
+        console.log('DECODED TOKEN IN REFRESHING...',decodedToken);
+        
         const user = await User.findById(decodedToken._id);
 
-        if(!user) return res.status(401).json({error: "invalid refresh token"})
+        console.log('FOUNDED USER: ',user);
         
-        if(refreshTokenFromUser !== user?.refreshToken){
-            return res.status(401).json({error: "refresh token is expired or used"});
+
+        if (!user) return res.status(401).json({ error: "invalid refresh token" })
+
+        if (refreshTokenFromUser !== user?.refreshToken) {
+            return res.status(401).json({ error: "refresh token is expired or used" });
         }
 
-        const {accessToken,newRefreshToken} = await generateAccessAndRefreshTokens(user._id);
+        const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+        console.log('ACCESS TOKEN: ',accessToken);
+        console.log('REFRESH TOKEN: ',newRefreshToken);
         
+        
+
         return res
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
-        .json({message: "access token has been refreshed successfully!!"});
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", newRefreshToken, options)
+            .json({ message: "access token has been refreshed successfully!!" });
 
     } catch (error) {
         console.log("error while refreshing the access token");
-        
+
     }
 });
 
@@ -179,11 +192,11 @@ const updateUser = asyncErrorHandler(async function (req, res) {
 });
 
 const loginUser = asyncErrorHandler(async function (req, res) {
-    const { emailorusername, password} = req.body
+    const { emailorusername, password } = req.body
 
 
     const user = await User.findOne({
-        $or: [{ username : emailorusername}, { email:emailorusername }]
+        $or: [{ username: emailorusername }, { email: emailorusername }]
     })
 
     if (!user)
@@ -195,12 +208,12 @@ const loginUser = asyncErrorHandler(async function (req, res) {
     // console.log('TOKEN HERE: ', token);
 
     return res
-        .cookie("accessToken",accessToken, options)
+        .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json({ user, token: accessToken });
 });
 
-const logOutUser = asyncErrorHandler(async (req,res) => {
+const logOutUser = asyncErrorHandler(async (req, res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -208,14 +221,14 @@ const logOutUser = asyncErrorHandler(async (req,res) => {
                 refreshToken: undefined
             }
         },
-        {new:true}
+        { new: true }
     );
 
     return res
-    .status(200)
-    .clearCookie("accessToken",options)
-    .clearCookie("refreshToken", options)
-    .json({message: "User logged out successfully"});
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json({ message: "User logged out successfully" });
 });
 
 const sendOtp = asyncErrorHandler(async function (req, res) {

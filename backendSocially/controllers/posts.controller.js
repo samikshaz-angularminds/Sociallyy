@@ -1,7 +1,7 @@
 const Post = require('../models/uploadPosts.model')
 const { cloudinary } = require('../config/cloudinaryConfig');
 const User = require('../models/user.model');
-const { asyncErrorHandler } = require('../utils/asyncErrorHandle');
+const { asyncErrorHandler } = require('../utils/asyncErrorHandle.utils');
 
 
 // for below line we need type:module in package.json

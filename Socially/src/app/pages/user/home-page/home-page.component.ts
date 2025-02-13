@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ApiService } from '../../../core/services/apiServices/api.service';
-import { UserService } from '../../../core/services/userService/user.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { Router, RouterModule } from '@angular/router';
 import { IUser } from '../../../core/models/user';
@@ -8,6 +7,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { forkJoin, map, tap } from 'rxjs';
 import { tokenConstant } from '../../../core/constants/token';
 import { IPost } from '../../../core/models/post';
+import { UserService } from '../../../core/services/userService/user.service';
 
 @Component({
   selector: 'app-home-page',
@@ -38,7 +38,7 @@ export class HomePageComponent implements OnInit {
 
   getUser() {
     this.userService.user$.subscribe((res: any) => {
-      this.getMe(res._id)
+      this.getMe(res?._id)
     })
   }
 

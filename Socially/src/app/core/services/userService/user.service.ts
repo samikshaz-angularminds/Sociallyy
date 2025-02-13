@@ -1,47 +1,22 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tokenConstant } from '../../constants/token';
+import { ApiService } from '../apiServices/api.service';
+import { apiConstant } from '../../constants/apiConstants';
+import { CustomJwtPayload, DecodeTokenService } from '../decodeTokenService/decode-token.service';
 import * as jwt_decode from 'jwt-decode';
-interface CustomJwtPayload extends jwt_decode.JwtPayload {
-  _id: string
-  id: string
-  email: string
-  username : string
-}
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class UserService {
-
   private userSubject = new BehaviorSubject<CustomJwtPayload | undefined>(undefined)
   isUserLoggedIn = false
+  apiService = inject(ApiService);
 
-  constructor(){
-    this.initializeUserState()
-  }
 
-  setUser(user: CustomJwtPayload) {
-    console.log('SETUSER: ',user);
-    
-    this.userSubject.next(user)
-    this.isUserLoggedIn = true
-  }
-
-  get user$(): Observable<CustomJwtPayload | undefined> {
-    return this.userSubject.asObservable()
-  }
-
-  saveToken(token: string) {
-    localStorage.setItem(tokenConstant.LOGIN_TOKEN, token)
-
-  }
-
-  clearToken() {
-    localStorage.removeItem(tokenConstant.LOGIN_TOKEN)
-    this.isUserLoggedIn = false
-  }
+  constructor() {}
 
   private decodeToken(token: string) {
     // return JwtDecode(token)
@@ -53,6 +28,8 @@ export class UserService {
 
     if (token) {
       const decodedToken = this.decodeToken(token)
+      console.log('the decoded token is...', decodedToken);
+      this.isUserLoggedIn = true
       const user: CustomJwtPayload = {
         _id: decodedToken._id,
         email: decodedToken.email,
@@ -60,11 +37,44 @@ export class UserService {
         id: decodedToken.id,
       }
 
-      this.setUser(user)
-      this.isUserLoggedIn = true
+      console.log("initialize user state---  ",user);
+      
+      this.getMe(user._id)
+
+      return user;
     }
-    
+    return null;
   }
+
+
+  getMe(userid: string) {
+    console.log("hi from getmeeeeeeeee ",userid);
+    
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid).subscribe({
+      next: (res: any) => {
+        console.log('response for get user: ', res);
+
+      },
+      error: (error) => console.log(error)
+
+    })
+  }
+
   
+
+  get user$(): Observable<CustomJwtPayload | undefined> {
+    return this.userSubject.asObservable()
+  }
+
+  setUser(user: CustomJwtPayload) {
+    console.log('SETUSER: ', user);
+
+    this.userSubject.next(user)
+  }
+
+
+
+
+
 
 }

@@ -2,7 +2,7 @@ import {
   __export
 } from "./chunk-XWLXMCJQ.js";
 
-// ../node_modules/engine.io-parser/build/esm/commons.js
+// node_modules/engine.io-parser/build/esm/commons.js
 var PACKET_TYPES = /* @__PURE__ */ Object.create(null);
 PACKET_TYPES["open"] = "0";
 PACKET_TYPES["close"] = "1";
@@ -20,7 +20,7 @@ var ERROR_PACKET = {
   data: "parser error"
 };
 
-// ../node_modules/engine.io-parser/build/esm/encodePacket.browser.js
+// node_modules/engine.io-parser/build/esm/encodePacket.browser.js
 var withNativeBlob = typeof Blob === "function" || typeof Blob !== "undefined" && Object.prototype.toString.call(Blob) === "[object BlobConstructor]";
 var withNativeArrayBuffer = typeof ArrayBuffer === "function";
 var isView = (obj) => {
@@ -77,7 +77,7 @@ function encodePacketToBinary(packet, callback) {
   });
 }
 
-// ../node_modules/engine.io-parser/build/esm/contrib/base64-arraybuffer.js
+// node_modules/engine.io-parser/build/esm/contrib/base64-arraybuffer.js
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var lookup = typeof Uint8Array === "undefined" ? [] : new Uint8Array(256);
 for (let i = 0; i < chars.length; i++) {
@@ -104,7 +104,7 @@ var decode = (base64) => {
   return arraybuffer;
 };
 
-// ../node_modules/engine.io-parser/build/esm/decodePacket.browser.js
+// node_modules/engine.io-parser/build/esm/decodePacket.browser.js
 var withNativeArrayBuffer2 = typeof ArrayBuffer === "function";
 var decodePacket = (encodedPacket, binaryType) => {
   if (typeof encodedPacket !== "string") {
@@ -160,7 +160,7 @@ var mapBinary = (data, binaryType) => {
   }
 };
 
-// ../node_modules/engine.io-parser/build/esm/index.js
+// node_modules/engine.io-parser/build/esm/index.js
 var SEPARATOR = String.fromCharCode(30);
 var encodePayload = (packets, callback) => {
   const length = packets.length;
@@ -302,7 +302,7 @@ function createPacketDecoderStream(maxPayload, binaryType) {
 }
 var protocol = 4;
 
-// ../node_modules/@socket.io/component-emitter/lib/esm/index.js
+// node_modules/@socket.io/component-emitter/lib/esm/index.js
 function Emitter(obj) {
   if (obj) return mixin(obj);
 }
@@ -374,7 +374,7 @@ Emitter.prototype.hasListeners = function(event) {
   return !!this.listeners(event).length;
 };
 
-// ../node_modules/engine.io-client/build/esm/globals.js
+// node_modules/engine.io-client/build/esm/globals.js
 var nextTick = (() => {
   const isPromiseAvailable = typeof Promise === "function" && typeof Promise.resolve === "function";
   if (isPromiseAvailable) {
@@ -396,7 +396,7 @@ var defaultBinaryType = "arraybuffer";
 function createCookieJar() {
 }
 
-// ../node_modules/engine.io-client/build/esm/util.js
+// node_modules/engine.io-client/build/esm/util.js
 function pick(obj, ...attr) {
   return attr.reduce((acc, k) => {
     if (obj.hasOwnProperty(k)) {
@@ -444,7 +444,7 @@ function randomString() {
   return Date.now().toString(36).substring(3) + Math.random().toString(36).substring(2, 5);
 }
 
-// ../node_modules/engine.io-client/build/esm/contrib/parseqs.js
+// node_modules/engine.io-client/build/esm/contrib/parseqs.js
 function encode(obj) {
   let str = "";
   for (let i in obj) {
@@ -465,7 +465,7 @@ function decode2(qs) {
   return qry;
 }
 
-// ../node_modules/engine.io-client/build/esm/transport.js
+// node_modules/engine.io-client/build/esm/transport.js
 var TransportError = class extends Error {
   constructor(reason, description, context) {
     super(reason);
@@ -596,7 +596,7 @@ var Transport = class extends Emitter {
   }
 };
 
-// ../node_modules/engine.io-client/build/esm/transports/polling.js
+// node_modules/engine.io-client/build/esm/transports/polling.js
 var Polling = class extends Transport {
   constructor() {
     super(...arguments);
@@ -732,7 +732,7 @@ var Polling = class extends Transport {
   }
 };
 
-// ../node_modules/engine.io-client/build/esm/contrib/has-cors.js
+// node_modules/engine.io-client/build/esm/contrib/has-cors.js
 var value = false;
 try {
   value = typeof XMLHttpRequest !== "undefined" && "withCredentials" in new XMLHttpRequest();
@@ -740,7 +740,7 @@ try {
 }
 var hasCORS = value;
 
-// ../node_modules/engine.io-client/build/esm/transports/polling-xhr.js
+// node_modules/engine.io-client/build/esm/transports/polling-xhr.js
 function empty() {
 }
 var BaseXHR = class extends Polling {
@@ -982,7 +982,7 @@ function newRequest(opts) {
   }
 }
 
-// ../node_modules/engine.io-client/build/esm/transports/websocket.js
+// node_modules/engine.io-client/build/esm/transports/websocket.js
 var isReactNative = typeof navigator !== "undefined" && typeof navigator.product === "string" && navigator.product.toLowerCase() === "reactnative";
 var BaseWS = class extends Transport {
   get name() {
@@ -1076,7 +1076,7 @@ var WS = class extends BaseWS {
   }
 };
 
-// ../node_modules/engine.io-client/build/esm/transports/webtransport.js
+// node_modules/engine.io-client/build/esm/transports/webtransport.js
 var WT = class extends Transport {
   get name() {
     return "webtransport";
@@ -1144,14 +1144,14 @@ var WT = class extends Transport {
   }
 };
 
-// ../node_modules/engine.io-client/build/esm/transports/index.js
+// node_modules/engine.io-client/build/esm/transports/index.js
 var transports = {
   websocket: WS,
   webtransport: WT,
   polling: XHR
 };
 
-// ../node_modules/engine.io-client/build/esm/contrib/parseuri.js
+// node_modules/engine.io-client/build/esm/contrib/parseuri.js
 var re = /^(?:(?![^:@\/?#]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@\/?#]*)(?::([^:@\/?#]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
 var parts = ["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"];
 function parse(str) {
@@ -1196,7 +1196,7 @@ function queryKey(uri, query) {
   return data;
 }
 
-// ../node_modules/engine.io-client/build/esm/socket.js
+// node_modules/engine.io-client/build/esm/socket.js
 var withEventListeners = typeof addEventListener === "function" && typeof removeEventListener === "function";
 var OFFLINE_EVENT_LISTENERS = [];
 if (withEventListeners) {
@@ -1756,7 +1756,7 @@ var Socket = class extends SocketWithUpgrade {
   }
 };
 
-// ../node_modules/engine.io-client/build/esm/transports/polling-fetch.js
+// node_modules/engine.io-client/build/esm/transports/polling-fetch.js
 var Fetch = class extends Polling {
   doPoll() {
     this._fetch().then((res) => {
@@ -1799,10 +1799,10 @@ var Fetch = class extends Polling {
   }
 };
 
-// ../node_modules/engine.io-client/build/esm/index.js
+// node_modules/engine.io-client/build/esm/index.js
 var protocol2 = Socket.protocol;
 
-// ../node_modules/socket.io-client/build/esm/url.js
+// node_modules/socket.io-client/build/esm/url.js
 function url(uri, path = "", loc) {
   let obj = uri;
   loc = loc || typeof location !== "undefined" && location;
@@ -1839,7 +1839,7 @@ function url(uri, path = "", loc) {
   return obj;
 }
 
-// ../node_modules/socket.io-parser/build/esm/index.js
+// node_modules/socket.io-parser/build/esm/index.js
 var esm_exports = {};
 __export(esm_exports, {
   Decoder: () => Decoder,
@@ -1848,7 +1848,7 @@ __export(esm_exports, {
   protocol: () => protocol3
 });
 
-// ../node_modules/socket.io-parser/build/esm/is-binary.js
+// node_modules/socket.io-parser/build/esm/is-binary.js
 var withNativeArrayBuffer3 = typeof ArrayBuffer === "function";
 var isView2 = (obj) => {
   return typeof ArrayBuffer.isView === "function" ? ArrayBuffer.isView(obj) : obj.buffer instanceof ArrayBuffer;
@@ -1885,7 +1885,7 @@ function hasBinary(obj, toJSON) {
   return false;
 }
 
-// ../node_modules/socket.io-parser/build/esm/binary.js
+// node_modules/socket.io-parser/build/esm/binary.js
 function deconstructPacket(packet) {
   const buffers = [];
   const packetData = packet.data;
@@ -1951,7 +1951,7 @@ function _reconstructPacket(data, buffers) {
   return data;
 }
 
-// ../node_modules/socket.io-parser/build/esm/index.js
+// node_modules/socket.io-parser/build/esm/index.js
 var RESERVED_EVENTS = [
   "connect",
   "connect_error",
@@ -2204,7 +2204,7 @@ var BinaryReconstructor = class {
   }
 };
 
-// ../node_modules/socket.io-client/build/esm/on.js
+// node_modules/socket.io-client/build/esm/on.js
 function on(obj, ev, fn) {
   obj.on(ev, fn);
   return function subDestroy() {
@@ -2212,7 +2212,7 @@ function on(obj, ev, fn) {
   };
 }
 
-// ../node_modules/socket.io-client/build/esm/socket.js
+// node_modules/socket.io-client/build/esm/socket.js
 var RESERVED_EVENTS2 = Object.freeze({
   connect: 1,
   connect_error: 1,
@@ -2981,7 +2981,7 @@ var Socket2 = class extends Emitter {
   }
 };
 
-// ../node_modules/socket.io-client/build/esm/contrib/backo2.js
+// node_modules/socket.io-client/build/esm/contrib/backo2.js
 function Backoff(opts) {
   opts = opts || {};
   this.ms = opts.min || 100;
@@ -3012,7 +3012,7 @@ Backoff.prototype.setJitter = function(jitter) {
   this.jitter = jitter;
 };
 
-// ../node_modules/socket.io-client/build/esm/manager.js
+// node_modules/socket.io-client/build/esm/manager.js
 var Manager = class extends Emitter {
   constructor(uri, opts) {
     var _a;
@@ -3351,7 +3351,7 @@ var Manager = class extends Emitter {
   }
 };
 
-// ../node_modules/socket.io-client/build/esm/index.js
+// node_modules/socket.io-client/build/esm/index.js
 var cache = {};
 function lookup2(uri, opts) {
   if (typeof uri === "object") {

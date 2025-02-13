@@ -5,6 +5,7 @@ import { ApiService } from '../../../core/services/apiServices/api.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { Router } from '@angular/router';
 import { UserService } from '../../../core/services/userService/user.service';
+import { DecodeTokenService } from '../../../core/services/decodeTokenService/decode-token.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -20,6 +21,7 @@ export class ForgotPasswordComponent {
   emailSent = false
   router = inject(Router);
   userService = inject(UserService);
+  decodeTokenService = inject(DecodeTokenService)
   loading = false
 
   onSend(email: string) {
@@ -45,7 +47,7 @@ export class ForgotPasswordComponent {
           this.loading = true 
           setTimeout(()=>{
             this.loading = false;
-            this.userService.saveToken(res.token)
+            this.decodeTokenService.saveToken(res.token)
             this.userService.setUser(res.user)
             this.router.navigate(['/user/home']);
           },1000)

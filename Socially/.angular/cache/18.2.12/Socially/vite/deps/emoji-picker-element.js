@@ -3,7 +3,7 @@ import {
   __spreadValues
 } from "./chunk-XWLXMCJQ.js";
 
-// ../node_modules/emoji-picker-element/database.js
+// node_modules/emoji-picker-element/database.js
 function assertNonEmptyString(str) {
   if (typeof str !== "string" || !str) {
     throw new Error("expected a non-empty string, got: " + str);
@@ -801,7 +801,7 @@ var Database = class {
   }
 };
 
-// ../node_modules/emoji-picker-element/picker.js
+// node_modules/emoji-picker-element/picker.js
 var allGroups = [[-1, "✨", "custom"], [0, "😀", "smileys-emotion"], [1, "👋", "people-body"], [3, "🐱", "animals-nature"], [4, "🍎", "food-drink"], [5, "🏠️", "travel-places"], [6, "⚽", "activities"], [7, "📝", "objects"], [8, "⛔️", "symbols"], [9, "🏁", "flags"]].map(([id, emoji, name]) => ({
   id,
   emoji,

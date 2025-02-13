@@ -1,5 +1,4 @@
 import { Component, ElementRef, HostListener, inject, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { UserService } from '../../../core/services/userService/user.service';
 import { IUser } from '../../../core/models/user';
 import { ApiService } from '../../../core/services/apiServices/api.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
@@ -9,6 +8,8 @@ import { tokenConstant } from '../../../core/constants/token';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as bootstrap from 'bootstrap';
+import { UserService } from '../../../core/services/userService/user.service';
+import { DecodeTokenService } from '../../../core/services/decodeTokenService/decode-token.service';
 
 @Component({
   selector: 'app-user-header',
@@ -23,6 +24,7 @@ export class UserHeaderComponent implements OnInit {
 
   userService = inject(UserService)
   apiService = inject(ApiService)
+  decodeTokenService = inject(DecodeTokenService)
   user !: IUser
   isSidebarVisible = false
   accordionIsOpen = false
@@ -125,7 +127,7 @@ export class UserHeaderComponent implements OnInit {
     if (consent.isConfirmed) {
       this.apiService.delete(apiConstant.API_HOST_URL + apiConstant.DELETE_ACCOUNT + this.user._id).subscribe({
         next: (res: any) => {
-          this.userService.clearToken();
+          this.decodeTokenService.clearToken();
           this.router.navigateByUrl('account/login')
         
         },

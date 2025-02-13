@@ -16,8 +16,9 @@ router.patch('/updatePic/:userId', upload.single('profilePhoto'), userController
 router.patch('/update/:userId', userController.updateUser);
 router.post('/login', userController.loginUser);
 router.post('/logout',userController.logOutUser)
-router.post('/refresh-token', userController.refreshAccessToken)
+router.post('/refresh/refresh-token', userController.refreshAccessToken)
 
+// safe routes
 router.get('/:id', verifyJwt, userController.getOneUser);
 router.get('/notme/:id', verifyJwt, userController.getUsersExceptMe);
 router.get('/other/user', verifyJwt,userController.seeAnotherUser);
