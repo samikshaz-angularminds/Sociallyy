@@ -15,4 +15,4 @@ const asyncErrorHandler = (fn) => (req, res, next) => {
 
 
 
-export {asyncErrorHandler};
+module.exports = {asyncErrorHandler};

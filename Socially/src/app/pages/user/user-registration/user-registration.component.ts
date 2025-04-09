@@ -84,12 +84,12 @@ export class UserRegistrationComponent implements OnInit {
     formData.append('posts', String(this.new_user.posts))
     if(this.isFile(this.selectedImage)) formData.append('profilePhoto', this.selectedImage)
 
-    for (const [key, value] of (formData as any).entries()) {
-      console.log(`FORMDATA ${key}: ${value}`);
-    }
+    // for (const [key, value] of (formData as any).entries()) {
+    //   console.log(`FORMDATA ${key}: ${value}`);
+    // }
 
     if (this.userRegistrationForm.valid) {
-      console.log(this.userRegistrationForm.value);
+      // console.log(this.userRegistrationForm.value);
 
       this.apiService.post(apiConstant.API_HOST_URL + apiConstant.USER_REGISTRATION, formData).subscribe({
         next: (res: any) => {
