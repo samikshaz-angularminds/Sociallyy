@@ -6,7 +6,10 @@ const jwt = require("jsonwebtoken");
 const verifyJwt = asyncErrorHandler( async (req,res,next) => {
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","");
+        console.log();
         console.log('token from verify: ', token);
+        console.log();
+        
         
     
         if(!token) {
@@ -23,6 +26,8 @@ const verifyJwt = asyncErrorHandler( async (req,res,next) => {
     
         req.user = user;
         console.log('req.user: ',req.user);
+        console.log();
+        
         
         next();
     } catch (error) {

@@ -1,7 +1,6 @@
 const User = require('../models/user.model');
 const OTP = require('../models/otp.model');
 const ProfilePhoto = require('../models/uploadPhoto.model');
-const { setUser, getUser } = require('../services/authLogin.service');
 const { cloudinary } = require('../config/cloudinaryConfig');
 const { default: mongoose } = require('mongoose');
 require('dotenv').config();
@@ -13,6 +12,7 @@ const fs = require('fs');
 const { asyncErrorHandler } = require('../utils/asyncErrorHandle.utils');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const ApiError = require("../utils/ApiError.utils")
 
 const options = {
     httpOnly: true,
@@ -41,20 +41,28 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 const refreshAccessToken = asyncErrorHandler(async (req, res) => {
-    const refreshTokenFromUser = req.cookies.refreshToken || req.body.refreshToken;
+    const refreshTokenFromUser = req.cookies?.refreshToken || req.body?.refreshToken;
+
+
 
     if (!refreshTokenFromUser) return res.status(401)
 
     console.log('REFRESH TOKEN FROM USER IS: ', refreshTokenFromUser);
+    console.log();
+    
 
     try {
         const decodedToken = jwt.verify(refreshTokenFromUser, process.env.REFRESH_TOKEN_SECRET);
 
         console.log('DECODED TOKEN IN REFRESHING...',decodedToken);
+        console.log();
+        
         
         const user = await User.findById(decodedToken._id);
 
         console.log('FOUNDED USER: ',user);
+        console.log();
+        
         
 
         if (!user) return res.status(401).json({ error: "invalid refresh token" })
@@ -66,8 +74,10 @@ const refreshAccessToken = asyncErrorHandler(async (req, res) => {
         const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
 
         console.log('ACCESS TOKEN: ',accessToken);
-        console.log('REFRESH TOKEN: ',newRefreshToken);
+        console.log();
         
+        console.log('REFRESH TOKEN: ',newRefreshToken);
+        console.log();
         
 
         return res
@@ -86,7 +96,7 @@ const uploadImage = asyncErrorHandler(async function (filePath) {
 
     const mainFolderName = "Socially";
     const filePathOnCloudinary = `${mainFolderName}${filePath}`;
-    console.log('file path cloudinry: ', filePathOnCloudinary);
+    console.log('file path cloudinary: ', filePathOnCloudinary);
 
     const response = await cloudinary.uploader.upload(filePath, {
         folder: "Socially"
@@ -138,7 +148,6 @@ const registerUser = asyncErrorHandler(async function (req, res) {
         img = await uploadImage('data:image/png;base64,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');
     }
     else {
-
         img = await uploadImage(req.file?.path)
     }
 
@@ -156,9 +165,13 @@ const registerUser = asyncErrorHandler(async function (req, res) {
         phone,
         website,
         profileImage: img
-    })
+    });
 
-    return res.json(newUser)
+    if(!newUser){
+        throw new ApiError(400, "Failed to create the user");
+    }
+
+    return res.json(newUser);
 
 });
 
@@ -199,13 +212,18 @@ const loginUser = asyncErrorHandler(async function (req, res) {
         $or: [{ username: emailorusername }, { email: emailorusername }]
     })
 
-    if (!user)
-        return res.status(400).json({ message: "no user found" })
-
-
+    if (!user){
+        throw new ApiError(404, "User not found");
+    }
+        
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
-    // console.log('TOKEN HERE: ', token);
+    console.log('ACCESS TOKEN HERE: ', accessToken);
+    console.log();
+    console.log('REFRESH TOKEN HERE: ', refreshToken);
+    console.log();
+    console.log({user, token:accessToken});
+    console.log();
 
     return res
         .cookie("accessToken", accessToken, options)
@@ -309,6 +327,10 @@ const getAllUsers = asyncErrorHandler(async function (req, res) {
 
     const allusers = await User.find({})
 
+    if(!allusers){
+        throw new ApiError(404,"users not found");
+    }
+
     return res.json(allusers)
 });
 
@@ -340,11 +362,15 @@ const getUsersExceptMe = asyncErrorHandler(async function (req, res) {
 });
 
 const getOneUser = asyncErrorHandler(async function (req, res) {
-    const userId = req.params.id
+    const userId = req.params.id;
 
-    const user = await User.findById(userId).populate('profileImage')
+    const user = await User.findById(userId).populate('profileImage');
 
-    return res.json(user)
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    return res.json(user);
 });
 
 const seeAnotherUser = asyncErrorHandler(async function (req, res) {
@@ -489,7 +515,7 @@ const downloadPic = asyncErrorHandler(async function (req, res) {
 });
 
 module.exports = {
-    registerUser,
+    registerUser, // working
     updateUser,
     getAllUsers,
     sendOtp,
@@ -497,8 +523,8 @@ module.exports = {
     getUsersForSearching,
     uploadImage,
     updateProfilePic,
-    loginUser,
-    getOneUser,
+    loginUser, // working
+    getOneUser, // working
     getUsersExceptMe,
     seeAnotherUser,
     privateAccount,
