@@ -6,7 +6,7 @@ export interface IUser {
   email: string,
   password: string,
   full_name: string,
-  profileImage: UserProfilePhoto,
+  profileImage: UserProfilePhoto | undefined,
   bio: string,
   phone: string,
   website: string,
@@ -29,7 +29,7 @@ export interface followerFollowing {
 
 export interface UserProfilePhoto {
   public_id: string
-  url: string
+  url: string | undefined
   _id: string
 }
 

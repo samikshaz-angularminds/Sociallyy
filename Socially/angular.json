@@ -27,13 +27,11 @@
               }
             ],
             "styles": [
-             
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/styles.css"
             ],
-            "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-            ]
+
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -67,10 +65,11 @@
             },
             "development": {
               "buildTarget": "Socially:build:development"
-            },
-            "options" : {
-              "proxyConfig" : "proxy.config.json"
             }
+          },
+          "options" : {
+            "proxyConfig" : "proxy.config.json",
+            "allowedHosts": ["all"]
           },
           "defaultConfiguration": "development"
         },

@@ -1,109 +1,147 @@
-@if(user){
-
-<div class="container d-flex flex-column justify-content-center align-items-center">
-
-    <div class="container w-75 d-flex justify-content-center align-items-center">
-        <div class=" d-flex flex-column justify-content-center align-items-center">
-            <div class="p-1">
-                <img class="width-100 height-100 rounded-circle" [src]="user.profileImage.url" alt="" srcset="">
-            </div>
-            <div class="p-1">
-                {{user.username}}
-            </div>
+@if (user) {
+  <div class="max-w-4xl mx-auto px-4 py-6">
+    <div class="flex justify-center items-center mb-8">
+      <div class="flex flex-col justify-center items-center mr-8">
+        <div class="mb-2">
+          <img
+            class="w-32 h-32 rounded-full"
+            [src]="user.profileImage?.url"
+            alt=""
+          />
         </div>
-
-        <div class="d-flex flex-column ps-3">
-
-            <div class="d-flex align-items-start">
-                <div class="p-2 d-flex flex-column justify-content-center align-items-center">
-                    <div>{{user.posts.length}}</div>
-                    <div>Posts</div>
-                </div>
-                <div class="p-2 d-flex cursor-pointer flex-column justify-content-center align-items-center"
-                    [routerLink]="['/user/route','followers']" [queryParams]="{username : user.id}">
-                    <div>{{user.followers.length}}</div>
-                    <div>Followers</div>
-                </div>
-                <div class="p-2 d-flex cursor-pointer flex-column justify-content-center align-items-center"
-                    [routerLink]="['/user/route','followings']" [queryParams]="{username : user.id}">
-                    <div>{{user.followings.length}}</div>
-                    <div>Following</div>
-                </div>
-            </div>
-    
+        <div class="text-xl font-semibold">
+          {{ user.username }}
         </div>
-        
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex space-x-8 mb-4">
+          <div class="text-center">
+            <div class="font-semibold text-lg">{{ user.posts.length }}</div>
+            <div class="text-gray-600">Posts</div>
+          </div>
+          <div
+            class="text-center cursor-pointer hover:text-blue-600"
+            [routerLink]="['/user/route', 'followers']"
+            [queryParams]="{ username: user.id }"
+          >
+            <div class="font-semibold text-lg">{{ user.followers.length }}</div>
+            <div class="text-gray-600">Followers</div>
+          </div>
+          <div
+            class="text-center cursor-pointer hover:text-blue-600"
+            [routerLink]="['/user/route', 'followings']"
+            [queryParams]="{ username: user.id }"
+          >
+            <div class="font-semibold text-lg">
+              {{ user.followings.length }}
+            </div>
+            <div class="text-gray-600">Following</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="container w-75 d-flex justify-content-center align-items-center">
-        <button class="btn btn-primary w-25 mx-1" [ngClass]="{'btn-light':isFollowing}" (click)="sendRequest(user.username)"> {{isFollowing ? 'Following' : 'Follow +'}}</button>
-
-        <button class="btn btn-secondary w-25 mx-1" [routerLink]="'/message'" [queryParams]="{receiverName : user.id}" >Message</button>
+    <div class="flex justify-center items-center space-x-4 mb-8">
+      <button
+        class="px-6 py-2 rounded font-medium"
+        [ngClass]="
+          isFollowing
+            ? 'bg-gray-200 text-gray-700'
+            : 'bg-blue-500 text-white hover:bg-blue-600'
+        "
+        (click)="sendRequest(user.username)"
+      >
+        {{ isFollowing ? "Following" : "Follow +" }}
+      </button>
+      <button
+        class="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        [routerLink]="'/message'"
+        [queryParams]="{ receiverName: user.id }"
+      >
+        Message
+      </button>
     </div>
 
-    <div class="container w-75 d-flex flex-column justify-content-center align-items-center pt-4">
-        @for (post of posts; track $index) {
-        <div class="d-flex flex-column m-1">
-            <div>
-                <img (click)="showPost(post._id)" [src]="post.media[0].url" class="width-250 height-250" alt=""
-                    srcset="">
-            </div>
-
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (post of posts; track $index) {
+        <div class="aspect-square">
+          <img
+            (click)="showPost(post._id)"
+            [src]="post.media[0].url"
+            class="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90"
+            alt=""
+          />
         </div>
-        }
+      }
     </div>
+  </div>
 
-</div>
-
-
-<!-- IMAGE Modal -->
-<div #showOnePost class="modal fade" id="showPostModal" tabindex="-1" aria-labelledby="showPostModalLabel"
-    aria-hidden="true">
+  <!-- IMAGE Modal -->
+  <div
+    #showOnePost
+    class="modal fade"
+    id="showPostModal"
+    tabindex="-1"
+    aria-labelledby="showPostModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div>
-                <div class="d-flex justify-content-center align-items-center">
-                    @if(onePost !== undefined){
-                    <div>
-                        <button class="p-1 fs-40 text-secondary bg-transparent border border-0" (click)="prevImage()"
-                            [disabled]="currentImageIndex<=0">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                    </div>
-                    <div class="p-1">
-                        <div>
-                            <img class="width-500 height-500" [src]="onePost.media[currentImageIndex].url"
-                                alt="image not available" srcset="">
-                        </div>
-                        <div class="bg-dark text-light">
-                            <!-- after liking -->
-                            <!-- <i class="fa-solid fa-heart"></i> -->
-                            <div>
-                                @if(onePost.likes.includes(loggedInUser.username)){
-                                <i class="fa-solid fa-heart text-light"></i>
-                                }
-                                @else {
-                                    <i class="fa-regular fa-heart text-light"  (click)="likeAPost(onePost)"></i>
-                                }
-                                
-                                {{onePost.likes.length}}
-                            </div>
-                            <div>
-                                {{onePost.caption}}
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="p-1 fs-40 text-secondary bg-transparent border border-0"
-                            [disabled]="currentImageIndex == onePost.media.length-1" (click)="nextImage()">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    }
+      <div class="modal-content">
+        <div>
+          <div class="d-flex justify-content-center align-items-center">
+            @if (onePost !== undefined) {
+              <div>
+                <button
+                  class="p-1 fs-40 text-secondary bg-transparent border border-0"
+                  (click)="prevImage()"
+                  [disabled]="currentImageIndex <= 0"
+                >
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+              </div>
+              <div class="p-1">
+                <div>
+                  <img
+                    class="width-500 height-500"
+                    [src]="onePost.media[currentImageIndex].url"
+                    alt="image not available"
+                    srcset=""
+                  />
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
+                <div class="bg-dark text-light">
+                  <!-- after liking -->
+                  <!-- <i class="fa-solid fa-heart"></i> -->
+                  <div>
+                    @if (onePost.likes.includes(loggedInUser.username)) {
+                      <i class="fa-solid fa-heart text-light"></i>
+                    } @else {
+                      <i
+                        class="fa-regular fa-heart text-light"
+                        (click)="likeAPost(onePost)"
+                      ></i>
+                    }
 
+                    {{ onePost.likes.length }}
+                  </div>
+                  <div>
+                    {{ onePost.caption }}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button
+                  class="p-1 fs-40 text-secondary bg-transparent border border-0"
+                  [disabled]="currentImageIndex == onePost.media.length - 1"
+                  (click)="nextImage()"
+                >
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 }

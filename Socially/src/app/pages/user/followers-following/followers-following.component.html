@@ -1,60 +1,81 @@
-<div class="container d-flex flex-column justify-content-center align-items-center">
-
-    @if(selectedElement === 'followers'){
-
-    @for (follower of followers; track $index) {
-        <div class="card p-2 m-1" style="width: 300px;">
-            <div class="d-flex justify-content-between">
-                <DIV class="d-flex" (click)="seeUser(follower.id)">
-                    <div class="px-1">
-                        <img class="height-50 width-50 rounded-circle" [src]="follower.profileImage.url" alt=""
-                            srcset="">
-                    </div>
-                    <div class="px-1">
-                        <div>
-                            {{follower.username}}
-                        </div>
-                        <div>
-                            {{follower.full_name}}
-                        </div>
-                    </div>
-
-                </DIV>
-                @if(accountHolder !== undefined){
-                <div class="px-1 d-flex justify-content-center align-items-center">
-                    <button class="btn btn-sm btn-danger" (click)="removeFollower(follower.username)">Remove</button>
+<div class="max-w-2xl mx-auto px-4 py-6">
+  @if (selectedElement === "followers") {
+    <div class="space-y-4">
+      @for (follower of followers; track $index) {
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <div class="flex justify-between items-center">
+            <div
+              class="flex items-center cursor-pointer"
+              (click)="seeUser(follower.id)"
+            >
+              <div class="mr-4">
+                <img
+                  class="w-12 h-12 rounded-full"
+                  [src]="follower.profileImage?.url"
+                  alt=""
+                />
+              </div>
+              <div>
+                <div class="font-medium">
+                  {{ follower.username }}
                 </div>
-                }
-            </div>
-        </div>
-    }
-
-    }
-    @else if (selectedElement === 'followings') {
-    @for (following of followings; track $index) {
-
-    <div class="card p-2 m-1" style="width: 300px;">
-        <div class="d-flex  justify-content-between">
-            <div class="d-flex" (click)="seeUser(following.id)">
-                <div class="px-1">
-                    <img class="height-50 width-50 rounded-circle " [src]="following.profileImage.url" alt="" srcset="">
+                <div class="text-sm text-gray-500">
+                  {{ follower.full_name }}
                 </div>
-                <div class="px-1">
-                    <div>
-                        {{following.username}}
-                    </div>
-                    <div>
-                        {{following.full_name}}
-                    </div>
-                </div>
+              </div>
             </div>
-            @if(accountHolder !== undefined){
-            <div class="px-1 d-flex justify-content-center align-items-center">
-                <button class="btn btn-sm btn-danger" (click)="removeFollowing(following.username)">Unfollow</button>
-            </div>
+            @if (accountHolder !== undefined) {
+              <div>
+                <button
+                  class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+                  (click)="removeFollower(follower.username)"
+                >
+                  Remove
+                </button>
+              </div>
             }
+          </div>
         </div>
+      }
     </div>
-    }
-    }
+  } @else if (selectedElement === "followings") {
+    <div class="space-y-4">
+      @for (following of followings; track $index) {
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <div class="flex justify-between items-center">
+            <div
+              class="flex items-center cursor-pointer"
+              (click)="seeUser(following.id)"
+            >
+              <div class="mr-4">
+                <img
+                  class="w-12 h-12 rounded-full"
+                  [src]="following.profileImage?.url"
+                  alt=""
+                />
+              </div>
+              <div>
+                <div class="font-medium">
+                  {{ following.username }}
+                </div>
+                <div class="text-sm text-gray-500">
+                  {{ following.full_name }}
+                </div>
+              </div>
+            </div>
+            @if (accountHolder !== undefined) {
+              <div>
+                <button
+                  class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+                  (click)="removeFollowing(following.username)"
+                >
+                  Unfollow
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
 </div>

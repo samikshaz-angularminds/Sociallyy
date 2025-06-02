@@ -1,72 +1,98 @@
-<div class=" mx-1 height-600">
-    <div class="border border-sec d-flex justify-content-between h-10">
-
-        <div class="d-flex">
-
-            <div class="px-2 d-flex justify-content-center align-items-center">
-                <img [src]="receiverUser.profileImage.url" class="rounded-circle width-40 height-40" alt=""
-                    srcset="">
-            </div>
-            <div class="px-2 d-flex justify-content-center align-items-center">
-                <strong> {{receiverUser.username}} </strong>
-            </div>
-        </div>
-
-        <div routerLink="/seeProfile"
-            [queryParams]="{uid: receiverUser.id, viewerId : loggedInUser.id}"
-            class="p-4 d-flex justify-content-center align-items-center">
-            <i class="fa-solid fa-circle-info font-size-25"></i>
-        </div>
-
-
-
+<div class="flex flex-col h-full">
+  <div
+    class="border-b border-gray-300 flex justify-between items-center p-4 bg-white"
+  >
+    <div class="flex items-center">
+      <div class="mr-3">
+        <img
+          [src]="receiverUser.profileImage?.url"
+          class="w-10 h-10 rounded-full"
+          alt=""
+        />
+      </div>
+      <div>
+        <strong class="text-lg">{{ receiverUser.username }}</strong>
+      </div>
     </div>
-    <div class="border border-sec h-90 p-2">
-        <div class="h-90" style="overflow-y: auto; ">
-            <div class="w-100" style="overflow-y: hidden; transform: rotate(180deg); min-height: 100%;">
 
-                @for (msg of conversationMessages; track $index) {
-               <div class="d-flex m-1 px-2"  style=" height: 30px; width: 100%; transform: rotate(180deg);" 
-                   [ngClass]="msg.sender===loggedInUser.id ? [ 'justify-content-end'] : ['justify-content-start']">
-   
-                   <div class="max-w-50 rounded-5 py-2 px-3 d-flex align-items-center "
-                       [ngClass]="msg.sender===loggedInUser.id ? [ 'bg-blue'] : ['bg-pink']"> {{ msg.message }}
-                   </div>
-               </div>
-   
-               }
-           </div>
-        </div>
-        <div class="border border-sec rounded-5 h-10 d-flex  align-items-center ">
-
-            <div class="w-10 d-flex justify-content-center align-items-center">
-                <i class="fa-regular fa-face-smile font-size-25" (click)="openEmojiPicker()"></i>
-                <emoji-picker class="light" #emojiPicker [ngClass]="{'visually-hidden' : this.hideEmoji}"
-                    (emoji-click)="selectedEmoji($event)"></emoji-picker>
-
-            </div>
-            <div class="w-80">
-                <form action="" (ngSubmit)="onSend(receiverUser.id)">
-                    <input class="border border-0 w-100" [(ngModel)]="msg" name="msg" type="text"
-                        placeholder="Message..." aria-label="Username" aria-describedby="basic-addon1"
-                        (input)="getMessageType($event)">
-
-                </form>
-            </div>
-
-            <div class="w-10 d-flex justify-content-center align-items-center">
-                @if(msg === ''){
-                pic
-                }
-                @else {
-                <button class="btn btn-primary rounded-5" type="submit">Send</button>
-                }
-
-
-            </div>
-        </div>
-
+    <div
+      routerLink="/seeProfile"
+      [queryParams]="{ uid: receiverUser.id, viewerId: loggedInUser.id }"
+      class="p-2 cursor-pointer hover:bg-gray-100 rounded"
+    >
+      <i class="fa-solid fa-circle-info text-xl text-gray-600"></i>
     </div>
+  </div>
+
+  <div class="flex-1 p-4 overflow-y-auto bg-gray-50">
+    <div class="flex flex-col-reverse space-y-reverse space-y-2">
+      @for (msg of conversationMessages; track $index) {
+        <div
+          class="flex"
+          [ngClass]="
+            msg.sender === loggedInUser.id ? 'justify-end' : 'justify-start'
+          "
+        >
+          <div
+            class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg"
+            [ngClass]="
+              msg.sender === loggedInUser.id
+                ? 'bg-blue-500 text-white'
+                : 'bg-white border border-gray-300'
+            "
+          >
+            {{ msg.message }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="border-t border-gray-300 p-4 bg-white">
+    <div class="flex items-center space-x-3">
+      <div class="relative">
+        <i
+          class="fa-regular fa-face-smile text-xl text-gray-500 cursor-pointer hover:text-gray-700"
+          (click)="openEmojiPicker()"
+        ></i>
+        <emoji-picker
+          class="absolute bottom-12 left-0 z-10"
+          #emojiPicker
+          [ngClass]="{ hidden: this.hideEmoji }"
+          (emoji-click)="selectedEmoji($event)"
+        ></emoji-picker>
+      </div>
+
+      <div class="flex-1">
+        <form (ngSubmit)="onSend(receiverUser.id)" class="flex">
+          <input
+            class="flex-1 p-3 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            [(ngModel)]="msg"
+            name="msg"
+            type="text"
+            placeholder="Message..."
+            (input)="getMessageType($event)"
+          />
+
+          <div class="flex items-center">
+            @if (msg === "") {
+              <button
+                type="button"
+                class="px-4 py-3 bg-gray-100 text-gray-500 rounded-r-full hover:bg-gray-200"
+              >
+                <i class="fa-solid fa-camera"></i>
+              </button>
+            } @else {
+              <button
+                type="submit"
+                class="px-6 py-3 bg-blue-500 text-white rounded-r-full hover:bg-blue-600"
+              >
+                Send
+              </button>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-
-

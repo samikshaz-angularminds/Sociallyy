@@ -1,324 +1,483 @@
-@if(user){
-
-<div class="container d-flex flex-column justify-content-center align-items-center">
-
-    <div class="container d-flex justify-content-center align-items-center" style="min-width: 400px;">
-        <div class=" d-flex flex-column justify-content-center align-items-center">
-            <div class="p-1 image-container">
-                <!-- {{user.profileImage.url}} -->
-                 <!-- <a [href]="user.profileImage.url" download> -->
-                     <img class="width-100 height-100 rounded-circle" (click)="downloadProfilePic(user.profileImage.url)" [src]="user.profileImage.url" alt="" srcset="">
-                 <!-- </a> -->
-                <div class="d-flex justify-content-end m-0 camera-icon" data-bs-toggle="modal"
-                    data-bs-target="#updatePic">
-                    <i class="fa-solid fa-camera" style="font-size: 25px;"></i>
-                </div>
+@if (user) {
+  <div class="max-w-4xl mx-auto px-4 py-6">
+    <div class="flex justify-center items-center mb-8">
+      <div class="flex flex-col justify-center items-center mr-8">
+        <div class="relative">
+          @if (user.profileImage?.url) {
+            <img
+              class="w-32 h-32 rounded-full cursor-pointer"
+              (click)="downloadProfilePic(user.profileImage?.url ?? '')"
+              [src]="user.profileImage?.url ?? ''"
+              alt=""
+            />
+          } @else {
+            <div
+              class="w-32 h-32 rounded-full border-2 border-blue-500 flex items-center justify-center bg-gray-100"
+            >
+              <span class="text-gray-500">No Image</span>
             </div>
-            
+          }
+          <div
+            class="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg cursor-pointer"
+            data-bs-toggle="modal"
+            data-bs-target="#updatePic"
+          >
+            <i class="fa-solid fa-camera text-gray-600"></i>
+          </div>
         </div>
+      </div>
 
-        <div class=" align-items-start">
-            <div class=" d-flex">
-                <div style="font-size: 30px;" class="p-2 d-flex align-items-center">
-                    {{user.username}}
-                </div>
-                <div class="p-2 d-flex align-items-center">
-                    <button class="btn btn-sm btn-light border  rounded border-2  border-secondary-subtle py-0" (click)="updateUser(user)" data-bs-toggle="modal" data-bs-target="#userUpdateModal"> Edit Profile </button>
-                </div>
-            </div>
-            <div class="d-flex">
-                <div class="p-2 d-flex flex-column justify-content-center align-items-center">
-                    <div>{{user.posts.length}}</div>
-                    <div>Posts</div>
-                </div>
-                <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
-                    [routerLink]="['/user/route','followers']" [queryParams]="{user : user._id,uuid : user.id}">
-                    <div>{{user.followers.length}}</div>
-                    <div>Followers</div>
-                </div>
-                <div class="p-2 d-flex flex-column justify-content-center align-items-center cursor-pointer"
-                    [routerLink]="['/user/route','followings']" [queryParams]="{user : user._id,uuid : user.id}">
-                    <div>{{user.followings.length}}</div>
-                    <div>Following</div>
-                </div>
-
-            </div>
+      <div class="flex-1">
+        <div class="flex items-center mb-4">
+          <div class="text-2xl font-semibold mr-4">
+            {{ user.username }}
+          </div>
+          <div>
+            <button
+              class="px-4 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200"
+              (click)="updateUser(user)"
+              data-bs-toggle="modal"
+              data-bs-target="#userUpdateModal"
+            >
+              Edit Profile
+            </button>
+          </div>
         </div>
+        <div class="flex space-x-8">
+          <div class="text-center">
+            <div class="font-semibold text-lg">{{ user.posts.length }}</div>
+            <div class="text-gray-600">Posts</div>
+          </div>
+          <div
+            class="text-center cursor-pointer hover:text-blue-600"
+            [routerLink]="['/user/route', 'followers']"
+            [queryParams]="{ user: user._id, uuid: user.id }"
+          >
+            <div class="font-semibold text-lg">{{ user.followers.length }}</div>
+            <div class="text-gray-600">Followers</div>
+          </div>
+          <div
+            class="text-center cursor-pointer hover:text-blue-600"
+            [routerLink]="['/user/route', 'followings']"
+            [queryParams]="{ user: user._id, uuid: user.id }"
+          >
+            <div class="font-semibold text-lg">
+              {{ user.followings.length }}
+            </div>
+            <div class="text-gray-600">Following</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div style="min-width: 400px;">
-        <div >
-            {{user.bio}}
-        </div>
-        <div>
-            <a target="_blank" [href]="'https://'+user.website">{{user.website}}</a>
-            
-        </div>
+    <div class="mb-8">
+      <div class="mb-2">
+        {{ user.bio }}
+      </div>
+      <div>
+        <a
+          target="_blank"
+          [href]="'https://' + user.website"
+          class="text-blue-600 hover:text-blue-800"
+          >{{ user.website }}</a
+        >
+      </div>
     </div>
-    <div class="container d-flex flex-column justify-content-center align-items-center pt-4" style="min-width: 400px;">
-
-        <!-- @for (post of posts; track $index) {
-        <div class="d-flex flex-column m-1">
-            <div>
-                <img (click)="showPost(post._id)" [src]="post.media[0].url" class="width-250 height-250">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (post of posts; track $index; let i = $index) {
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="flex justify-end p-2">
+            <div class="relative">
+              <button
+                class="text-gray-500 hover:text-gray-700 p-1"
+                type="button"
+                id="dropdownMenuImage"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+              <div
+                class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-10 hidden"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <ul class="py-1">
+                  <li
+                    class="px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer"
+                    (click)="deletePost(post._id)"
+                  >
+                    Delete
+                  </li>
+                  <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    Edit
+                  </li>
+                </ul>
+              </div>
             </div>
+          </div>
 
-        </div>
-        }
-        @empty {
-            <div class="d-flex justify-content-center align-items-center pt-5 mt-5" >
-                <div>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-camera" style="font-size: 60px;"></i>
-                    </div>
-                    <div style="font-size: 40px;">
-                        No Posts Yet
-                    </div>
-                </div>
-            </div>
-        } -->
+          <div [id]="'carouselExample' + i" class="relative">
+            <div class="relative overflow-hidden">
+              <img
+                [src]="post.media[0].url"
+                class="w-full h-64 object-cover"
+                alt=""
+              />
 
-
-        @for (post of posts; track $index; let i=$index) {
-        <div class="m-1">
-            <div class="d-flex flex-column align-items-end pb-1 justify-content-start">
-                <button class="btn txt-blue font-size-1" type="button" id="dropdownMenuImage"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
-                            <div  class="dropdown-menu dropdown-menu-end p-1" style="min-width: 60px !important;" aria-labelledby="dropdownMenuButton">
-                                <ul class="dropdown-item-text m-0 p-0">
-                                    <li class="dropdown-item no-list-style p-0 text-danger cursor-pointer" (click)="deletePost(post._id)">
-                                        Delete
-                                    </li>
-                                    <li class="no-list-style dropdown-item p-0 cursor-pointerpo">
-                                       Edit
-                                    </li>
-
-                                </ul>
-                            </div>
-            </div>
-
-            <div [id]="'carouselExample'+i" class="carousel slide overflow-hidden">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img [src]="post.media[0].url" class="d-block width-400 height-400" alt="...">
-                    </div>
-
-                    @if(post.media.length > 1){
-                        @for (pic of post.media.slice(1); track $index) {
-                        <div class="carousel-item">
-                            <img [src]="pic.url" class="d-block width-400 height-400 object-fit-cover" alt="...">
-                        </div>
-                        }
-
-                    }
-                </div>
-                @if (post.media.length > 1) {
-                    <button [disabled]="currentImageIndex=== 0" (click)="prevImg()"  class="carousel-control-prev" [ngClass]="{'visually-hidden' : currentImageIndex==0}" type="button" [attr.data-bs-target]="'#carouselExample'+i"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button [disabled]="currentImageIndex===post.media.length-1" (click)="nextImg()" class="carousel-control-next"  [ngClass]="{'visually-hidden' : currentImageIndex==post.media.length-1}" type="button" [attr.data-bs-target]="'#carouselExample'+i"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-
+              @if (post.media.length > 1) {
+                @for (pic of post.media.slice(1); track $index) {
+                  <img
+                    [src]="pic.url"
+                    class="w-full h-64 object-cover hidden"
+                    alt=""
+                  />
                 }
+              }
             </div>
 
-            <div class="cursor-pointer" >
-                <i  [class]=" post.likes.includes(user.username) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-                    (click)="likeToggle(post,user.username)"></i>
-                    <div (click)="getPostLikes(post._id)" data-bs-toggle="modal" data-bs-target="#likesModal">
-                        {{post.likes.length}} likes
-                    </div>
+            @if (post.media.length > 1) {
+              <button
+                [disabled]="currentImageIndex === 0"
+                (click)="prevImg()"
+                class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                [ngClass]="{
+                  'opacity-50 cursor-not-allowed': currentImageIndex == 0,
+                }"
+                type="button"
+              >
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button
+                [disabled]="currentImageIndex === post.media.length - 1"
+                (click)="nextImg()"
+                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                [ngClass]="{
+                  'opacity-50 cursor-not-allowed':
+                    currentImageIndex == post.media.length - 1,
+                }"
+                type="button"
+              >
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            }
+          </div>
+
+          <div class="p-4">
+            <div class="flex items-center mb-2">
+              <i
+                [class]="
+                  post.likes.includes(user.username)
+                    ? 'fa-solid fa-heart text-red-500'
+                    : 'fa-regular fa-heart'
+                "
+                (click)="likeToggle(post, user.username)"
+                class="cursor-pointer text-xl mr-2"
+              ></i>
             </div>
-            <div>
-                {{post.caption}}
+            <div
+              class="cursor-pointer mb-2"
+              (click)="getPostLikes(post._id)"
+              data-bs-toggle="modal"
+              data-bs-target="#likesModal"
+            >
+              <span class="font-medium">{{ post.likes.length }} likes</span>
             </div>
+            <div class="text-gray-800">
+              {{ post.caption }}
+            </div>
+          </div>
         </div>
-        }
-        @empty {
-            <div class="d-flex justify-content-center align-items-center pt-5 mt-5" >
-                <div>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-camera" style="font-size: 60px;"></i>
-                    </div>
-                    <div style="font-size: 40px;">
-                        No Posts Yet
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</div>
-
-
-<!-- IMAGE Modal -->
-<div #showOnePost class="modal fade" id="showPostModal" tabindex="-1" aria-labelledby="showPostModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content img bg-transparent border border-0">
-            <div>
-                <div class="d-flex justify-content-center align-items-center">
-                    @if(onePost !== undefined){
-                    <div>
-                        <button class="p-1 fs-40 text-secondary bg-transparent border border-0" (click)="prevImage()"
-                            [disabled]="currentImageIndex<=0">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                    </div>
-                    <div class="p-1 ">
-                        <div class="d-flex justify-content-end">
-                            <button class="btn txt-blue font-size-1" type="button" id="dropdownMenuImage"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                <ul class="dropdown-item-text">
-                                    <li class="dropdown-item no-list-style">
-                                        <a>
-                                            <span class="cursor-pointer" (click)="deletePost(onePost._id)">Delete
-                                                Post</span>
-                                        </a>
-                                    </li>
-                                    <li class="no-list-style dropdown-item">
-                                        <a class="text-decoration-none text-danger bg-hover cursor-pointer">Edit
-                                            Post</a>
-                                    </li>
-
-                                </ul>
-                            </div>
-
-                        </div>
-
-
-
-                        <div>
-                            <img class="width-500 height-500" [src]="onePost.media[currentImageIndex].url"
-                                alt="image not available" srcset="">
-                        </div>
-                        <div class="bg-dark text-light">
-
-                            <div>
-                                <i [class]=" onePost.likes.includes(user.username) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-                                    (click)="likeToggle(onePost,user.username)"></i>
-                                {{onePost.likes.length}}
-                            </div>
-                            <div>
-                                {{onePost.caption}}
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="p-1 fs-40 text-secondary bg-transparent border border-0"
-                            [disabled]="currentImageIndex == onePost.media.length-1" (click)="nextImage()">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- UPDATE PROFILE PICTURE MODAL -->
-<div id="updatePic" class="modal fade" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-body">
-                <div class="">
-                    <label for="">Select a file</label>
-                    <input type="file" (change)="onFileSelect($event)" class="form-control" src="" alt="">
-                </div>
-                <div class="p-2 d-flex justify-content-center align-items-center">
-                    <div>
-                        <button type="button" class="btn btn-secondary mx-1" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary mx-1" data-bs-dismiss="modal"
-                            (click)="updateProfilePicture(user._id)">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- LIKES MODAL -->
-<div class="modal fade" id="likesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width: 300px;" >
-      <div class="modal-content">
-      @for (user of likerss; track $index) {
-        <div class="d-flex justify-content-between">
-            <div class="d-flex justify-content-center align-items-center p-1">
-                <img style="height: 30px; width: 30px; border-radius: 50%;" [src]="user.profileImage.url" alt="" srcset="">
-            </div>
-            <div  class="d-flex flex-column justify-content-center align-items-center p-1">
-                <div> {{user.username}} </div>
-                <div> {{user.full_name}} </div>
-            </div>
-            <div class="d-flex justify-content-center align-items-center p-1">
-                <button class="btn btn-sm btn-secondary" data-bs-dismiss="modal" [routerLink]="'/message'" [queryParams]="{receiverName : user.username}"> Message </button>
-            </div>
+      } @empty {
+        <div
+          class="col-span-full flex flex-col justify-center items-center py-16"
+        >
+          <div class="text-6xl text-gray-400 mb-4">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <div class="text-2xl text-gray-600">No Posts Yet</div>
         </div>
       }
-    
+    </div>
+  </div>
+
+  <!-- IMAGE Modal -->
+  <div
+    #showOnePost
+    class="modal fade"
+    id="showPostModal"
+    tabindex="-1"
+    aria-labelledby="showPostModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content img bg-transparent border border-0">
+        <div>
+          <div class="d-flex justify-content-center align-items-center">
+            @if (onePost !== undefined) {
+              <div>
+                <button
+                  class="p-1 fs-40 text-secondary bg-transparent border border-0"
+                  (click)="prevImage()"
+                  [disabled]="currentImageIndex <= 0"
+                >
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+              </div>
+              <div class="p-1">
+                <div class="d-flex justify-content-end">
+                  <button
+                    class="btn txt-blue font-size-1"
+                    type="button"
+                    id="dropdownMenuImage"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                  </button>
+                  <div
+                    class="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    <ul class="dropdown-item-text">
+                      <li class="dropdown-item no-list-style">
+                        <a>
+                          <span
+                            class="cursor-pointer"
+                            (click)="deletePost(onePost._id)"
+                            >Delete Post</span
+                          >
+                        </a>
+                      </li>
+                      <li class="no-list-style dropdown-item">
+                        <a
+                          class="text-decoration-none text-danger bg-hover cursor-pointer"
+                          >Edit Post</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div>
+                  <img
+                    class="width-500 height-500"
+                    [src]="onePost.media[currentImageIndex].url"
+                    alt="image not available"
+                    srcset=""
+                  />
+                </div>
+                <div class="bg-dark text-light">
+                  <div>
+                    <i
+                      [class]="
+                        onePost.likes.includes(user.username)
+                          ? 'fa-solid fa-heart'
+                          : 'fa-regular fa-heart'
+                      "
+                      (click)="likeToggle(onePost, user.username)"
+                    ></i>
+                    {{ onePost.likes.length }}
+                  </div>
+                  <div>
+                    {{ onePost.caption }}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button
+                  class="p-1 fs-40 text-secondary bg-transparent border border-0"
+                  [disabled]="currentImageIndex == onePost.media.length - 1"
+                  (click)="nextImage()"
+                >
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  
 
-<!-- USER UPDATE MODAL -->
-  <div class="modal fade" id="userUpdateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- UPDATE PROFILE PICTURE MODAL -->
+  <div id="updatePic" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-body">
-            <form #updateUserForm="ngForm" (ngSubmit)="finallyUpdateUser(updateUserForm)" action="" class="p-2">
-                <div>
-                    <label for="" class="form-label">Full Name</label>
-                    <input [(ngModel)]="user.full_name" name="full_name" type="text" class="form-control">
-                </div>
-                <div>
-                    <label for="" class="form-label">Username</label>
-                    <input [(ngModel)]="user.username" name="username" type="text" class="form-control">
-                </div>
-                <div>
-                    <label for="" class="form-label">Email</label>
-                    <input [(ngModel)]="user.email" name="email" type="text" class="form-control">
-                </div>
-                <div>
-                    <label for="" class="form-label">Bio</label>
-                    <input [(ngModel)]="user.bio" name="bio" type="text" class="form-control">
-                </div>
-                <div>
-                    <label for="" class="form-label">Website</label>
-                    <input [(ngModel)]="user.website" name="website" type="text" class="form-control">
-                </div>
-                <div>
-                    <label for="" class="form-label">Phone</label>
-                    <input maxlength="10" minlength="10" [(ngModel)]="user.phone" name="phone" type="text" class="form-control">
-                </div>
-
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="d-flex justify-content-center align-items-center p-2" >
-                        <button style="width: 60px;" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center p-2" >
-                        <button style="width: 60px;" type="submit" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Save</button>
-                    </div>
-                </div>
-                
-            </form>
+          <div class="">
+            <label for="">Select a file</label>
+            <input
+              type="file"
+              (change)="onFileSelect($event)"
+              class="form-control"
+              src=""
+              alt=""
+            />
+          </div>
+          <div class="p-2 d-flex justify-content-center align-items-center">
+            <div>
+              <button
+                type="button"
+                class="btn btn-secondary mx-1"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary mx-1"
+                data-bs-dismiss="modal"
+                (click)="updateProfilePicture(user._id)"
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- LIKES MODAL -->
+  <div
+    class="modal fade"
+    id="likesModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" style="width: 300px">
+      <div class="modal-content">
+        @for (user of likerss; track $index) {
+          <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-center align-items-center p-1">
+              <img
+                style="height: 30px; width: 30px; border-radius: 50%"
+                [src]="user.profileImage?.url"
+                alt=""
+                srcset=""
+              />
+            </div>
+            <div
+              class="d-flex flex-column justify-content-center align-items-center p-1"
+            >
+              <div>{{ user.username }}</div>
+              <div>{{ user.full_name }}</div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center p-1">
+              <button
+                class="btn btn-sm btn-secondary"
+                data-bs-dismiss="modal"
+                [routerLink]="'/message'"
+                [queryParams]="{ receiverName: user.username }"
+              >
+                Message
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 
+  <!-- USER UPDATE MODAL -->
+  <div
+    class="modal fade"
+    id="userUpdateModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form
+            #updateUserForm="ngForm"
+            (ngSubmit)="finallyUpdateUser(updateUserForm)"
+            action=""
+            class="p-2"
+          >
+            <div>
+              <label for="" class="form-label">Full Name</label>
+              <input
+                [(ngModel)]="user.full_name"
+                name="full_name"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <div>
+              <label for="" class="form-label">Username</label>
+              <input
+                [(ngModel)]="user.username"
+                name="username"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <div>
+              <label for="" class="form-label">Email</label>
+              <input
+                [(ngModel)]="user.email"
+                name="email"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <div>
+              <label for="" class="form-label">Bio</label>
+              <input
+                [(ngModel)]="user.bio"
+                name="bio"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <div>
+              <label for="" class="form-label">Website</label>
+              <input
+                [(ngModel)]="user.website"
+                name="website"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <div>
+              <label for="" class="form-label">Phone</label>
+              <input
+                maxlength="10"
+                minlength="10"
+                [(ngModel)]="user.phone"
+                name="phone"
+                type="text"
+                class="form-control"
+              />
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center">
+              <div class="d-flex justify-content-center align-items-center p-2">
+                <button
+                  style="width: 60px"
+                  class="btn btn-sm btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+              </div>
+              <div class="d-flex justify-content-center align-items-center p-2">
+                <button
+                  style="width: 60px"
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  data-bs-dismiss="modal"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 }
-

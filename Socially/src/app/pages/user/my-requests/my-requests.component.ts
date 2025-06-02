@@ -21,12 +21,12 @@ export class MyRequestsComponent implements OnInit {
   requests !: IUser[]
 
   ngOnInit(): void {
-    this.getUser()
+    // this.getUser()
 
   }
 
   getUser() {
-    this.userService.user$.subscribe((res: any) => this.user = res)
+    // this.userService.user$.subscribe((res: any) => this.user = res)
     this.getRequests(this.user.id)
   }
 

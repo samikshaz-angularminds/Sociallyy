@@ -48,7 +48,7 @@ export class FollowersFollowingComponent implements OnInit {
   }
 
   getUser(element: string, uid?: string) {
-    this.userService.user$.subscribe((response: any) => this.user = response)
+    // this.userService.user$.subscribe((response: any) => this.user = response)
 
     console.log('ELEMENT: ',element);
     console.log('USERNAME: ',uid);

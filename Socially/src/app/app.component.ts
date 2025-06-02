@@ -16,10 +16,9 @@ import { UserService } from './core/services/userService/user.service';
 })
 export class AppComponent {
   title = 'Socially';
-  loggedIn = false
+  // loggedIn = false
 
-  apiService = inject(ApiService)
-  userService = inject(UserService)
+  // apiService = inject(ApiService)
 
   constructor(){
     // this.deleteRejectedRequests()

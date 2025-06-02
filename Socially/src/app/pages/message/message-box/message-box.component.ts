@@ -51,10 +51,10 @@ export class MessageBoxComponent implements OnInit {
   }
 
   getUser() {
-    this.userService.user$.subscribe((res: any) => {
-      this.loggedInUser = res
-      console.log('LOGGEDIN User: ', this.loggedInUser);
-    })
+    // this.userService.user$.subscribe((res: any) => {
+    //   this.loggedInUser = res
+    //   console.log('LOGGEDIN User: ', this.loggedInUser);
+    // })
   }
 
   getConversation(other: string) {

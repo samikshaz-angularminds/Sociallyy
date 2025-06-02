@@ -5,7 +5,7 @@ accountHolderName: string
 caption: string
 createdAt: string
 likes: string[]
-media: IMedia[]
+media: IMedia[] 
 }
 
 export interface IMedia{

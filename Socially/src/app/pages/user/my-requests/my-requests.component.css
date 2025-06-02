@@ -1,11 +1,1 @@
-.width-415 {
-  width: 415px;
-}
-
-.width-45 {
-  width: 45px;
-}
-
-.height-45 {
-  height: 45px;
-}
+/* All styles are now handled by Tailwind CSS utility classes */

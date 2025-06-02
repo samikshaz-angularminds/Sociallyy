@@ -1,7 +1,1 @@
-.width-50{
-    width: 50px;
-}
-
-.height-50{
-    height: 50px;
-}
+/* All styles are now handled by Tailwind CSS utility classes */

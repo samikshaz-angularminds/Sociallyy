@@ -362,7 +362,12 @@ const getUsersExceptMe = asyncErrorHandler(async function (req, res) {
 const getOneUser = asyncErrorHandler(async function (req, res) {
     const userId = req.params.id;
 
+    console.log("USER ID: ",userId);
+    
+
     const user = await User.findById(userId).populate('profileImage');
+    console.log("USER FOUND: ",user);
+
 
     if(!user){
         throw new ApiError(404, "User not found");

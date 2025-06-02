@@ -49,10 +49,10 @@ export class MessagingComponent implements OnInit {
   }
 
   getUser() {
-    this.userService.user$.subscribe((res: any) => {
-      this.loggedInUser = res
-      this.getMyMessages(this.loggedInUser.id)
-    })
+    // this.userService.user$.subscribe((res: any) => {
+    //   this.loggedInUser = res
+    //   this.getMyMessages(this.loggedInUser.id)
+    // })
   }
 
   getMyMessages(myUid: string) {

@@ -29,17 +29,17 @@ export class HomePageComponent implements OnInit {
   followings: IUser[] = []
   currentImageIndex = 0
   pendingRequestsToUsers: string[] = []
-  likerss: IUser[] = []
+  likerss: IUser[] | undefined = []
 
 
   ngOnInit(): void {
-    this.getUser()
+    this.getMe(this.userService.user?._id)
   }
 
   getUser() {
-    this.userService.user$.subscribe((res: any) => {
-      this.getMe(res?._id)
-    })
+    // this.userService.user$.subscribe((res: any) => {
+    //   this.getMe(res?._id)
+    // })
   }
 
   getSuggestions() {
@@ -67,7 +67,7 @@ export class HomePageComponent implements OnInit {
     //   }
     // })
 
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SUGGESTIONS + this.user.id).subscribe({
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SUGGESTIONS + this.userService.user?._id).subscribe({
       next: (res: any) => {
         console.log('sugg: ', res);
         this.users = res
@@ -114,7 +114,7 @@ export class HomePageComponent implements OnInit {
     this.currentImageIndex--
   }
 
-  getMe(userid: string) {
+  getMe(userid: string | undefined) {
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid).subscribe({
       next: (res: any) => {
         this.user = res
@@ -152,7 +152,7 @@ export class HomePageComponent implements OnInit {
     console.log('POST ID: ', post._id);
 
     this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.LIKE_POST + post._id, { liker: liker }).subscribe({
-      next: (res: any) => this.getMe(this.user._id),
+      next: (res: any) => this.getMe(this.userService.user?._id),
       error: (error) => console.log(error)
     })
   }
@@ -160,7 +160,7 @@ export class HomePageComponent implements OnInit {
   unlikeAPost(post: IPost, unliker: string) {
     this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.UNLIKE_POST + post._id, { unliker: unliker }).subscribe({
       next: (res: any) => {
-        this.getMe(this.user._id)
+        this.getMe(this.userService.user?._id)
 
       },
       error: (error) => console.log(error)

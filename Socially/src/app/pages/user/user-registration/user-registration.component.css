@@ -1,7 +1,1 @@
-.border-left-none{
-    border-left: none;
-}
-
-.border-right-none{
-border-right: none;
-}
+/* All styles are now handled by Tailwind CSS utility classes */

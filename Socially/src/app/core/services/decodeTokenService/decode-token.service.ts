@@ -32,6 +32,19 @@ export class DecodeTokenService {
     this.userService.isUserLoggedIn = true
   }
 
+  getToken() {
+    if (localStorage.getItem(tokenConstant.LOGIN_TOKEN)) return localStorage.getItem(tokenConstant.LOGIN_TOKEN)
+
+    return null
+  }
+
+  getRefreshToken() {
+    if (localStorage.getItem(tokenConstant.REFRESH_TOKEN)) return localStorage.getItem(tokenConstant.REFRESH_TOKEN)
+
+    return null
+
+  }
+
   clearToken() {
     localStorage.removeItem(tokenConstant.LOGIN_TOKEN)
     localStorage.removeItem(tokenConstant.REFRESH_TOKEN)
@@ -47,10 +60,10 @@ export class DecodeTokenService {
     const token = localStorage.getItem(tokenConstant.LOGIN_TOKEN)
 
     if (token) {
-      
 
 
-      
+
+
     }
   }
 

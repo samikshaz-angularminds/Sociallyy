@@ -5,7 +5,6 @@ import { ApiService } from '../../../core/services/apiServices/api.service';
 import { apiConstant } from '../../../core/constants/apiConstants';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { tokenConstant } from '../../../core/constants/token';
 import { DecodeTokenService } from '../../../core/services/decodeTokenService/decode-token.service';
 import { UserService } from '../../../core/services/userService/user.service';
 
@@ -41,7 +40,7 @@ export class UserLoginComponent implements OnInit {
 
   getLoginForm() {
     this.loginForm = this.fb.group({
-      emailorusername : ['', Validators.required],
+      emailorusername: ['', Validators.required],
       password: ['', Validators.required]
     })
   }
@@ -49,15 +48,21 @@ export class UserLoginComponent implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       this.apiService.post(apiConstant.API_HOST_URL + apiConstant.USER_LOGIN, this.loginForm.value).subscribe({
-        next: (res: any) => {
-          if(res){
+        next: async (res: any) => {
+          if (res) {
             this.decodeTokenService.saveToken(res.token)
 
-            this.userService.setUser(res.user)
+            console.log("logged in user: ", res);
+
+            this.userService.user = res.user;
+            this.userService.isUserLoggedIn = true;
+            console.log("userservice user---- ",this.userService.user);
+
+            // this.userService.setUser(res.user)
             this.decodeTokenService.saveRefreshToken(res.user.refreshToken)
             this.router.navigate(['/user/home'])
           }
-          else{
+          else {
             alert('Need correct details')
           }
         },

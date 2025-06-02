@@ -1,49 +1,55 @@
-<div class="container d-flex">
-
-    <div class="w-25 border border-sec p-3">
-
-        @for (conversation of conversations; track $index) {
-<!-- {{conversation.otherUser.otherUid}}             -->
-<!-- kk -->
-<!-- {{conversation | json}} -->
-        <div class="pt-3 lh-1 d-flex" (click)="userChange(conversation.otherUser.otherUid)">
-
-            <div class="d-flex justify-content-center align-items-center px-2">
-                <img [src]="conversation.otherUser.profilePic" class="height-40 width-40 rounded-circle" alt=""
-                    srcset="">
-            </div>
-
-            <div>
-                <div  #uname>
-                    {{ conversation.otherUser.username }}
-                </div>
-                <small class="text-secondary"> {{ conversation.message[conversation.message.length-1].message }}
-                </small>
-            </div>
-
+<div class="flex h-screen bg-gray-50">
+  <div class="w-1/4 border-r border-gray-300 bg-white p-4">
+    <h2 class="text-xl font-semibold mb-4">Messages</h2>
+    @for (conversation of conversations; track $index) {
+      <div
+        class="flex items-center p-3 hover:bg-gray-100 rounded-lg cursor-pointer"
+        (click)="userChange(conversation.otherUser.otherUid)"
+      >
+        <div class="mr-3">
+          <img
+            [src]="conversation.otherUser.profilePic"
+            class="w-12 h-12 rounded-full"
+            alt=""
+          />
         </div>
+        <div class="flex-1">
+          <div class="font-medium" #uname>
+            {{ conversation.otherUser.username }}
+          </div>
+          <small class="text-gray-500 truncate block">
+            {{ conversation.message[conversation.message.length - 1].message }}
+          </small>
+        </div>
+      </div>
+    }
+  </div>
 
-        }
-    </div>
-
-    <div class="w-75 border border-sec height-600"
-        [ngClass]=" receiverUser ? [] : ['d-flex', 'flex-column', 'justify-content-center', 'align-items-center'] ">
-        @if(receiverUser){
-        <app-message-box [receiverUser]="receiverUser"></app-message-box>
-        }
-        @else {
-        <div class="font-size-90 ">
-            <i class="fa-solid fa-paper-plane"></i>
+  <div
+    class="flex-1 border-l border-gray-300 bg-white"
+    [ngClass]="
+      receiverUser ? [] : ['flex', 'flex-col', 'justify-center', 'items-center']
+    "
+  >
+    @if (receiverUser) {
+      <app-message-box [receiverUser]="receiverUser"></app-message-box>
+    } @else {
+      <div class="text-center">
+        <div class="text-6xl text-gray-400 mb-4">
+          <i class="fa-solid fa-paper-plane"></i>
         </div>
-        <div class="fw-bold">
-            Your Messages
+        <div class="text-xl font-bold text-gray-800 mb-2">Your Messages</div>
+        <div class="text-gray-500 mb-4">
+          Send Photos and messages to a friend or group
         </div>
-        <div class="text-secondary">
-            Send Photos and messages to a friend or group
+        <div>
+          <button
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Send Message
+          </button>
         </div>
-        <div class="pt-2">
-            <button class="btn btn-sm btn-primary" >Send Message</button>
-        </div>
-        }
-    </div>
+      </div>
+    }
+  </div>
 </div>

@@ -16,9 +16,9 @@ export class AuthService {
   constructor() { }
 
   getUser() {
-    this.userService.user$.subscribe((res: any) => {
-      console.log(res)
-    })
+    // this.userService.user$.subscribe((res: any) => {
+    //   console.log(res)
+    // })
   }
 
   getLoggedInUser(userid: string) {

@@ -48,7 +48,7 @@ export class ForgotPasswordComponent {
           setTimeout(()=>{
             this.loading = false;
             this.decodeTokenService.saveToken(res.token)
-            this.userService.setUser(res.user)
+            // this.userService.setUser(res.user)
             this.router.navigate(['/user/home']);
           },1000)
         }
