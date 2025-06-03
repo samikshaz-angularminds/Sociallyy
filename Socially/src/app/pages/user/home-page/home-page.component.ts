@@ -8,6 +8,7 @@ import { forkJoin, map, tap } from 'rxjs';
 import { tokenConstant } from '../../../core/constants/token';
 import { IPost } from '../../../core/models/post';
 import { UserService } from '../../../core/services/userService/user.service';
+import { DecodeTokenService } from '../../../core/services/decodeTokenService/decode-token.service';
 
 @Component({
   selector: 'app-home-page',
@@ -19,7 +20,8 @@ import { UserService } from '../../../core/services/userService/user.service';
 export class HomePageComponent implements OnInit {
 
   apiService = inject(ApiService)
-  userService = inject(UserService)
+  // userService = inject(UserService)
+  tokenService = inject(DecodeTokenService)
   changeRef = inject(ChangeDetectorRef)
   router = inject(Router)
   user !: IUser
@@ -33,7 +35,10 @@ export class HomePageComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getMe(this.userService.user?._id)
+    // console.log("decode token on home-page-- ",this.tokenService.user);
+    
+    this.tokenService.user$.subscribe(user => console.log("from homepage-- ",user))
+    // this.getMe(this.userService.user?._id)
   }
 
   getUser() {
@@ -42,7 +47,7 @@ export class HomePageComponent implements OnInit {
     // })
   }
 
-  getSuggestions() {
+  getSuggestions(userid:string) {
     // forkJoin({
     //   suggestions: this.apiService.get<IUser[]>(apiConstant.API_HOST_URL + apiConstant.GET_USERS_EXCEPT_ME + this.user._id),
     //   pendingRequest: this.apiService.get(apiConstant.API_HOST_URL + apiConstant.PENDING_REQUESTS + this.user.id),
@@ -67,7 +72,7 @@ export class HomePageComponent implements OnInit {
     //   }
     // })
 
-    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SUGGESTIONS + this.userService.user?._id).subscribe({
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.SUGGESTIONS + userid).subscribe({
       next: (res: any) => {
         console.log('sugg: ', res);
         this.users = res
@@ -98,7 +103,7 @@ export class HomePageComponent implements OnInit {
       next: (res: any) => {
         console.log('REQUEST SENT BY ME: ', res);
         this.reqsent[myUid] = true
-        this.getSuggestions()
+        // this.getSuggestions()
       },
       error: (error) => {
         console.log(error)
@@ -118,7 +123,7 @@ export class HomePageComponent implements OnInit {
     this.apiService.get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid).subscribe({
       next: (res: any) => {
         this.user = res
-        this.getSuggestions()
+        // this.getSuggestions()
         this.followingsOfUser(this.user.id)
       },
       error: (error) => console.log(error)
@@ -151,16 +156,16 @@ export class HomePageComponent implements OnInit {
   likeAPost(post: IPost, liker: string) {
     console.log('POST ID: ', post._id);
 
-    this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.LIKE_POST + post._id, { liker: liker }).subscribe({
-      next: (res: any) => this.getMe(this.userService.user?._id),
-      error: (error) => console.log(error)
-    })
+    // this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.LIKE_POST + post._id, { liker: liker }).subscribe({
+    //   next: (res: any) => this.getMe(this.userService.user?._id),
+    //   error: (error) => console.log(error)
+    // })
   }
 
   unlikeAPost(post: IPost, unliker: string) {
     this.apiService.patch(apiConstant.API_HOST_URL + apiConstant.UNLIKE_POST + post._id, { unliker: unliker }).subscribe({
       next: (res: any) => {
-        this.getMe(this.userService.user?._id)
+        // this.getMe(this.userService.user?._id)
 
       },
       error: (error) => console.log(error)

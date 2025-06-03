@@ -29,7 +29,7 @@ export class MessageBoxComponent implements OnInit {
 
   chatService = inject(ChatService)
   apiService = inject(ApiService)
-  userService = inject(UserService)
+  // userService = inject(UserService)
   route = inject(ActivatedRoute)
   loggedInUser !: IUser
   receiver = ''

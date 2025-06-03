@@ -53,18 +53,18 @@ export class UserService {
   // }
 
 
-  // getMe(userid: string) {
-  //   // console.log("hi from getmeeeeeeeee ",userid);
+  getMe(userid: string) {
+    // console.log("hi from getmeeeeeeeee ",userid);
     
-  //   this.apiService.get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid).subscribe({
-  //     next: (res: any) => {
-  //       console.log('response for get user: ', res);
+    this.apiService.get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid).subscribe({
+      next: (res: any) => {
+        console.log('response for get user: ', res);
 
-  //     },
-  //     error: (error) => console.log(error)
+      },
+      error: (error) => console.log(error)
 
-  //   })
-  // }
+    })
+  }
 
   
 

@@ -28,7 +28,7 @@ export class AnotherUserComponent implements OnInit {
   @ViewChild("showOnePost") showOnePost!: ElementRef;
   route = inject(ActivatedRoute);
   apiService = inject(ApiService);
-  userService = inject(UserService);
+  // userService = inject(UserService);
   cdr = inject(ChangeDetectorRef);
   username = "";
   user!: IUser;

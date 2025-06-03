@@ -26,7 +26,7 @@ export class MessagingComponent implements OnInit {
 
 
   apiService = inject(ApiService)
-  userService = inject(UserService)
+  // userService = inject(UserService)
   route = inject(ActivatedRoute)
   loggedInUser !: IUser
   receiverUser !: IUser

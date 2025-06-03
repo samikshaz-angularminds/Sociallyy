@@ -12,7 +12,7 @@ const fs = require('fs');
 const { asyncErrorHandler } = require('../utils/asyncErrorHandle.utils');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
-const ApiError = require("../utils/ApiError.utils")
+const {ApiError} = require("../utils/ApiError.utils")
 
 const options = {
     httpOnly: true,

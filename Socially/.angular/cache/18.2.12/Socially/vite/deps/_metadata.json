@@ -1,79 +1,73 @@
 {
-  "hash": "e4cf8f75",
-  "configHash": "73687445",
-  "lockfileHash": "26f70941",
-  "browserHash": "4a63d77b",
+  "hash": "76cd62b9",
+  "configHash": "78334689",
+  "lockfileHash": "2c344221",
+  "browserHash": "2afaaf04",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "802e8fd7",
+      "fileHash": "91e5ed60",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "135e3bcd",
+      "fileHash": "12332a9c",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "c133fd1d",
+      "fileHash": "34a527b5",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "f1f77882",
+      "fileHash": "32916834",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "da62a330",
+      "fileHash": "67ff4d4a",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "d49776e9",
-      "needsInterop": false
-    },
-    "bootstrap": {
-      "src": "../../../../../../node_modules/bootstrap/dist/js/bootstrap.esm.js",
-      "file": "bootstrap.js",
-      "fileHash": "191d87b4",
+      "fileHash": "7ff9c68f",
       "needsInterop": false
     },
     "emoji-picker-element": {
       "src": "../../../../../../node_modules/emoji-picker-element/index.js",
       "file": "emoji-picker-element.js",
-      "fileHash": "79617925",
+      "fileHash": "55027814",
       "needsInterop": false
     },
     "jwt-decode": {
       "src": "../../../../../../node_modules/jwt-decode/build/esm/index.js",
       "file": "jwt-decode.js",
-      "fileHash": "5237e041",
+      "fileHash": "bf57c118",
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "9dfc7740",
+      "fileHash": "c6d080dd",
       "needsInterop": false
     },
     "socket.io-client": {
       "src": "../../../../../../node_modules/socket.io-client/build/esm/index.js",
       "file": "socket__io-client.js",
-      "fileHash": "29e23368",
+      "fileHash": "f149d0e8",
       "needsInterop": false
     },
     "sweetalert2": {
       "src": "../../../../../../node_modules/sweetalert2/dist/sweetalert2.esm.all.js",
       "file": "sweetalert2.js",
-      "fileHash": "29675fd5",
+      "fileHash": "9f53ae06",
       "needsInterop": false
     }
   },

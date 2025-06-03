@@ -37,7 +37,7 @@ export class UserHeaderComponent implements OnInit {
   @ViewChild("searchModal", { static: false }) searchModal!: ElementRef;
   @ViewChild("fileInput") fileInput!: ElementRef;
 
-  userService = inject(UserService);
+  // userService = inject(UserService);
   apiService = inject(ApiService);
   decodeTokenService = inject(DecodeTokenService);
   user !: IUser;
@@ -53,14 +53,25 @@ export class UserHeaderComponent implements OnInit {
   filteredUsers!: IUser[];
   searchQuery = "";
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     // this.getUser()
-    console.log("userservice user in header--- ", this.userService.user);
+    // console.log("userservice user in header--- ", this.userService.user);
+    // this.decodeTokenService.initializeUserState().subscribe(user => {
+    // console.log("✅ Actual user object: ", user);
+
+    // if (user)  this.decodeTokenService.user = user;
+
+    // You can now use `user` here to set state, call other functions, etc.
+    // });
+
+    this.decodeTokenService.user$.subscribe(user => console.log(user));
+
+    console.log(this.decodeTokenService.user$);
 
     this.getPostForm();
-    this.getImage(this.userService.user?._id);
+    // this.getImage(this.userService.user?._id);
   }
 
   getUser() {
@@ -68,15 +79,18 @@ export class UserHeaderComponent implements OnInit {
   }
 
   getImage(userid: string | undefined) {
-    this.apiService
-      .get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid)
-      .subscribe({
-        next: (res: any) =>{
-          console.log("user rsponse in header== ",res);
-          this.userService.user = res
-          (this.user = res)},
-        error: (error) => console.log(error),
-      });
+    if (userid) {
+      this.apiService
+        .get(apiConstant.API_HOST_URL + apiConstant.GET_ME + userid)
+        .subscribe({
+          next: (res: any) => {
+            // console.log("user rsponse in header== ",res);
+            // this.userService.user = res
+            (this.user = res)
+          },
+          error: (error) => console.log(error),
+        });
+    }
   }
 
   toggleSidebar() {
@@ -109,8 +123,8 @@ export class UserHeaderComponent implements OnInit {
       this.apiService
         .patch(
           apiConstant.API_HOST_URL +
-            apiConstant.ACCOUNT_PRIVACY +
-            this.user._id,
+          apiConstant.ACCOUNT_PRIVACY +
+          this.user._id,
           { command: true },
         )
         .subscribe({
@@ -132,8 +146,8 @@ export class UserHeaderComponent implements OnInit {
       this.apiService
         .patch(
           apiConstant.API_HOST_URL +
-            apiConstant.ACCOUNT_PRIVACY +
-            this.user._id,
+          apiConstant.ACCOUNT_PRIVACY +
+          this.user._id,
           { command: this.user.isPrivate ? false : true },
         )
         .subscribe({
@@ -172,7 +186,7 @@ export class UserHeaderComponent implements OnInit {
   logOut() {
     localStorage.removeItem(tokenConstant.LOGIN_TOKEN);
     document.cookie = "uid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    this.userService.isUserLoggedIn = false;
+    // this.userService.isUserLoggedIn = false;
     this.router.navigate(["account/login"]);
   }
 

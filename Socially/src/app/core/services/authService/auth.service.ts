@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../apiServices/api.service';
 import { apiConstant } from '../../constants/apiConstants';
-import { UserService } from '../userService/user.service';
 import { tokenConstant } from '../../constants/token';
 
 @Injectable({
@@ -10,7 +9,6 @@ import { tokenConstant } from '../../constants/token';
 export class AuthService {
 
   apiService = inject(ApiService);
-  userService = inject(UserService);
 
 
   constructor() { }

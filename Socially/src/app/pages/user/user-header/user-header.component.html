@@ -1,4 +1,4 @@
-@if (decodeTokenService.getToken !== null) {
+@if (decodeTokenService.getToken() !== null) {
   <nav class="bg-white border-b border-gray-200 px-4 py-2">
     <div class="flex items-center justify-between max-w-7xl mx-auto">
       <div
@@ -48,7 +48,7 @@
       <div class="p-1">
         <img
           routerLink="/user/myProfile"
-          [src]="userService.user?.profileImage?.url"
+          [src]=""
           class="w-10 h-10 rounded-full cursor-pointer"
           alt=""
         />

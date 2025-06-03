@@ -32,7 +32,7 @@ import { UserService } from "../../../core/services/userService/user.service";
 export class UserProfileComponent {
   @ViewChild("showOnePost") showOnePost!: ElementRef;
   apiService = inject(ApiService);
-  userService = inject(UserService);
+  // userService = inject(UserService);
   fb = inject(FormBuilder);
   changeRef = inject(ChangeDetectorRef);
   router = inject(Router);
@@ -49,9 +49,9 @@ export class UserProfileComponent {
 
   ngOnInit(): void {
     // this.getUser()
-    console.log("in ngoninit user--- ", this.userService.user);
+    // console.log("in ngoninit user--- ", this.userService.user);
 
-    this.getProfile(this.userService.user?._id);
+    // this.getProfile(this.userService.user?._id);
   }
 
   getUser() {

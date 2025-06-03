@@ -1,5 +1,6 @@
 export const apiConstant = {
-    API_HOST_URL : 'https://sociallyy.onrender.com/',
+    // API_HOST_URL : 'https://sociallyy.onrender.com/',
+    API_HOST_URL: 'http://localhost:5005/',
 
     // USER
     USER_REGISTRATION : 'api/user/register',

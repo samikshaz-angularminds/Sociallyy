@@ -15,7 +15,7 @@ import { DecodeTokenService } from '../../../core/services/decodeTokenService/de
 export class MyRequestsComponent implements OnInit {
 
   apiService = inject(ApiService)
-  userService = inject(UserService)
+  // userService = inject(UserService)
   DecodeTokenService = inject(DecodeTokenService)
   user !: IUser
   requests !: IUser[]

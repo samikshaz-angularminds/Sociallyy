@@ -20,7 +20,7 @@ export class ForgotPasswordComponent {
   apiService = inject(ApiService)
   emailSent = false
   router = inject(Router);
-  userService = inject(UserService);
+  // userService = inject(UserService);
   decodeTokenService = inject(DecodeTokenService)
   loading = false
 

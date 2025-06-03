@@ -23,7 +23,7 @@ export class UserLoginComponent implements OnInit {
   apiService = inject(ApiService)
   router = inject(Router)
   decodeTokenService = inject(DecodeTokenService)
-  userService = inject(UserService);
+  // userService = inject(UserService);
   isPassword = true
   loginError = ''
 
@@ -54,12 +54,14 @@ export class UserLoginComponent implements OnInit {
 
             console.log("logged in user: ", res);
 
-            this.userService.user = res.user;
-            this.userService.isUserLoggedIn = true;
-            console.log("userservice user---- ",this.userService.user);
+            // this.userService.user = res.user;
+            // this.userService.isUserLoggedIn = true;
+            // console.log("userservice user---- ",this.userService.user);
 
             // this.userService.setUser(res.user)
+            this.decodeTokenService.saveToken(res.token);
             this.decodeTokenService.saveRefreshToken(res.user.refreshToken)
+
             this.router.navigate(['/user/home'])
           }
           else {

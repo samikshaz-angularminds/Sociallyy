@@ -16,7 +16,7 @@ export class FollowersFollowingComponent implements OnInit {
 
   selectedElement: string = ''
   apiService = inject(ApiService)
-  userService = inject(UserService)
+  // userService = inject(UserService)
   route = inject(ActivatedRoute)
   accountHolder !: string
   anotherUser !: string

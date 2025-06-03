@@ -21,4 +21,4 @@
     }
 }
 
-module.exports = ApiError;
+module.exports = {ApiError};
